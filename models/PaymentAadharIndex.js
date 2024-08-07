@@ -15,19 +15,20 @@ const paymentAadharSchema = new Schema({
     type: String,
     required: true
   },
-  utrNumber: { // Update this field name if it differs in your schema
+  utrNumber: {
     type: String,
-    required: true
+    required: true,
+    unique: true // Ensure UTR numbers are unique
   },
   email: {
     type: String,
     required: true
   },
-  amount: { // Update this field name if it differs in your schema
+  amount: {
     type: Number,
     required: true
   },
-  filePath: { // Ensure this field is correctly defined and used
+  filePath: {
     type: String,
     required: true
   }
