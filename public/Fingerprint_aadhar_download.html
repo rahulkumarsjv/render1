@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="home.css">
+    <link rel="stylesheet" href="Fingerprint_aadhar_download.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <title>RA DIGITAL INDIA Cyber Cafe</title>
+</head>
+<body>
+    <div class="navborder">
+        <div class="iconnavbaar">&#9776;</div> <!-- Using HTML entity for the menu icon -->
+        <div class="bullet"><p>26</p></div>
+        <div class="profile">Rahul</div>
+    </div>
+    <div class="home">
+        <div class="navbara">
+            <div class="navbar"><a href="home.html"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></div>
+            <div class="navbar"><a href="Aadhar_muan_card.html"><i class="fas fa-id-card"></i> <span>Aadhar Card</span></a></div>
+            <div class="navbar"><a href="new_pan_card_appy.html"><i class="fas fa-address-card"></i> <span>Pan Card</span></a></div>
+            <div class="navbar"><a href="Duplicate"><i class="fas fa-copy"></i> <span>Duplicate EID TO PDF</span></a></div>
+            <div class="navbar"><a href="mobiletopdf"><i class="fas fa-mobile-alt"></i> <span>Mobile Number to Aadhar PDF</span></a></div>
+            <div class="navbar"><a href="Generateeid"><i class="fas fa-id-badge"></i> <span>Generate EID to UID</span></a></div>
+            <div class="navbar"><a href="Duplicateeid"><i class="fas fa-clone"></i> <span>Duplicate EID to UID</span></a></div>
+            <div class="navbar"><a href="pannotouid"><i class="fas fa-exchange-alt"></i> <span>PAN No to UID</span></a></div>
+            <div class="navbar"><a href="lostpanno"><i class="fas fa-question-circle"></i> <span>Lost PAN No</span></a></div>
+        </div>
+            <div class="Fingerprint">
+             <div class="Fingerprintaadhar">
+                <p>Advance Aadhar Successfully Working On All Devices.</p>
+             </div>
+                <div class="Charge">
+                    <input type="text" name="Number" id="Number" placeholder="Processing Fee - 20 rupees" disabled><br>
+                    <label for="Number" id="number3">Aadhar Number</label>
+                    <input type="number" id="number2" name="number2" placeholder="********1234" maxlength="12"min="12"><br><br>
+                    <button type="submit" id="submit" name="submit">Submit</button>
+                </div>
+            </div>
+    </div>
+        <script>
+            document.querySelector('.iconnavbaar').addEventListener('click', function() {
+                const navbara = document.querySelector('.navbara');
+                navbara.classList.toggle('collapsed');
+            });
+    
+            document.querySelectorAll('.printservicebo').forEach(item => {
+                item.addEventListener('click', function() {
+                    const link = item.querySelector('a');
+                    if (link) {
+                        window.location.href = link.href;
+                    }
+                });
+            });
+        </script>
+          <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Load jQuery first -->
+          <script src="logout.js"></script> <!-- Include the logout.js file -->
+          <script src="login-check.js"></script> <!-- Include the login-check.js file -->
+
+</body>
+</html>

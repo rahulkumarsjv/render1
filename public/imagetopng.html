@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RA DIGITAL INDIA Cyber Cafe</title>
+<style>
+    .navbar{
+        border: solid black 1px;
+        background-color: black;
+        width: 100%;
+       height: 50px;
+       justify-self: center;
+       align-items: center;
+       display: flex;
+       margin-bottom: 2%;
+    }
+    .navbar a{
+       color: #fff;
+       margin-left: 5%;
+       font-size: 30px;
+       justify-content: space-between;
+       text-decoration: none;
+    }
+    #container {
+        border: 2px solid black;
+        margin: 20px;
+        padding: 10px;
+        display: flex;
+        justify-content: center;
+        position: relative;
+    }
+
+    #container img {
+        max-width: 100%;
+        max-height: 100%;
+    }
+    #fileInput{
+     position: absolute;
+     justify-content: center;
+     width: 200px;
+     height: 50px;
+     opacity: 0;
+    }
+    .file{
+        border-radius: 20%;
+        background-color: blue;
+        width: 200px;
+        height: 50px;
+        color: #fff;
+        align-items: center;
+        justify-content: center;
+        display: flex;
+        font-size: 25px;
+   }
+   .file1{
+        border-radius: 20%;
+        background-color: blue;
+        width: 200px;
+        height: 50px;
+        color: #fff;
+        align-items: center;
+        justify-content: center;
+        display: flex;
+        font-size: 25px;
+        margin-left: 50px;
+        border: solid 1px #1111;
+   }
+   #convertBtn{
+    position: absolute;
+    top: 13.50%;
+    left: 16.80%;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    width: 200px;
+    height: 45px;
+    opacity: 0;
+    cursor: pointer;
+
+   }
+   .bunt{
+    display: flex;
+   }
+</style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="index.html">image to pdf</a>
+        <a href="imagetokb.html">image to kb</a>
+        <a href="imagetopng.html">image to png</a>
+    </div>
+    <div class="bunt">
+    <div class="file">Upload</div>
+    <div class="file1">Convert to PNG</div>
+    <button id="convertBtn">Convert to PNG</button>
+    <input type="file" id="fileInput" accept=".pdf, image/*">
+    </div>
+    <div id="container"></div>
+    <script>
+        document.getElementById('fileInput').addEventListener('change', function(event) {
+            var file = event.target.files[0];
+            var reader = new FileReader();
+            reader.onload = function(event) {
+                var fileUrl = event.target.result;
+                if (file.type === 'application/pdf') {
+                    displayPDF(fileUrl);
+                } else {
+                    displayImage(fileUrl);
+                }
+            };
+            reader.readAsDataURL(file);
+        });
+
+        function displayPDF(pdfUrl) {
+            var container = document.getElementById('container');
+            container.innerHTML = '<embed src="' + pdfUrl + '" type="application/pdf" width="100%" height="600px">';
+        }
+
+        function displayImage(imgUrl) {
+            var container = document.getElementById('container');
+            container.innerHTML = '<img src="' + imgUrl + '" alt="Uploaded Image">';
+        }
+
+        document.getElementById('convertBtn').addEventListener('click', function() {
+            var container = document.getElementById('container');
+            var element = container.querySelector('img') || container.querySelector('embed');
+
+            var canvas = document.createElement('canvas');
+            var context = canvas.getContext('2d');
+
+            canvas.width = element.width;
+            canvas.height = element.height;
+
+            context.drawImage(element, 0, 0);
+
+            // Remove background
+            var imgData = context.getImageData(0, 0, canvas.width, canvas.height);
+            var pixels = imgData.data;
+
+            // Calculate average color of the image
+            var totalRed = 0, totalGreen = 0, totalBlue = 0, totalAlpha = 0;
+            for (var i = 0; i < pixels.length; i += 4) {
+                var alpha = pixels[i + 3];
+                totalRed += pixels[i] * alpha;
+                totalGreen += pixels[i + 1] * alpha;
+                totalBlue += pixels[i + 2] * alpha;
+                totalAlpha += alpha;
+            }
+
+            var avgRed = Math.round(totalRed / totalAlpha);
+            var avgGreen = Math.round(totalGreen / totalAlpha);
+            var avgBlue = Math.round(totalBlue / totalAlpha);
+
+            // Set background to average color
+            context.fillStyle = 'rgb(' + avgRed + ',' + avgGreen + ',' + avgBlue + ')';
+            context.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Set alpha channel to 0 for pixels similar to background color
+            var tolerance = 50; // You can adjust this value based on your requirements
+            for (var i = 0; i < pixels.length; i += 4) {
+                var alpha = pixels[i + 3];
+                var red = pixels[i];
+                var green = pixels[i + 1];
+                var blue = pixels[i + 2];
+
+                if (Math.abs(red - avgRed) <= tolerance && Math.abs(green - avgGreen) <= tolerance && Math.abs(blue - avgBlue) <= tolerance) {
+                    pixels[i + 3] = 0; // Set alpha channel to 0 (transparent)
+                }
+            }
+
+            context.putImageData(imgData, 0, 0);
+
+            // Convert canvas to image
+            var imgDataUrl = canvas.toDataURL('image/png');
+
+            // Download image
+            var link = document.createElement('a');
+            link.href = imgDataUrl;
+            link.download = 'converted_image.png';
+            link.click();
+        });
+    </script>
+</body>
+</html>

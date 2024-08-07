@@ -1,0 +1,175 @@
+    <!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>RA DIGITAL INDIA Cyber Cafe</title>
+        <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Kalam&display=swap" rel="stylesheet">
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@500&display=swap" rel="stylesheet">
+        
+        <link rel="stylesheet" href="style5.css" type="text/css">
+        <style>
+            @media only screen and (max-width: 600px) {
+    .c-info{
+        display: none;
+        visibility: hidden;
+        
+    }
+    .div-border{
+        display: none;
+    }
+   .logo-strip {
+        margin-top: -22px;
+    }
+     .social-icon li a{
+       display: none;
+        visibility: hidden;
+    }
+    .top-strip{
+    background-color: #0683d4!important;
+    height: 40px;
+    padding:10px 0 10px 0;
+    color: white;
+} 
+            }
+            h1 {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.contact {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.contact ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.contact li {
+    margin: 10px 0;
+}
+
+.contact a {
+    text-decoration: none;
+    color: #333;
+    font-size: 18px;
+    text-align: left;
+}
+
+.contact a:hover {
+    color: #007BFF;
+}
+
+form {
+    width: 100%;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+label {
+    display: block;
+    margin: 10px 0 5px;
+}
+
+input, textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+textarea {
+    height: 100px;
+}
+
+button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #007BFF;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+        </style>
+    </head>
+    <body>
+        <header>
+            <nav class="navbar navbar-inverse">
+              <div class="container-fluid">
+                <div class="navbar-header">
+                  <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                  </button>
+                </div>
+                <div class="collapse navbar-collapse" id="myNavbar">
+                  <ul class="nav navbar-nav" style="color: white;">
+                    <li class=""><a href="index.html"><i class="fa fa-home" aria-hidden="true" style="margin-right:10px; color: white;"></i>HOME</a></li>
+                    <li class=""><a href="about.">ABOUT US</a></li>
+                    <li class="dropdown">
+                      <a class="dropdown-toggle" data-toggle="dropdown" href="#">DOWNLOAD / UPLOAD ZONE<span class="caret"></span></a>
+                      <ul class="dropdown-menu">
+                        <li><a href="imagetotest.html">Image to text Convert</a></li>
+                      </ul>
+                    </li>
+                    <li><a href="https://www.sarkariresult.com/">LATEST JOBS</a></li>
+                    <li class="dropdown">
+                      <a class="dropdown-toggle" data-toggle="dropdown" href="#">SERVICES<span class="caret"></span></a>
+                      <ul class="dropdown-menu">
+                        <li><a href="imagetokb.html">Image to kb convert</a></li>
+                        <li><a href="imagetopdf.html">Image To Pdf Convert</a></li>
+                        <li><a href="imagetopng.html">Image To Png Convert</a></li>
+                      </ul>
+                    </li>
+                    <li><a href="about.html">about US</a></li>
+                    <li><a href="contact.html">CONTACT US</a></li>
+                    <li><a href="login.html">Login</a></li>
+                    <li><a href="sign_up.html">Sign up</a></li>
+                  </ul>
+                </div>
+              </div>
+            </nav>
+          </header>
+          <div class="contact">
+            <ul>
+              <h1>संपर्क करें</h1>
+              <li><a href="tel:8447008141">8447008141</a></li>
+              <li><a href="tel:9153912078">9153912078</a></li>
+              <li><a href="mailto:pancard4886@gmail.com">pancard4886@gmail.com</a></li>
+            </ul>
+          </div>
+          <h1>अगर आपका कोई भी कार्रवाई हो तो इस फॉर्म को फील करके उसे व्यक्ति का कंप्लेंट दर्ज करें</h1>
+          <form action="/submit-contact" method="post">
+            <label for="name">नाम:</label>
+            <input type="text" id="name" name="name" required><br><br>
+            <label for="email">ईमेल:</label>
+            <input type="email" id="email" name="email" required><br><br>
+            <label for="phone">टेलीफोन:</label>
+            <input type="tel" id="phone" name="phone" required><br><br>
+            <label for="message">संदेश:</label>
+            <textarea id="message" name="message" required></textarea><br><br>
+            <button type="submit">भेजें</button>
+          </form>
+        </body>
+        </html>

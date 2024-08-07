@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/lostpannumber.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <title>RA DIGITAL INDIA Cyber Cafe</title>
+</head>
+
+<body>
+    <header class="header">
+        <div class="navborder">
+            <div class="iconnavbaar">&#9776;</div>
+            <div class="nav-right">
+                <div class="profile">Wallet Balance:</div>
+                <div class="bullet">
+                    <p><span id="walletBalance">Loading...</span></p>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="home">
+        <div class="navbara">
+            <!-- Navbar links -->
+            <!-- Add your nav links here -->
+        </div>
+        <div class="home2">
+            <div class="border2">
+                <div class="Fingerprint">
+                    <div class="Fingerprintaadhar">
+                        <p>Advance Lost PAN Number - Successfully instant PAN Number</p>
+                    </div>
+                    <div class="Charge">
+                        <form id="lostPanForm">
+                            <input type="text" name="Number" id="Number" placeholder="Processing Fee - 100 rupees" disabled><br>
+                            <label for="number2">Aadhar Number</label>
+                            <input type="number" id="number2" name="number2" placeholder="********1234" maxlength="12" required><br><br>
+                            <button type="submit">Submit</button>
+                        </form>
+                    </div>
+                    <div class="result" id="result"></div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Aadhar Number</th>
+                                    <th>Result</th>
+                                    <th>Apply Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="records-tbody">
+                                <tr>
+                                    <td colspan="5">No data available in table</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            fetchWalletBalance();
+            fetchRecords();
+        });
+
+        document.getElementById('lostPanForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            submitLostPanForm();
+        });
+
+        function fetchWalletBalance() {
+            fetch('/api/wallet-balance')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.walletBalance !== undefined) {
+                        document.getElementById('walletBalance').textContent = data.walletBalance;
+                    } else {
+                        console.error('Error: Wallet balance not found');
+                    }
+                })
+                .catch(error => console.error('Error fetching wallet balance:', error));
+        }
+
+        function fetchRecords() {
+            fetch('/LostPAN')
+                .then(response => response.json())
+                .then(records => {
+                    console.log('Fetched LostPAN:', records);  // Debug line to verify data
+                    const tbody = document.getElementById('records-tbody');
+                    tbody.innerHTML = '';
+                    if (records.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="5">No data available in table</td></tr>';
+                    } else {
+                        records.forEach((record, index) => {
+                            const row = `
+                                <tr>
+                                    <td>${index + 1}</td>
+                                    <td>${record.aadhaarNumber || 'N/A'}</td>
+                                    <td>${record.result || 'N/A'}</td>
+                                    <td>${record.applyDate ? new Date(record.applyDate).toLocaleDateString() : 'N/A'}</td>
+                                    <td>${record.status || 'N/A'}</td>
+                                </tr>`;
+                            tbody.innerHTML += row;
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching records:', error);
+                    const tbody = document.getElementById('records-tbody');
+                    tbody.innerHTML = '<tr><td colspan="5">Error fetching data</td></tr>';
+                });
+        }
+
+        function submitLostPanForm() {
+            const aadhaarNumber = document.getElementById('number2').value;
+
+            if (aadhaarNumber.length === 12) {
+                fetch('/submit-lost-pan', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ aadhaarNumber })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('result').innerText = data.message;
+                        if (data.success) {
+                            fetchWalletBalance();
+                            fetchRecords();
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error submitting form:', error);
+                        document.getElementById('result').innerText = 'An error occurred. Please try again later.';
+                    });
+            } else {
+                document.getElementById('result').innerText = 'Please enter a valid 12-digit Aadhaar number.';
+            }
+        }
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,73 @@
+table {
+    width: 100%;
+    text-align: center;
+    border-collapse: collapse;
+    /* table-layout: fixed; */
+}
+
+.Pan{
+    background-color:rgb(255 255 221);
+}
+
+td {
+    border: 1px solid black;
+}
+
+td.first_child{
+    width: 2%;
+}
+
+td.second_child{
+    text-align: left;
+    width: 49%;
+}
+
+
+td.third_child{
+    width: 49%;
+}
+
+thead {
+    color: white;
+    line-height:.5px;
+    background-color: rgb(140 32 32)
+}
+
+tbody {
+    
+    background-color:rgb(255 255 221);
+}
+
+.aster {
+    color: red;
+}
+
+span#citizen{
+    margin-left: 30px;
+}
+
+name_type{
+    margin-left: 30px;
+}
+
+span#first_name, span#middle_name {
+    margin-left: 90px;
+}
+
+.blue {
+    color:blue;
+}
+
+#pic, #doc {
+    display: -webkit-box;
+}
+.photodisply{
+    border: solid 1px black;
+    width: 15%;
+    height: 150px;
+}
+.Signature{
+    border: solid 1px black;
+    width: 15%;
+    height: 50px; 
+}

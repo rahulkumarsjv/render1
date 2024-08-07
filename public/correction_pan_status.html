@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>RA DIGITAL INDIA Cyber Cafe</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid black;
+        }
+
+        th,
+        td {
+            padding: 15px;
+            text-align: left;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Correction : PAN Card Applications</h1>
+    <input type="text" id="searchInput" placeholder="Search..." onkeyup="filterTable()">
+    <table id="panTable">
+        <thead>
+            <tr>
+                <th>Unique Number</th>
+                <th>PAN No.</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Mobile</th>
+                <th>status</th>
+
+                <!-- Add other fields as needed -->
+            </tr>
+        </thead>
+        <tbody id="panTableBody">
+            <!-- Rows will be added dynamically -->
+        </tbody>
+    </table>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async function () {
+            try {
+                const response = await fetch('/get-corrected-pan-applications');
+                const data = await response.json();
+                console.log(data);
+
+                        const tableBody = document.getElementById('panTableBody');
+                        data.forEach(application => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${application._id}</td>
+                                <td>${application.pannumber}</td>
+                                <td>${application.first_name} ${application.middle_name} ${application.last_name}</td>
+                                <td>${application.email}</td>
+                                <td>${application.mobile}</td>
+                                <td>${application.status}</td>
+                                <!-- Add other fields as needed -->
+                            `;
+                            tableBody.appendChild(row);
+                        });
+                    } catch (error) {
+                        console.error('Error fetching PAN applications:', error);
+                    }
+                });
+
+                function filterTable() {
+                    const input = document.getElementById('searchInput');
+                    const filter = input.value.toLowerCase();
+                    const table = document.getElementById('panTable');
+                    const trs = table.getElementsByTagName('tr');
+
+                    for (let i = 1; i < trs.length; i++) { // Start from 1 to skip the header row
+                        const tds = trs[i].getElementsByTagName('td');
+                        let showRow = false;
+
+                        for (let j = 0; j < tds.length; j++) {
+                            const td = tds[j];
+                            if (td) {
+                                if (td.innerText.toLowerCase().indexOf(filter) > -1) {
+                                    showRow = true;
+                                    break;
+                                }
+                            }
+                        }
+
+                        trs[i].style.display = showRow ? '' : 'none';
+                }
+            }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,170 @@
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.Aadhar {
+    border: solid 1px black;
+    width: 100%;
+    max-width: 750px;
+    height: auto;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.Aadhar1,
+.Aadhar-back {
+    border: solid 1px black;
+    width: 48%;
+    height: auto; /* Adjust height to let it adapt based on content */
+    margin-bottom: 1rem; /* Adjust margin for better spacing */
+    box-sizing: border-box;
+}
+
+.Aadhar1 img,
+.Aadhar-back img {
+    width: 100%;
+}
+
+.Aadhar-border {
+    border-right: dotted black 1px;
+    margin-left: 1%;
+}
+
+.test {
+    padding-left: 10%;
+    padding-top: 10%;
+    font-size: 10px;
+}
+
+.test span {
+    font-size: 9px;
+}
+
+.signature-valid img {
+    width: 20%;
+    margin-left: 20%;
+}
+
+.Aadhar-no {
+    justify-content: center;
+    text-align: center;
+}
+
+.marAadhar {
+    text-align: center;
+}
+
+.Aadhar-border-do {
+    border-top: dotted black 1px;
+    margin-top: 5%;
+    margin-left: 2%;
+}
+
+.Aadhar-photo {
+    border: solid 1px black;
+    width: 25%;
+    height: auto;
+    margin-top: 5%;
+    margin-left: 5%;
+    float: left;
+    margin-right: 2%;
+}
+
+.test1 {
+    font: 1em sans-serif;
+    font-size: 13px;
+    margin-top: 7%;
+}
+
+#Aadhar-numbr {
+    margin-top: 20%;
+    text-align: center;
+}
+
+.Aadhaarimge3 h2 {
+    margin-top: 0px;
+    text-align: center;
+}
+
+.Aadhar-back {
+    border: solid black 1px;
+    width: 48%;
+    padding-left: 0.40%;
+    box-sizing: border-box;
+}
+
+.Aadhar-back img {
+    width: 100%;
+    height: auto; /* Adjust height to let it adapt based on content */
+}
+
+.Aadharback-bor {
+    border-top: dotted 1px;
+    margin-top:13%;
+}
+
+.img4 img {
+    width: 100%;
+    height: 3rem;
+}
+
+.aadhar-back-qrtest {
+    display: flex;
+}
+
+.Aadhaar-back-Addess {
+    font-size: 10px;
+    border: solid 1px rgb(255, 255, 255);
+    width: 80%;
+}
+
+
+.Qrcode img {
+    width: 100%;
+    height: auto; /* Adjust height to let it adapt based on content */
+}
+
+.Aadhaar-number-2 {
+    text-align: center;
+}
+.indowdata{
+    height: 130px;
+    /* border: solid black 1px; */
+}
+.indowdata h6{
+      transform: rotate(90deg);
+    font-size: 10px;
+    text-align: left;
+    font-size: 10px;
+    
+} 
+
+@media screen and (max-width: 800px) {
+    .Aadhar1,
+    .Aadhar-back {
+        width: 100%;
+    }
+
+    .Aadhar-back img {
+        height: auto;
+    }
+
+    .Aadharback-bor {
+        border-top: dotted 1px;
+    }
+
+    .img4 img {
+        height: 5rem;
+    }
+
+    .aadhar-back-qrtest {
+        display: flex;
+    }
+
+    .Qrcode img {
+        height: auto;
+    }
+}

@@ -1,0 +1,243 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RA DIGITAL INDIA Cyber Cafe</title>
+<!-- <link rel="stylesheet" href="styles.css"> -->
+<style>
+    body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  header {
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+  }
+  .container {
+    margin: 20px auto;
+    max-width: 800px;
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .imageBox {
+    width: 300px;
+    height: 300px;
+    margin: 10px;
+    position: relative;
+    border: 2px solid black; /* Adding border */
+    box-sizing: border-box; /* Including border in dimensions */
+  }
+  
+  .imageBox img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Ensuring entire image is visible */
+  }
+  
+  
+  .deleteButton:hover {
+    background-color: #ff6b6b;
+  }
+  #imageContainer {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+  }
+  #imageContainer img {
+    max-width: 100%;
+  }
+  #pdfDownloadLink {
+    margin: 20px auto;
+    text-align:center;
+    background: "red";
+    width:100%;
+  }
+  
+  #fileInput {
+    display: none;
+  }
+  button{
+    border: none;
+    background: var(--clr);
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 20px auto;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  button:hover{
+    background: var(--hov);
+  }
+  
+  .deleteButton {
+    background-color: #f44336;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    position: absolute;
+    top: -10px;
+    padding: 0;
+    right: 5px;
+  }
+  .h1{
+    margin-top: 20px;
+    border: solid black 1px;
+    background-color: aqua;
+    color: rgb(4, 52, 88);
+  }
+  .navbar{
+        border: solid black 1px;
+        background-color: black;
+        width: 100%;
+       height: 50px;
+       justify-self: center;
+       align-items: center;
+       display: flex;
+       margin-bottom: 2%;
+    }
+    .navbar a{
+       color: #fff;
+       margin-left: 5%;
+       font-size: 30px;
+       justify-content: space-between;
+       text-decoration: none;
+    }
+</style>
+</head>
+<body>
+  <div class="navbar">
+    <a href="imagetopdf.html">image to pdf</a>
+    <a href="imagetokb.html">image to kb</a>
+    <a href="imagetopng.html">image to png</a>
+</div>
+<header>
+    <h1>Image To PDF Converter</h1>
+  </header>
+  <div class="h1"><h3><marquee>image add karte hi convert ho jaega sirf download click karo PDF download ho jaega</marquee></h3></div>
+  <div class="container">
+    <input type="file" id="fileInput" multiple>
+    <button style="--clr:#1eff05;--hov:#08ff39;" id="addImageButton">Add Images</button>
+    <button style="--clr:#001eff;--hov:#0400ff;" id="convertButton">Download To Pdf</button>
+    <button style="--clr:#ff1201;--hov:#ff0000;" id="clearButton">All Clear Image</button>
+    <div id="pdfDownloadLink"></div>
+    <div id="imageContainer"></div>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+<script src="script.js"></script>
+<script>
+    const imageContainer = document.getElementById('imageContainer');
+const convertButton = document.getElementById('convertButton');
+const clearButton = document.getElementById('clearButton');
+const pdfDownloadLink = document.getElementById('pdfDownloadLink');
+let imageFiles = [];
+window.jsPDF = window.jspdf.jsPDF;
+
+// Function to render the images in the UI
+const renderImages = () => {
+  imageContainer.innerHTML = '';
+  imageFiles.forEach((file,index) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+    const imageBox = document.createElement('div');
+      imageBox.classList.add('imageBox');
+      imageBox.setAttribute('data-index', index);
+      imageBox.innerHTML = `
+        <img src="${reader.result}">
+        <button class="deleteButton" data-index="${index}">&times;</button>
+      `;
+    imageContainer.appendChild(imageBox);
+    }
+  });
+};
+
+function deleteImage(index) {
+  imageFiles.splice(index, 1);
+  renderImages();
+}
+
+
+imageContainer.addEventListener('click', (event) => {
+  if (event.target.classList.contains('deleteButton')) {
+    const index = parseInt(event.target.dataset.index);
+    deleteImage(index);
+  }
+});
+
+
+// Function to handle the conversion process
+const convertToPdf = () => {
+  const doc = new jsPDF();
+  let imagesProcessed = 0;
+  const pageWidth = doc.internal.pageSize.getWidth() - 20;
+  imageFiles.forEach((file, index) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      const canvas = document.createElement('canvas');
+      const context = canvas.getContext('2d');
+      const img = new Image();
+      img.src = reader.result;
+      img.onload = () => {
+        const scaleFactor = pageWidth / img.width;
+        const imageHeight = img.height * scaleFactor;
+        canvas.width = img.width;
+        canvas.height = img.height;
+        context.drawImage(img, 0, 0, img.width, img.height);
+        const imageData = canvas.toDataURL('image/jpeg');
+        if (index === 0) {
+          doc.addImage(imageData, 'JPEG', 10, 10, pageWidth, imageHeight);
+        } else {
+          doc.addPage();
+          doc.addImage(imageData, 'JPEG', 10, 10, pageWidth, imageHeight);
+        }
+        imagesProcessed++;
+        if (imagesProcessed === imageFiles.length) {
+          doc.save('converted.pdf');
+          pdfDownloadLink.innerHTML = `<a href="${doc.output('bloburl')}">Download PDF</a>`;
+        }
+      };
+    };
+  });
+};
+
+// Add event listener to the file input element
+const fileInput = document.getElementById('fileInput');
+fileInput.addEventListener('change', (e) => {
+const selectedFiles = Array.from(e.target.files);
+imageFiles = imageFiles.concat(selectedFiles);
+renderImages();
+});
+
+// Add event listener to the convert button
+convertButton.addEventListener('click', () => {
+    convertButton.innerHTML = 'Please Wait...'
+  convertButton.disabled=true
+convertToPdf();
+    convertButton.innerHTML = 'Download To Pdf'
+  convertButton.disabled=false
+});
+
+document.querySelector('#addImageButton').addEventListener('click',()=>fileInput.click())
+
+clearButton.addEventListener('click',()=>{
+  imageFiles=[]
+  renderImages()
+})
+</script>
+</body>
+</html>

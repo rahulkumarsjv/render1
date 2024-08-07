@@ -1,0 +1,87 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="detailaadha.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <title>Styled Page</title>
+</head>
+<body>
+    <header class="header">
+        <div class="navborder">
+            <div class="iconnavbaar">&#9776;</div>
+                <div class="bullet"><p>26</p></div>
+                <div class="profile">Rahul</div>
+            </div>
+        </div>
+    </header>
+    <div class="home">
+        <div class="navbara">
+            <div class="navbar"><a href="home.html"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></div>
+            <div class="navbar"><a href="Aadhar_muan_card.html"><i class="fas fa-id-card"></i> <span>Aadhar Card</span></a></div>
+            <div class="navbar"><a href="new_pan_card_appy.html"><i class="fas fa-address-card"></i> <span>Pan Card</span></a></div>
+            <div class="navbar"><a href="Duplicate.html"><i class="fas fa-copy"></i> <span>Duplicate EID TO PDF</span></a></div>
+            <div class="navbar"><a href="mobiletopdf.html"><i class="fas fa-mobile-alt"></i> <span>Mobile Number to Aadhar PDF</span></a></div>
+            <div class="navbar"><a href="Generateeid.html"><i class="fas fa-id-badge"></i> <span>Generate EID to UID</span></a></div>
+            <div class="navbar"><a href="Duplicateeid.html"><i class="fas fa-clone"></i> <span>Duplicate EID to UID</span></a></div>
+            <div class="navbar"><a href="pannotouid.html"><i class="fas fa-exchange-alt"></i> <span>PAN No to UID</span></a></div>
+            <div class="navbar"><a href="Lost-pan_number.html"><i class="fas fa-question-circle"></i> <span>Lost PAN No</span></a></div>
+        </div>
+        <div class="home2">
+            <div class="border2">
+             <div class="LostAadharnumberDetailfiln"><h3>Lost Aadhar number Detail filn 600 rupaye</h3></div>
+             <div class="LostAadharnumberDetailfiln1"><p>Apna ful detail Dalo Sahi aur Jaise hi aapka data Milta hai aapko aapka detail show ho jaega aur Agar data Nahin milega to Aapka amount aapke wallet Mein refund ho jaega</p></div>
+             <form action="" method="post" id="post">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name">
+        
+                <label for="FatherName">Father Name</label>
+                <input type="text" id="FatherName" name="FatherName">
+        
+                <label for="gender">Gender</label>
+                <select id="gender" name="gender">
+                    <option value="Gender">Gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                </select><br>
+        
+                <label for="number">Mobile No</label>
+                <input type="tel" id="number" name="number">
+        
+                <label for="address">Address</label>
+                <input type="text" id="address" name="address">
+        
+                <label for="area">Area</label>
+                <input type="text" id="area" name="area"><br>
+        
+                <label for="city">City</label>
+                <input type="text" id="city" name="city">
+        
+                <label for="pincode">Pin Code</label>
+                <input type="text" id="pincode" name="pincode">
+        
+                <input type="submit" name="submit" id="submit" value="Submit">
+            </form>
+        </body>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.querySelectorAll('.navbar a').forEach(item => {
+            item.addEventListener('click', function(event) {
+                event.preventDefault();
+                window.location.href = item.href;
+            });
+        });
+        document.querySelector('.iconnavbaar').addEventListener('click', function() {
+            const navbara = document.querySelector('.navbara');
+            navbara.classList.toggle('expanded');
+        });
+    </script>
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Load jQuery first -->
+      <script src="logout.js"></script> <!-- Include the logout.js file -->
+      <script src="login-check.js"></script> <!-- Include the login-check.js file -->
+
+</body>
+</html> 

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RA DIGITAL INDIA Cyber Cafe</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+  <link rel="stylesheet" href="google-tags.css">
+</head>
+<body>
+  <div class="google-translate">
+    <label for="google-translate">Language</label>
+    <select id="google-translate" name="google-translate">
+      <option value="hindi" selected>Hindi</option>
+    </select>
+  </div>
+  <div class="input-di">
+    <div class="input-wrapper">
+      <label for="address2">Address English</label>
+      <input type="text" id="address2" name="address2" class="form-control">
+      <div class="microphone-container" id="mic-address2">
+        <span class="microphone-icon">&#x1F3A4;</span>
+        <span class="circle one"></span>
+        <span class="circle two"></span>
+        <span class="circle three"></span>
+      </div>
+    </div>
+    <div class="input-wrapper">
+      <label for="address3">Address automatic hindi</label>
+      <input type="text" id="address3" name="address3" class="form-control" readonly>
+    </div>
+  </div>
+  <div class="submit">
+    <button type="button" id="submit" class="btn btn-primary">Submit</button>
+  </div>
+  <script>
+    $(document).ready(function() {
+      $('#google-translate').val('hindi'); // Automatically select Hindi
+
+      $('#address2').on('input', function() {
+        var englishText = $(this).val();
+        translateText(englishText, $('#address3'));
+      });
+
+      function translateText(englishText, element) {
+        if (!englishText) {
+          element.val('');
+          return;
+        }
+        $.ajax({
+          url: `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=hi&dt=t&q=${encodeURI(englishText)}`,
+          success: function(result) {
+            if (result[0] != undefined && result[0] != null) {
+              var hindiText = result[0][0][0];
+              element.val(hindiText);
+            }
+          }
+        });
+      }
+
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'en-US';
+
+      $('#mic-address2').on('click', function() {
+        $(this).addClass('vibrate');
+        recognition.start();
+      });
+
+      recognition.onresult = function(event) {
+        const speechResult = event.results[0][0].transcript;
+        $('#address2').val(speechResult);
+        $('#address2').trigger('input'); // Trigger input event to translate
+      };
+
+      recognition.onend = function() {
+        $('#mic-address2').removeClass('vibrate');
+      };
+    });
+  </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Load jQuery first -->
+    <script src="logout.js"></script> <!-- Include the logout.js file -->
+    <script src="login-check.js"></script> <!-- Include the login-check.js file -->
+</body>
+</html>

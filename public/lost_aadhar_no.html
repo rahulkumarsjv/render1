@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/lost_aadhar_no.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <title>RA DIGITAL INDIA Cyber Cafe</title>
+</head>
+<body>
+    <header class="header">
+        <div class="navborder">
+            <div class="iconnavbaar">&#9776;</div> <!-- Using HTML entity for the menu icon -->
+            <div class="nav-right">
+                <div class="profile">Wallet Balance</div>
+                <div class="bullet"><p><span id="walletBalance">Loading...</span></p></div>
+            </div>
+        </div>
+    </header>
+    <div class="home">
+      <div class="navbara">
+          <div class="navbar"><a href="home.html"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></div>
+          <div class="navbar"><a href="Aadhar_muan_card.html"><i class="fas fa-id-card"></i> <span>Aadhar Card</span></a></div>
+          <div class="navbar"><a href="new_pan_card_appy.html"><i class="fas fa-address-card"></i> <span>Pan Card</span></a></div>
+          <div class="navbar"><a href="lost_aadhar_no.html"><i class="fas fa-copy"></i> <span>Duplicate EID TO PDF</span></a></div>
+          <div class="navbar"><a href="mobiletopdf"><i class="fas fa-mobile-alt"></i> <span>Mobile Number to Aadhar PDF</span></a></div>
+          <div class="navbar"><a href="Generateeid"><i class="fas fa-id-badge"></i> <span>Generate EID to UID</span></a></div>
+          <div class="navbar"><a href="Duplicateeid"><i class="fas fa-clone"></i> <span>Duplicate EID to UID</span></a></div>
+          <div class="navbar"><a href="pannotouid"><i class="fas fa-exchange-alt"></i> <span>PAN No to UID</span></a></div>
+          <div class="navbar"><a href="Lost-pan_number.html"><i class="fas fa-question-circle"></i> <span>Lost PAN No</span></a></div>
+          <div class="navbar"><a href="profile.html"><i class="fa-solid fa-user"></i><span>Profile</span></a></div>
+          <div class="navbar"><a href="payment.html"><i class="fa-solid fa-user"></i><span>ADD Payment</span></a></div>
+          <div class="navbar"><a href="transaction.html"><i class="fa-solid fa-user"></i><span>Transaction</span></a></div>
+          <div class="navbar"><button id="logout"><i class="fa-solid fa-user"></i> <span>Logout</span></button></div>
+        </div>
+        <div class="home2">
+            <div class="border2">
+                <div class="container">
+                    <div class="duplic">
+                        <span>DUPLICATE EID TO PDF</span><br>
+                        DELIVERY TIME - 24-72 HOURS<br>
+                        SERVICE COST - 525 POINTS
+                    </div>
+                    <div class="image">
+                        <img src="./images/duplicateeid.png" alt="Duplicate Photo">
+                    </div>
+                    <form action="/submit-form" method="post" id="duplicate-form">
+                        <div class="form-group">
+                            <label for="enrollment_id">Enrollment ID *</label>
+                            <input type="text" id="enrollment_id" name="enrollment_id" placeholder="Enrollment ID" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="date">Date *</label>
+                            <input type="date" id="date" name="date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="time">Time *</label>
+                            <input type="time" id="time" name="time" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="aadhar_name">Aadhar Holder Name *</label>
+                            <input type="text" id="aadhar_name" name="aadharHolderName" placeholder="Aadhar Holder Name" required>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" id="submit" name="submit">Submit</button>
+                        </div>
+                    </form>
+                    <div class="result" id="result"></div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Name</th>
+                                    <th>UID</th>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                    <th>PKT</th>
+                                    <th>Result</th>
+                                    <th>Apply Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="records-tbody">
+                                <tr>
+                                    <td colspan="9">No data available in table</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+          $('#duplicate-form').on('submit', function(event) {
+            event.preventDefault();
+        
+            const formData = {
+              enrollment_id: $('#enrollment_id').val(),
+              date: $('#date').val(),
+              time: $('#time').val(),
+              aadharHolderName: $('#aadhar_name').val()
+            };
+        
+            $.get('/api/wallet-balance', function(walletData) {
+              if (walletData.walletBalance < 525) {
+                alert('Insufficient wallet balance');
+                return;
+              }
+        
+              $.post('/submit-form', formData, function(response) {
+                alert(response.message);
+                fetchRecords();
+                $('#duplicate-form')[0].reset();
+              }).fail(function(xhr) {
+                alert(xhr.responseText);
+              });
+            });
+          });
+        });
+        
+        function fetchRecords() {
+          $.get('/lostaadhars', function(records) {
+            console.log('Fetched records:', records); // Add this line for debugging
+            const tbody = $('#records-tbody');
+            tbody.empty();
+        
+            if (records.length === 0) {
+              tbody.append('<tr><td colspan="9">No data available in table</td></tr>');
+            } else {
+              records.forEach((record, index) => {
+                tbody.append(`
+                  <tr>
+                    <td>${index + 1}</td>
+                    <td>${record.aadharHolderName}</td>
+                    <td>${record.enrollment_id}</td>
+                    <td>${record.date}</td>
+                    <td>${record.time}</td>
+                    <td></td>
+                    <td></td>
+                    <td>${new Date(record.apply_date).toLocaleDateString()}</td>
+                    <td>${record.status}</td>
+                  </tr>
+                `);
+              });
+            }
+          }).fail(function(error) {
+            console.error('Error fetching records:', error);
+          });
+        }
+        
+        function fetchWalletBalance() {
+          $.get('/api/wallet-balance', function(walletData) {
+            if (walletData.walletBalance !== undefined) {
+              $('#walletBalance').text(walletData.walletBalance);
+            } else {
+              console.error('Error: Wallet balance not found');
+            }
+          }).fail(function(error) {
+            console.error('Error fetching wallet balance:', error);
+          });
+        }
+        
+        $(document).ready(function() {
+          fetchWalletBalance();
+          fetchRecords();
+        });
+    </script>
+    <script src="logout.js"></script>
+    <script src="login-check.js"></script>
+</body>
+</html>

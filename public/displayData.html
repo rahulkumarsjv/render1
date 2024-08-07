@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RA DIGITAL INDIA Display Data</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        button {
+            margin: 5px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .search-section {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        #searchInput {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 300px;
+            font-size: 16px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+            font-size: 16px;
+        }
+        th {
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+        #dataDisplay {
+            margin-top: 20px;
+        }
+        .logout-section {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="search-section">
+            <input type="text" id="searchInput" placeholder="Search by name, address, or ID">
+            <button onclick="searchData()">Search</button>
+        </div>
+        <h1>View Data</h1>
+        <button onclick="fetchData('correctionpans')">View Correction Pans</button>
+        <button onclick="fetchData('lostaadhars')">View Lost Aadhaar</button>
+        <button onclick="fetchData('lostpans')">View Lost Pans</button>
+        <button onclick="fetchData('mobiletolostaadhars')">View Mobile to Lost Aadhaar</button>
+        <button onclick="fetchData('mobiletolostshowaadhars')">View Mobile to Lost Show Aadhaar</button>
+        <button onclick="fetchData('pana49forms')">View Pana49 Forms</button>
+        <button onclick="fetchData('panapplications')">View Pan Applications</button>
+        <button onclick="fetchData('paymentaadhars')">View Payment Aadhaar</button>
+        <button onclick="fetchData('records')">View Records</button>
+        <button onclick="fetchData('sendotps')">View Send OTPs</button>
+        <button onclick="fetchData('transactions')">View Transactions</button>
+        <button onclick="logout()">Logout</button>
+
+        <div id="dataDisplay"></div>
+        <div id="editForm">
+            <h2>Edit Data</h2>
+            <form id="editDataForm" onsubmit="submitEditForm(event)">
+                <!-- Dynamic inputs will be inserted here -->
+                <button type="submit">Update</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let currentCollection = '';
+        let currentEditId = '';
+
+        function fetchData(collection) {
+            currentCollection = collection;
+            fetch(`/data/${collection}`)
+                .then(response => response.json())
+                .then(data => {
+                    const display = document.getElementById('dataDisplay');
+                    display.innerHTML = `<h2>Data from ${collection}</h2>`;
+                    
+                    if (data.length === 0) {
+                        display.innerHTML += '<p>No data found</p>';
+                        return;
+                    }
+
+                    const table = document.createElement('table');
+                    const headers = Object.keys(data[0]);
+
+                    // Create table headers
+                    const headerRow = document.createElement('tr');
+                    headers.forEach(header => {
+                        const th = document.createElement('th');
+                        th.textContent = header;
+                        headerRow.appendChild(th);
+                    });
+                    const actionTh = document.createElement('th');
+                    actionTh.textContent = 'Actions';
+                    headerRow.appendChild(actionTh);
+                    table.appendChild(headerRow);
+
+                    // Create table rows
+                    data.forEach(item => {
+                        const row = document.createElement('tr');
+                        headers.forEach(header => {
+                            const cell = document.createElement('td');
+                            cell.textContent = item[header];
+                            row.appendChild(cell);
+                        });
+
+                        // Add action buttons
+                        const actionCell = document.createElement('td');
+                        const editButton = document.createElement('button');
+                        editButton.textContent = 'Edit';
+                        editButton.onclick = () => showEditForm(item._id, item);
+                        actionCell.appendChild(editButton);
+
+                        const deleteButton = document.createElement('button');
+                        deleteButton.textContent = 'Delete';
+                        deleteButton.onclick = () => deleteData(item._id);
+                        actionCell.appendChild(deleteButton);
+
+                        row.appendChild(actionCell);
+                        table.appendChild(row);
+                    });
+
+                    display.appendChild(table);
+                })
+                .catch(error => console.error('Error fetching data:', error));
+        }
+
+        function deleteData(id) {
+            fetch(`/data/${currentCollection}/${id}`, { method: 'DELETE' })
+                .then(response => response.json())
+                .then(result => {
+                    alert(result.message);
+                    fetchData(currentCollection);
+                })
+                .catch(error => console.error('Error deleting data:', error));
+        }
+
+        function showEditForm(id, data) {
+            currentEditId = id;
+            const form = document.getElementById('editDataForm');
+            form.innerHTML = ''; // Clear the form
+
+            for (const key in data) {
+                if (data.hasOwnProperty(key) && key !== '_id' && key !== '__v') {
+                    const label = document.createElement('label');
+                    label.textContent = key;
+                    const input = document.createElement('input');
+                    input.name = key;
+                    input.value = data[key];
+                    form.appendChild(label);
+                    form.appendChild(input);
+                }
+            }
+
+            const submitButton = document.createElement('button');
+            submitButton.type = 'submit';
+            submitButton.textContent = 'Update';
+            form.appendChild(submitButton);
+
+            document.getElementById('editForm').style.display = 'block';
+        }
+
+        function submitEditForm(event) {
+            event.preventDefault();
+            const formData = new FormData(document.getElementById('editDataForm'));
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = value;
+            });
+
+            fetch(`/data/${currentCollection}/${currentEditId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+                .then(response => response.json())
+                .then(result => {
+                    alert(result.message);
+                    fetchData(currentCollection);
+                    document.getElementById('editForm').style.display = 'none';
+                })
+                .catch(error => console.error('Error updating data:', error));
+        }
+
+        function logout() {
+            fetch('/admin_logout')
+                .then(() => {
+                    window.location.href = '/admin_login.html';
+                })
+                .catch(error => console.error('Error logging out:', error));
+        }
+
+        function searchData() {
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+            const table = document.querySelector('#dataDisplay table');
+
+            if (table) {
+                const rows = table.querySelectorAll('tr');
+
+                rows.forEach((row, index) => {
+                    if (index === 0) return; // Skip header row
+
+                    const cells = row.querySelectorAll('td');
+                    let matchFound = false;
+
+                    cells.forEach(cell => {
+                        if (cell.textContent.toLowerCase().includes(searchInput)) {
+                            matchFound = true;
+                        }
+                    });
+
+                    if (matchFound) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+</html>

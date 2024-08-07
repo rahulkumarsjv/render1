@@ -1,0 +1,11 @@
+.container {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+#uploadedImage {
+    width: 100%;
+    height: auto;
+    display: none;
+}

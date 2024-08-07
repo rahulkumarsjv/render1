@@ -1,0 +1,82 @@
+.input-di {
+  display: flex;
+}
+
+#inputdd {
+  border: solid 1px black;
+  width: 50%;
+  height: auto;
+}
+
+#name {
+  width: 100%;
+  height: 30px;
+}
+
+#dob {
+  width: 100%;
+  height: 30px;
+}
+
+select {
+  width: 100%;
+  height: 30px;
+}
+
+#fathername {
+  width: 100%;
+  height: 30px;
+}
+
+#address {
+  width: 100%;
+  height: 30px;
+}
+
+#number {
+  width: 100%;
+  height: 30px;
+}
+
+#photo {
+  width: 100%;
+  height: 30px;
+}
+
+#submit {
+  width: 100%;
+  height: 30px;
+  color: #ffffff;
+  background-color: rgb(0, 0, 0);
+  margin-top: 5px;
+  font-size: 20px;
+}
+#second-inputs{
+  border: solid 1px black;
+  width: 50%;
+  margin-left: 10px;
+}
+#name2 {
+  width: 100%;
+  height: 30px;
+}
+
+#fathernamehindi {
+  width: 100%;
+  height: 30px;
+}
+
+#dob2 {
+  width: 100%;
+  height: 30px;
+}
+
+#number2 {
+  width: 100%;
+  height: 30px;
+}
+
+#address2 {
+  width: 100%;
+  height: 30px;
+}

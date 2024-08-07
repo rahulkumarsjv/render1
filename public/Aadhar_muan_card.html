@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SRA DIGITAL INDIA Cyber Cafe</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <div class="google-translate">
+    <label for="google-translate">Language</label>
+    <select id="google-translate" name="google-translate">
+      <option value="general">Select Language</option>
+      <option value="english">English</option>
+      <option value="hindi">Hindi</option>
+      <option value="spanish">Spanish</option>
+      <option value="french">French</option>
+      <option value="german">German</option>
+      <option value="italian">Italian</option>
+      <option value="portuguese">Portuguese</option>
+      <option value="chinese">Chinese</option>
+      <option value="russian">Russian</option>
+      <option value="japanese">Japanese</option>
+      <option value="arabic">Arabic</option>
+    </select>
+  </div>
+  <div class="input-di">
+    <div class="inputdd" id="inputdd">
+      <div class="input-wrapper" id="input-wrapper">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" name="name">
+      </div>
+      <div class="input-wrapper">
+        <label for="fathername">Father's Name</label>
+        <input type="text" id="fathername" name="fathername">
+      </div>
+      <div class="input-wrapper">
+        <label for="dob">Date of Birth</label>
+        <input type="date" id="dob" name="dob">
+      </div>
+      <div class="input-wrapper">
+        <label for="gender">Gender</label>
+        <select id="gender1" name="gender1">
+          <option value="general">General</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+        </select>
+      </div>
+      <div class="input-wrapper">
+        <label for="number">Aadhar Number</label>
+        <input type="tel" id="number" name="number" maxlength="12">
+      </div>
+      <div class="input-wrapperr">
+        <label for="address">Address</label>
+        <input type="text" id="address" name="address">
+      </div>
+      <div class="input-wrapper">
+        <label for="photo">Photo</label>
+        <input type="file" id="photo" name="photo" accept="image/*">
+      </div>
+      <div class="Aadharphoto" id="Aadharphoto"></div>
+    </div>
+    <div class="input-diname" id="second-inputs">
+      <div class="input-wrapper">
+        <label for="name2">Full Name</label>
+        <input type="text" id="name2" name="name2">
+      </div>
+      <div class="input-wrapper">
+        <label for="fathername">Father's Name</label>
+        <input type="text" id="fathernamehindi" name="fathername">
+      </div>
+      <div class="input-wrapper">
+        <label for="dob2">Date of Birth</label>
+        <input type="date" id="dob2" name="dob2">
+      </div>
+      <div class="input-wrapper">
+        <label for="gender">Gender</label>
+        <select id="gender2" name="gender2">
+          <option value="general">General</option>
+          <option value="male" id="Male">Male</option>
+          <option value="female" id="female">Female</option>
+        </select>
+      </div>
+      <div class="input-wrapper">
+        <label for="number2">Aadhar Number</label>
+        <input type="tel" id="number2" name="number2" maxlength="12">
+      </div>
+      <div class="input-wrapper">
+        <label for="address2">Address</label>
+        <input type="text" id="address2" name="address2">
+        <div id="qr-code-container"></div>
+      </div>
+    </div>
+  </div>
+  <div class="submit">
+    <button type="button" id="submit">Submit</button>
+  </div>
+  <script>
+    alert("Free Aadhar muan card Jab aap form submit Karoge To dikhaega aapke wallet se ₹10 cut Gaya Hai Lekin ₹10 Nahin katata Hai and yah service free hai  फ्री आधार मुअन कार्ड जब आप फॉर्म सबमिट करोगे तो दिखाऊंगा आपके वॉलेट से ₹10 कट गया है लेकिन ₹10 नहीं कटता है और यह सर्विस फ्री है")
+    $(document).ready(function() {
+      let walletBalance = 10; // Initial wallet balance, can be retrieved from the server if needed
+
+      $('#google-translate').change(function() {
+        var selectedLanguage = $(this).val();
+        if (selectedLanguage === 'hindi') {
+          var englishText = $('#name').val();
+          translateText(englishText, $('#name2'));
+          englishText = $('#dob').val();
+          translateText(englishText, $('#dob2'));
+          englishText = $('#gender1').val();
+          translateText(englishText, $('#gender2'));
+          englishText = $('#number').val();
+          translateText(englishText, $('#number2'));
+          englishText = $('#address').val();
+          translateText(englishText, $('#address2'));
+          englishText = $('#address2').val();
+          translateText(englishText, $('#fathernamehindi'));
+        } else {
+          $('.inputd input, .inputd select').val('');
+        }
+      });
+
+      $('#gender1').change(translateGenderOptions);
+
+      function translateText(englishText, element) {
+        if (!englishText) {
+          element.val('');
+          return;
+        }
+        $.ajax({
+          url: `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=hi&dt=t&q=${encodeURI(englishText)}`,
+          success: function(result) {
+            if (result[0] != undefined && result[0] != null) {
+              var hindiText = result[0][0][0];
+              element.val(hindiText);
+            }
+          }
+        });
+      }
+
+      function translateGenderOptions() {
+        var gender1 = $('#gender1').val();
+        var gender2 = $('#gender2');
+        if (gender1 === "male") {
+          gender2.html("<option value='general'>सामान्य</option><option value='male'>पुरुष</option>");
+        } else if (gender1 === "female") {
+          gender2.html("<option value='general'>सामान्य</option><option value='female'>महिला</option>");
+        } else {
+          gender2.html("<option value='general'>सामान्य</option><option value='male'>पुरुष</option><option value='female'>महिला</option>");
+        }
+      }
+
+      document.getElementById('submit').addEventListener('click', function() {
+        // Check if wallet balance is sufficient
+        if (walletBalance < 10) {
+          alert('Insufficient balance in wallet.');
+          return;
+        }
+
+        // Deduct ₹10 from wallet balance
+        walletBalance -= 10;
+        console.log('Remaining wallet balance: ₹' + walletBalance);
+        alert('₹10 has been successfully deducted from your wallet.');
+
+        // Call displayDetails function to handle the rest of the submission
+        displayDetails();
+      });
+
+      function displayDetails() {
+        // Capture form data
+        const fullName = document.getElementById('name').value;
+        const fatherName = document.getElementById('fathername').value;
+        const dob = document.getElementById('dob').value;
+        const gender = document.getElementById('gender1').value;
+        const aadharNumber = document.getElementById('number').value;
+        const address = document.getElementById('address').value;
+
+        // Create an object to store the form data
+        const formData = {
+          fullName,
+          fatherName,
+          dob,
+          gender,
+          aadharNumber,
+          address
+        };
+
+        // Store form data in local storage
+        localStorage.setItem('formData', JSON.stringify(formData));
+
+        // Generate QR code
+        const formDataString = JSON.stringify(formData);
+        const qrCodeContainer = document.getElementById('qr-code-container');
+        qrCodeContainer.innerHTML = ''; // Clear previous QR code
+        QRCode.toDataURL(formDataString, function (err, url) {
+          if (err) console.error(err);
+          const img = document.createElement('img');
+          img.src = url;
+          qrCodeContainer.appendChild(img);
+
+          // Store the QR code image URL in local storage
+          localStorage.setItem('qrCode', url);
+        });
+
+        // Handle photo upload and store it in local storage
+        const photo = $('#photo')[0].files[0];
+        if (photo) {
+          const reader = new FileReader();
+          reader.onload = function(event) {
+            localStorage.setItem('uploadedImage', event.target.result);
+            redirectToSecondPage();
+          };
+          reader.readAsDataURL(photo);
+        } else {
+          alert('Please upload a photo.');
+        }
+      }
+
+      function redirectToSecondPage() {
+        const name = $('#name').val();
+        const dob = $('#dob').val();
+        const number = $('#number').val();
+        const address = $('#address').val();
+        const name2 = $('#name2').val();
+        const fatherName = $('#fathername').val();
+        const dob2 = $('#dob2').val();
+        const gender1 = $('#gender1').val();
+        const gender2 = $('#gender2').val();
+        const number2 = $('#number2').val();
+        const address2 = $('#address2').val();
+
+        const queryParams = `Second.html?name=${encodeURIComponent(name)}&dob=${encodeURIComponent(dob)}&number=${encodeURIComponent(number)}&address=${encodeURIComponent(address)}&namehind=${encodeURIComponent(name2)}&fathername=${encodeURIComponent(fatherName)}&dob2=${encodeURIComponent(dob2)}&gender=${encodeURIComponent(gender1)}&genderhindi=${encodeURIComponent(gender2)}&number2=${encodeURIComponent(number2)}&addresshind=${encodeURIComponent(address2)}`;
+        window.location.href = queryParams;
+      }
+    });
+  </script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Load jQuery first -->
+  <script src="logout.js"></script> <!-- Include the logout.js file -->
+  <script src="login-check.js"></script> <!-- Include the login-check.js file -->
+</body>
+</html>
