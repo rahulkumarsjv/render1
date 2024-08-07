@@ -956,6 +956,7 @@ app.get('/api/transactions', checkAuth, async (req, res) => {
 //   }
 // };
 
+// Registration route
 app.post('/adminregister', async (req, res) => {
   const { firstName, lastName, email, password, confirmPassword } = req.body;
 
@@ -985,10 +986,11 @@ app.post('/adminregister', async (req, res) => {
     await newAdmin.save();
     res.status(201).json({ message: 'Admin registered successfully' });
   } catch (error) {
-    console.error('Error registering admin:', error.message, error.stack);
+    console.error('Error registering admin:', error);
     res.status(500).json({ message: 'Error registering admin' });
   }
 });
+
 
 // Login route
 app.post('/admin_login', async (req, res) => {
