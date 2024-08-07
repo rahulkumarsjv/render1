@@ -1,3 +1,4 @@
+// models/PaymentAadhar.js
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
@@ -17,8 +18,7 @@ const paymentAadharSchema = new Schema({
   },
   utrNumber: {
     type: String,
-    required: true,
-    unique: true // Ensure UTR numbers are unique
+    required: true
   },
   email: {
     type: String,
