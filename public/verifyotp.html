@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RA DIGITAL INDIA Cyber Cafe</title>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .timer {
+      font-size: 18px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Continue OTP Verification for Resetting password</h1>
+    <p>Enter the 6-digit code sent to your email</p>
+    <div class="otp-input">
+      <input type="number" min="0" max="6" required>
+      <!-- <input type="number" min="0" max="9" required>
+      <input type="number" min="0" max="9" required>
+      <input type="number" min="0" max="9" required>
+      <input type="number" min="0" max="9" required>
+      <input type="number" min="0" max="9" required> -->
+    </div>
+    <button onclick="verifyOTP()">Verify</button>
+    <div class="timer" id="timer">Time left: 03:00</div>
+    <button id="resendButton" onclick="resendOTP()" disabled>Resend Code</button>
+  </div>
+
+  <script>
+    let email = '';
+    let countdown;
+    
+    const timerElement = document.getElementById('timer');
+    const resendButton = document.getElementById('resendButton');
+
+    window.onload = function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      email = urlParams.get('email');
+      if (!email) {
+        alert('Email parameter is missing in the URL.');
+      } else {
+        startCountdown(180); // Start countdown of 3 minutes (180 seconds)
+      }
+    }
+
+    function startCountdown(duration) {
+      let timer = duration, minutes, seconds;
+      countdown = setInterval(() => {
+        minutes = parseInt(timer / 60, 10);
+        seconds = parseInt(timer % 60, 10);
+
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+
+        timerElement.textContent = `Time left: ${minutes}:${seconds}`;
+
+        if (--timer < 0) {
+          clearInterval(countdown);
+          timerElement.textContent = 'OTP expired. Please request a new one.';
+          resendButton.disabled = false;
+        }
+      }, 1000);
+    }
+
+    async function verifyOTP() {
+      const otp = Array.from(document.querySelectorAll('.otp-input input'))
+        .map(input => input.value)
+        .join('');
+
+      if (!email || otp.length !== 6) {
+        alert('Please enter a valid OTP and email.');
+        return;
+      }
+
+      try {
+        const response = await fetch('http://localhost:3000/verify-otp', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email, otp })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success) {
+            alert(data.message); // OTP verified successfully
+            window.location.href = '/reset-password.html'; // Redirect to password reset page
+          } else {
+            alert(data.message); // Show error message
+          }
+        } else {
+          const errorData = await response.json();
+          alert(`Error: ${errorData.message}`);
+        }
+      } catch (error) {
+        console.error('Error verifying OTP:', error);
+        alert('Error verifying OTP');
+      }
+    }
+
+    async function resendOTP() {
+      if (!email) {
+        alert('Email parameter is missing in the URL.');
+        return;
+      }
+
+      try {
+        const response = await fetch('http://localhost:3000/send-otp', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          alert(data.message); // OTP sent successfully
+          // Reset the timer
+          startCountdown(180);
+          resendButton.disabled = true;
+        } else {
+          const errorData = await response.json();
+          alert(`Error: ${errorData.message}`);
+        }
+      } catch (error) {
+        console.error('Error sending OTP:', error);
+        alert('Error sending OTP');
+      }
+    }
+  </script>
+</body>
+</html>

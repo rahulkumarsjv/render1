@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RA DIGITAL INDIA Cyber Cafe</title>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+  <div class="container">
+    <h1>Forget Password</h1>
+    <p>Please Enter Your registered email id with us to continue resetting your password!</p>
+    <div class="form-group">
+      <label for="email">Email:</label>
+      <input type="email" id="email" class="form-control" required>
+    </div>
+    <button onclick="sendOTP()">Send OTP</button>
+  </div>
+
+  <script>
+
+    async function sendOTP() {
+
+      const email = document.getElementById('email').value;
+
+      if (!email) {
+        alert('Email is required');
+        return;
+      }
+
+      try {
+        const response = await fetch('http://localhost:3000/send-otp', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email })
+        });
+
+        const data = await response.json();
+        if (data.message === 'OTP sent successfully') {
+          alert(data.message);
+          window.location.href = `/verifyotp.html?email=${encodeURIComponent(email)}`; // Redirect to OTP verification page with email as parameter
+        } else {
+          alert(data.message);
+        }
+      } catch (error) {
+        console.error('Error sending OTP:', error);
+        alert('Error sending OTP');
+      }
+    }
+  </script>
+</body>
+
+</html>

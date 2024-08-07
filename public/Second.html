@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RA DIGITAL INDIA Cyber Cafe</title>
+  <style>
+    .data-display {
+      padding: 20px;
+      border: solid 1px rgb(255, 255, 255);
+      width: 60%;
+      height: 400px;
+      display: flex;
+      flex-wrap: wrap;
+    }
+    .container {
+      border-radius: 10px;
+      border: solid 1px;
+      width: 48%;
+      height: 400px;
+      margin: 5px;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+    .image img {
+      width: 100%;
+    }
+    .photoborder {
+      border: solid 1px black;
+      width: 150px;
+      height: 150px;
+      float: left;
+      margin-right: 10px;
+      box-sizing: border-box;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .photoborder img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: cover;
+    }
+    .textno p {
+      padding-top: 50px;
+      text-align: center;
+      font-size: 30px;
+    }
+    .MeraAadharMeripahchan {
+      margin-top: 15px;
+      font-size: 20px;
+      align-items: center;
+      justify-content: center;
+      display: flex;
+    }
+    #qrcode {
+      border: solid rgb(255, 255, 255) 1px;
+      width: 40%;
+      height: 170px;
+      float: left;
+      margin-left: 2px;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #qrcode img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .textback {
+      border: solid 1px rgb(255, 255, 255);
+      width: 55%;
+      height: 170px;
+      float: left;
+    }
+    #testnumber12 {
+      padding-top: 195px;
+      height: 20px;
+      font-size: 30px;
+      text-align: center;
+    }
+    .MeraAadharMeripahchan1 {
+      display: flex;
+      justify-content: space-between;
+    }
+    #hr1 {
+      margin-top: 42px;
+    }
+    @media screen and (max-width: 1000px) {
+      .data-display {
+        padding: 20px;
+        border: solid 1px rgb(255, 255, 255);
+        width: 100%;
+        height: 300px;
+        display: flex;
+        flex-wrap: wrap;
+      }
+      .container {
+        width: 100%;
+        height: auto;
+        margin: 5px 0;
+      }
+      .photoborder {
+        width: 150px;
+        height: 150px;
+      }
+      #qrcode {
+      border: solid rgb(255, 255, 255) 1px;
+      width: 30%;
+      height: 200px;
+      float: left;
+      margin-left: 2px;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: 90px;
+    }
+    #qrcode img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    }
+  </style>
+</head>
+<body>
+  <div class="data-display">
+    <div class="container">
+      <div class="image"><img src="./images/Aadhar forn man.png" alt="aadhar forn photo"></div>
+      <div class="nametext">
+        <div class="photoborder" id="displayedImageContainer"><img id="photo" alt="Uploaded Photo" style="width: auto; height: 100%;"></div>
+        <div class="ptext">
+          <p><span id="namehindi"></span></p>
+          <p><span id="name"></span></p>
+          <p>जन्म तिथि/ DOB: <span id="dob"></span></p>
+          <p><span id="genderhindi">/ </span><span id="gender"></span></p>
+        </div>
+      </div>
+      <div class="textno">
+        <p><span id="number"></span></p>
+        <hr>
+        <div class="MeraAadharMeripahchan">
+          <span id="MeraAadharMeripahchan">मेरा <span style="color: red;">आधार</span> मेरी पहचान</span>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="image"><img src="./images/aadhar back card.png" alt="aadhar forn photo"></div>
+      <div class="textback">
+        <p>पता: <span id="addresshindi"></span></p>
+        <p>Address: <span id="address"></span></p>
+      </div>
+      <div id="qrcode"></div>
+      <div class="testnumber12">
+        <p id="testnumber12"><span id="number2"></span></p>
+        <hr id="hr1">
+      </div>
+      <div class="MeraAadharMeripahchan1">
+        <p>1947</p>
+        <p>help@uidai.gov.in</p>
+        <p>www.uidai.gov.in</p>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode"></script>
+  <script src="second.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Load jQuery first -->
+  <script src="logout.js"></script> <!-- Include the logout.js file -->
+  <script src="login-check.js"></script> <!-- Include the login-check.js file -->
+</body>
+</html>

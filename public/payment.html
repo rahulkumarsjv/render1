@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RA DIGITAL INDIA Cyber Cafe</title>
+  <link rel="stylesheet" href="./css/payment.css">
+</head>
+<body>
+  <div class="Add_pay">
+    <h3>Instant Wallet Recharge</h3>
+    <p>We are very happy to say that with the support of all of you, we have started the facility of instant wallet recharge. With this facility, you can recharge the instant wallet anytime without paying any fee. So why are you waiting for? Recharge your wallet now.</p>
+    <p>Enter Your Amount</p>
+  </div>
+  <div class="Add_payment">
+    <img src="/images/phonepepaymetqrcode.jpg" alt="PhonePe Pay">
+    <form action="/userpayment" method="post" enctype="multipart/form-data">
+      <input type="text" name="name" id="name" placeholder="Full Name" required>
+      <input type="text" name="number1" id="upiname" placeholder="Phone Pe Paytm Ya Other" required>
+      <input type="text" name="numberutrno" id="numberutrno" placeholder="Upi To Utr NUmber" required>
+      <input type="email" name="email" id="email" placeholder="Email id" required>
+      <input type="number" name="amount" step="0.01" id="amount" placeholder="Amount" required> <!-- Make sure the name attribute is 'amount' -->
+      <input type="file" name="file" required>
+      <button type="submit">Recharge Wallet</button>
+    </form>
+    
+  </div>
+  <div>
+    <h3>Your Wallet Balance: <span id="walletBalance">Loading...</span></h3>
+  </div>
+
+  <script>
+    // Fetch and display wallet balance
+    fetch('/api/wallet-balance')
+      .then(response => response.json())
+      .then(data => {
+        if (data.walletBalance !== undefined) {
+          document.getElementById('walletBalance').textContent = data.walletBalance;
+        } else {
+          console.error('Error: Wallet balance not found');
+        }
+      })
+      .catch(error => console.error('Error fetching wallet balance:', error));
+  </script>
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Load jQuery first -->
+   <script src="logout.js"></script> <!-- Include the logout.js file -->
+   <script src="login-check.js"></script> <!-- Include the login-check.js file -->
+</body>
+</html>
