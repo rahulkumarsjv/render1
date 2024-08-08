@@ -62,7 +62,7 @@ app.use(session({
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
-// File upload setup
+// Configure multer
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, path.join(__dirname, 'uploads'));
@@ -73,7 +73,17 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
-console.log('File will be saved to:', path.join(__dirname, 'uploads', file.filename));
+
+// Route to handle file uploads
+app.post('/upload', upload.single('file'), (req, res) => {
+  if (req.file) {
+    console.log('File will be saved to:', path.join(__dirname, 'uploads', req.file.filename));
+    res.send('File uploaded successfully.');
+  } else {
+    res.status(400).send('File upload failed.');
+  }
+});
+
 
 // const upload = multer({ dest: 'uploads/' });
 
