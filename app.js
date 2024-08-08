@@ -90,10 +90,6 @@ function checkAuth(req, res, next) {
 }
 
 
-
-
-
-
 // Initialize your email transporter
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -130,7 +126,7 @@ app.post('/send-otp', async (req, res) => {
       otpStore[email] = { otp, otpExpiry };
 
       const mailOptions = {
-        from: 'pancard4886@gmail.com',
+        from: process.env.EMAIL_USER,
         to: email,
         subject: 'Registration OTP',
         text: `Your OTP for registration is ${otp}`
@@ -193,9 +189,6 @@ app.post('/reset-password', async (req, res) => {
   }
 });
 
-
-
-
 // Route to handle form submission
 app.post('/submit-contact', (req, res) => {
   const { name, email, phone, message } = req.body;
@@ -205,8 +198,8 @@ app.post('/submit-contact', (req, res) => {
   }
 
   const mailOptions = {
-    from: 'pancard4886@gmail.com',
-    to: 'pancard4886@gmail.com',
+    from: process.env.EMAIL_USER,
+    to: process.env.EMAIL_USER,
     subject: 'New Contact Form Submission',
     text: `Name: ${name}\nEmail: ${email}\nPhone: ${phone}\nMessage: ${message}`
   };
