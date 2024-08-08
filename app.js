@@ -62,10 +62,19 @@ app.use(session({
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Configure multer
+const uploadDir = path.join(__dirname, 'uploads');
+console.log('Upload directory path:', uploadDir);
+
+if (!fs.existsSync(uploadDir)) {
+  console.log('Uploads directory does not exist. Creating directory...');
+  fs.mkdirSync(uploadDir, { recursive: true });
+} else {
+  console.log('Uploads directory already exists.');
+}
+// Configure multer for file uploads
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, 'uploads'));
+    cb(null, uploadDir);
   },
   filename: function (req, file, cb) {
     cb(null, Date.now() + path.extname(file.originalname));
@@ -77,7 +86,7 @@ const upload = multer({ storage: storage });
 // Route to handle file uploads
 app.post('/upload', upload.single('file'), (req, res) => {
   if (req.file) {
-    console.log('File will be saved to:', path.join(__dirname, 'uploads', req.file.filename));
+    console.log('File will be saved to:', path.join(uploadDir, req.file.filename));
     res.send('File uploaded successfully.');
   } else {
     res.status(400).send('File upload failed.');
