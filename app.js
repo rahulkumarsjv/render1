@@ -73,6 +73,7 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
+console.log('File will be saved to:', path.join(__dirname, 'uploads', file.filename));
 
 // const upload = multer({ dest: 'uploads/' });
 
