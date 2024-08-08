@@ -22,7 +22,7 @@ const cors = require('cors');
 
 const app = express();
 
-app.use(cors()); // Enable CORS for all routes
+app.use(cors({ origin: 'https://ra-digital-inida-portal-cyber-cafe.onrender.com' }));  // Enable CORS for all routes
 app.use(express.json());
 const port = process.env.PORT || 10000;
 
