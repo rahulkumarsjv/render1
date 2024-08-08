@@ -99,7 +99,7 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-// In-memory store for OTPs (replace with a database in production)
+/// In-memory store for OTPs (replace with a database in production)
 const otpStore = {};
 
 // Function to generate a numeric OTP
@@ -188,7 +188,6 @@ app.post('/reset-password', async (req, res) => {
     res.status(500).json({ message: 'Error updating password' });
   }
 });
-
 // Route to handle form submission
 app.post('/submit-contact', (req, res) => {
   const { name, email, phone, message } = req.body;
