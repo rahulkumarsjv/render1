@@ -27,11 +27,7 @@ const paymentAadharSchema = new Schema({
   amount: {
     type: Number,
     required: true
-  }
-  // filePath: {
-  //   type: String,
-  //   required: true
-  // }
+  },
 });
 
 module.exports = mongoose.model('PaymentAadhar', paymentAadharSchema);
