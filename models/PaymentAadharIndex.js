@@ -2,7 +2,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const userpaymentSchemar = new Schema({
+const paymentAadharSchema = new Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
