@@ -14,15 +14,14 @@
   </div>
   <div class="Add_payment">
     <img src="/images/phonepepaymetqrcode.jpg" alt="PhonePe Pay">
-    <form action="/userpayment" method="post" enctype="multipart/form-data">
+    <form action="/userpayment" method="post">
       <input type="text" name="name" id="name" placeholder="Full Name" required>
       <input type="text" name="number1" id="upiname" placeholder="Phone Pe Paytm Ya Other" required>
       <input type="text" name="numberutrno" id="numberutrno" placeholder="Upi To Utr NUmber" required>
       <input type="email" name="email" id="email" placeholder="Email id" required>
-      <input type="number" name="amount" step="0.01" id="amount" placeholder="Amount" required> <!-- Make sure the name attribute is 'amount' -->
+      <input type="number" name="amount" step="0.01" id="amount" placeholder="Amount" required>
       <button type="submit">Recharge Wallet</button>
-    </form>
-    
+    </form>    
   </div>
   <div>
     <h3>Your Wallet Balance: <span id="walletBalance">Loading...</span></h3>
