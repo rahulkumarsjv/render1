@@ -65,14 +65,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 // File upload setup
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'uploads/'); // Folder where files will be stored
+    cb(null, path.join(__dirname, 'uploads'));
   },
   filename: function (req, file, cb) {
-    cb(null, Date.now() + path.extname(file.originalname)); // File name with timestamp
+    cb(null, Date.now() + path.extname(file.originalname));
   }
 });
 
 const upload = multer({ storage: storage });
+
 // const upload = multer({ dest: 'uploads/' });
 
 // Middleware to log session details
@@ -88,11 +89,6 @@ function checkAuth(req, res, next) {
   }
   next();
 }
-
-
-
-
-
 
 // Initialize your email transporter
 const transporter = nodemailer.createTransport({
