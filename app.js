@@ -11,7 +11,7 @@ const AdminUser = require('./models/AdminUser'); // Path to your AdminUser model
 const LostPAN = require('./models/LostPAN');
 const record = require('./models/Record');
 const Transaction = require('./models/Transaction');
-const paymentAadharSchema = require('./models/PaymentAadharIndex');
+const PaymentAadhar = require('./models/PaymentAadharIndex');
 const LostAadhar = require('./models/lost-submit-form');
 const MobileToLostAadhar = require('./models/mobiletolostshowaadhar');
 const Pana49form = require('./models/Pana49form');
@@ -62,38 +62,17 @@ app.use(session({
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
-// const uploadDir = path.join(__dirname, 'uploads');
-// console.log('Upload directory path:', uploadDir);
+// File upload setup
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/'); // Folder where files will be stored
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + path.extname(file.originalname)); // File name with timestamp
+  }
+});
 
-// if (!fs.existsSync(uploadDir)) {
-//   console.log('Uploads directory does not exist. Creating directory...');
-//   fs.mkdirSync(uploadDir, { recursive: true });
-// } else {
-//   console.log('Uploads directory already exists.');
-// }
-// // Configure multer for file uploads
-// const storage = multer.diskStorage({
-//   destination: function (req, file, cb) {
-//     cb(null, uploadDir);
-//   },
-//   filename: function (req, file, cb) {
-//     cb(null, Date.now() + path.extname(file.originalname));
-//   }
-// });
-
-// const upload = multer({ storage: storage });
-
-// // Route to handle file uploads
-// app.post('/upload', upload.single('file'), (req, res) => {
-//   if (req.file) {
-//     console.log('File will be saved to:', path.join(uploadDir, req.file.filename));
-//     res.send('File uploaded successfully.');
-//   } else {
-//     res.status(400).send('File upload failed.');
-//   }
-// });
-
-
+const upload = multer({ storage: storage });
 // const upload = multer({ dest: 'uploads/' });
 
 // Middleware to log session details
@@ -109,6 +88,11 @@ function checkAuth(req, res, next) {
   }
   next();
 }
+
+
+
+
+
 
 // Initialize your email transporter
 const transporter = nodemailer.createTransport({
@@ -503,27 +487,17 @@ app.get('/getMobileToAadharRecords', async (req, res) => {
   }
 });
 
-app.post('/userpayment', checkAuth, upload.single('file'), async (req, res) => {
+
+app.post('/userpayment', checkAuth, async (req, res) => {
   const { name, number1, numberutrno, email, amount } = req.body;
 
-  // Log the entire request body
-  console.log('Request body:', req.body);
-
-  // Log each individual field
-  console.log('Received name:', name);
-  console.log('Received number1:', number1);
-  console.log('Received numberutrno:', numberutrno);
-  console.log('Received email:', email);
-  console.log('Received amount:', amount);
-
+  // Validate inputs
   if (!numberutrno || numberutrno.length !== 12) {
     return res.status(400).send('Invalid UTR number');
   }
 
-  // Validate the amount
   const amountToAdd = parseFloat(amount);
   if (isNaN(amountToAdd) || amountToAdd <= 0) {
-    console.log('Invalid amount:', amountToAdd); // Logging the invalid amount
     return res.status(400).send('Invalid amount');
   }
 
@@ -533,26 +507,29 @@ app.post('/userpayment', checkAuth, upload.single('file'), async (req, res) => {
       return res.status(404).send('User not found');
     }
 
-     // Check if UTR number already exists in the PaymentAadhar collection
-     const existingPayment = await paymentAadharSchema.findOne({ utrNumber: numberutrno });
-     if (existingPayment) {
-       return res.status(400).send('UTR number is already linked');
-     }
+    // Check for existing UTR number
+    const existingPayment = await PaymentAadhar.findOne({ utrNumber: numberutrno });
+    if (existingPayment) {
+      return res.status(400).send('UTR number is already linked');
+    }
 
+    // Update wallet balance
     user.walletBalance += amountToAdd;
     await user.save();
 
-    const paymentAadhar = new paymentAadharSchema({
+    // Create a new PaymentAadhar document
+    const paymentAadhar = new PaymentAadhar({
       userId: user._id,
       name: name,
       number1: number1,
-      utrNumber: numberutrno, // Ensure this matches the schema field
+      utrNumber: numberutrno,
       email: email,
-      amount: amountToAdd, // Ensure this matches the schema field
+      amount: amountToAdd
     });
 
     await paymentAadhar.save();
 
+    // Log the transaction
     const transaction = new Transaction({
       userId: user._id,
       amount: amountToAdd,
@@ -560,9 +537,8 @@ app.post('/userpayment', checkAuth, upload.single('file'), async (req, res) => {
       description: 'Wallet recharge',
       date: new Date()
     });
-    
+
     await transaction.save();
-    
 
     res.status(201).json({ message: 'Wallet recharged successfully' });
   } catch (error) {
