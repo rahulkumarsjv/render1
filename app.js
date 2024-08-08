@@ -549,7 +549,6 @@ app.post('/userpayment', checkAuth, upload.single('file'), async (req, res) => {
       utrNumber: numberutrno, // Ensure this matches the schema field
       email: email,
       amount: amountToAdd, // Ensure this matches the schema field
-      filePath: req.file.path // Ensure this matches the schema field
     });
 
     await paymentAadhar.save();
