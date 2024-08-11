@@ -62,17 +62,17 @@ app.use(session({
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
-// File upload setup
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/'); // Folder where files will be stored
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + path.extname(file.originalname)); // File name with timestamp
-  }
-});
+// // File upload setup
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, 'uploads/'); // Folder where files will be stored
+//   },
+//   filename: function (req, file, cb) {
+//     cb(null, Date.now() + path.extname(file.originalname)); // File name with timestamp
+//   }
+// });
 
-const upload = multer({ storage: storage });
+// const upload = multer({ storage: storage });
 // const upload = multer({ dest: 'uploads/' });
 
 // Middleware to log session details
@@ -601,6 +601,19 @@ app.post('/submit-lost-pan', checkAuth, async (req, res) => {
 // const multer = require('multer');
 // const upload = multer({ dest: 'uploads/' });
 
+// File upload setup
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join(__dirname, 'uploads/')); // Save files in 'uploads' directory
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + path.extname(file.originalname)); // Append timestamp to the original filename
+  }
+});
+
+const upload = multer({ storage: storage });
+
+// PAN Card Application route
 app.post('/submit-newpan-application', checkAuth, upload.fields([
   { name: 'file', maxCount: 1 },
   { name: 'signature', maxCount: 1 },
@@ -748,7 +761,7 @@ app.post('/submit-newpan-application', checkAuth, upload.fields([
   }
 });
 
-// Route to fetch PAN application by unique number
+// Route to fetch all PAN applications
 app.get('/get-all-pan-applications', async (req, res) => {
   try {
     const pana49forms = await Pana49form.find();
@@ -759,6 +772,8 @@ app.get('/get-all-pan-applications', async (req, res) => {
   }
 });
 
+// Serve static files from the 'uploads' directory
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.post('/submit-correctionpan-appy-application', upload.fields([
   { name: 'image', maxCount: 1 },
