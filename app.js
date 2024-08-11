@@ -22,9 +22,9 @@ const cors = require('cors');
 
 const app = express();
 
-app.use(cors({ origin: 'https://ra-digital-inida-portal-cyber-cafe.onrender.com' }));  // Enable CORS for all routes
+app.use(cors()); // Enable CORS for all routes
 app.use(express.json());
-const port = process.env.PORT || 10000;
+const port = process.env.PORT || 3000;
 
 // // Connect to MongoDB
 // mongoose.connect('mongodb+srv://rahul199202012:gexBdbMGUqtwE3Nq@cluster0.k7xol6w.mongodb.net/rndigitalindia', {
@@ -197,9 +197,10 @@ app.post('/submit-contact', (req, res) => {
   }
 
   const mailOptions = {
-    from: 'pancard4886@gmail.com',
+    from: email,
     to: 'pancard4886@gmail.com',
-    subject: 'New Contact Form Submission',
+    subject: 'RA DIGITAL INDIA Cyber Cafe',
+    replyTo: email,
     text: `Name: ${name}\nEmail: ${email}\nPhone: ${phone}\nMessage: ${message}`
   };
 
@@ -1070,17 +1071,68 @@ app.delete('/data/:collection/:id', async (req, res) => {
 // Update data
 app.put('/data/:collection/:id', async (req, res) => {
     const { collection, id } = req.params;
-    const newValue = req.body.value; // Adjust this for specific fields
-    const Model = mongoose.model(collection, new mongoose.Schema({}, { strict: false }));
+    const updateData = req.body; // Assuming the entire request body contains fields to update
+
+    let Model;
+    try {
+        // Check if the model already exists, and use it if it does
+        Model = mongoose.model(collection);
+    } catch (error) {
+        // If the model does not exist, create a new one
+        if (error.name === 'MissingSchemaError') {
+            Model = mongoose.model(collection, new mongoose.Schema({}, { strict: false }));
+        } else {
+            console.error('Error retrieving model:', error);
+            return res.status(500).json({ message: 'Error retrieving model' });
+        }
+    }
 
     try {
-        await Model.findByIdAndUpdate(id, { value: newValue }); // Adjust this for specific fields
-        res.json({ message: 'Record updated successfully' });
+        const updatedRecord = await Model.findByIdAndUpdate(id, updateData, { new: true });
+        if (!updatedRecord) {
+            return res.status(404).json({ message: 'Record not found' });
+        }
+        res.json({ message: 'Record updated successfully', updatedRecord });
     } catch (error) {
         console.error('Error updating data:', error);
         res.status(500).json({ message: 'Error updating data' });
     }
 });
+
+
+app.get('/data/:collection', async (req, res) => {
+  const collectionName = req.params.collection;
+
+  // Define the collections that should be queried from the 'users' collection
+  const allowedCollections = [
+      'lostaadhars', 'lostpans', 'mobiletolostshowaadhars',
+      'pana49forms', 'paymentaadhars', 'records', 'transactions'
+  ];
+
+  if (collectionName === 'users') {
+      return res.status(403).json({ message: 'Access to users collection is forbidden' });
+  }
+
+  if (!allowedCollections.includes(collectionName)) {
+      return res.status(400).json({ message: 'Invalid collection name' });
+  }
+
+  try {
+      // Fetch data from 'users' collection based on the collection name
+      const collection = mongoose.connection.collection('users');
+      const data = await collection.find({ collectionName }).toArray();
+
+      if (!data || data.length === 0) {
+          throw new Error('No data found or data is not an array');
+      }
+
+      res.json(data);
+  } catch (error) {
+      console.error('Error fetching data:', error);
+      res.status(500).json({ message: 'Error fetching data' });
+  }
+});
+
 
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
