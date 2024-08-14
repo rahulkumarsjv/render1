@@ -15,6 +15,14 @@
             padding: 15px;
             text-align: left;
         }
+        img {
+            max-width: 100px;
+            height: auto;
+        }
+        iframe {
+            width: 200px;
+            height: 300px;
+        }
     </style>
 </head>
 <body>
@@ -27,8 +35,10 @@
                 <th>Name</th>
                 <th>Email</th>
                 <th>Mobile</th>
-                <th>status</th>
-
+                <th>Status</th>
+                <th>Photos</th>
+                <th>Signature</th>
+                <th>PDF Documents</th>
                 <!-- Add other fields as needed -->
             </tr>
         </thead>
@@ -38,52 +48,57 @@
     </table>
 
     <script>
-        document.addEventListener('DOMContentLoaded', async function () {
-            try {
-                const response = await fetch('/get-all-pan-applications');
-                const data = await response.json();
+       document.addEventListener('DOMContentLoaded', async function () {
+    try {
+        const response = await fetch('/get-all-pan-applications');
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log('Fetched Data:', data); // Debugging
 
-                const tableBody = document.getElementById('panTableBody');
-                data.forEach(application => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${application._id}</td>
-                        <td>${application.first_name} ${application.middle_name} ${application.last_name}</td>
-                        <td>${application.email}</td>
-                        <td>${application.mobile}</td>
-                        <td>${application.status}</td>
-                        <!-- Add other fields as needed -->
-                    `;
-                    tableBody.appendChild(row);
-                });
-            } catch (error) {
-                console.error('Error fetching PAN applications:', error);
-            }
-        });
+        const tableBody = document.getElementById('panTableBody');
+        if (Array.isArray(data)) {
+            data.forEach(application => {
+                console.log('Application:', application); // Debugging
 
-        function filterTable() {
-            const input = document.getElementById('searchInput');
-            const filter = input.value.toLowerCase();
-            const table = document.getElementById('panTable');
-            const trs = table.getElementsByTagName('tr');
+                const row = document.createElement('tr');
 
-            for (let i = 1; i < trs.length; i++) { // Start from 1 to skip the header row
-                const tds = trs[i].getElementsByTagName('td');
-                let showRow = false;
-                
-                for (let j = 0; j < tds.length; j++) {
-                    const td = tds[j];
-                    if (td) {
-                        if (td.innerText.toLowerCase().indexOf(filter) > -1) {
-                            showRow = true;
-                            break;
-                        }
-                    }
+                let photos = '';
+                if (application.filePath) {
+                    photos += `<img src="/uploads/${application.filePath}" alt="Photo"> `;
                 }
 
-                trs[i].style.display = showRow ? '' : 'none';
-            }
+                let signature = '';
+                if (application.signaturePath) {
+                    signature += `<img src="/uploads/${application.signaturePath}" alt="Signature"> `;
+                }
+
+                let pdfs = '';
+                if (application.documentsPath) {
+                    pdfs += `<iframe src="/uploads/${application.documentsPath}" type="application/pdf"></iframe> `;
+                }
+
+                row.innerHTML = `
+                    <td>${application.uniqueNumber || 'N/A'}</td>
+                    <td>${application.first_name || ''} ${application.middle_name || ''} ${application.last_name || ''}</td>
+                    <td>${application.email || 'N/A'}</td>
+                    <td>${application.mobile || 'N/A'}</td>
+                    <td>${application.status || 'N/A'}</td>
+                    <td>${photos || 'N/A'}</td>
+                    <td>${signature || 'N/A'}</td>
+                    <td>${pdfs || 'N/A'}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        } else {
+            console.error('Data is not an array:', data);
         }
+    } catch (error) {
+        console.error('Error fetching PAN applications:', error);
+    }
+});
+
     </script>
 </body>
 </html>
