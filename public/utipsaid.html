@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop Details Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .utipsa{
+            text-align: center;
+            border: blue solid 1px;
+            background-color: blue;
+            color: #fff;
+            font-size: 30px;
+        }
+        .marquee{
+            margin-top: 1%;
+            background-color: aquamarine;
+            width: 100%;
+            color: #0808ff;
+            font-size: 20px;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        form {
+           width: 98%;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="number"] {
+            width: 100%;
+            height: 25px;
+            padding: 8px;
+            margin-bottom: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="utipsa">
+    <h1>PAN card PSA ID retailer create now </h1>
+</div>
+<div class="marquee">
+    <marquee><h3>7 day ke andar chalu Hoga Sidha UTI ke taraf email aaega uti psa id chalu karane ke liye aapko minimum rupaye 400 lagega</h3></marquee>
+</div>
+<br><br>
+    <form action="/submit-shop-details" method="POST">
+        <label for="shopName">Full Name :</label>
+        <input type="text" id="fullname" name="fullname" required>
+
+        <label for="shopName">Shop Name:</label>
+        <input type="text" id="shopName" name="shopName" required>
+
+        <label for="aadharNumber">Aadhaar Number:</label>
+        <input type="text" id="aadharNumber" name="aadharNumber" pattern="\d{12}" title="Aadhaar number must be 12 digits" required>
+
+        <label for="panNumber">PAN Number:</label>
+        <input type="text" id="panNumber" name="panNumber" pattern="[A-Z]{5}\d{4}[A-Z]{1}" title="PAN number must be in the format AAAAA9999A" required>
+
+        <label for="address">Address:</label>
+        <input type="text" id="address" name="address" required>
+
+        <label for="pinCode">Pin Code:</label>
+        <input type="number" id="pinCode" name="pinCode" pattern="\d{6}" title="Pin code must be 6 digits" required>
+
+        <label for="mobileNumber">Mobile Number:</label>
+        <input type="text" id="mobileNumber" name="mobileNumber" pattern="\d{10}" title="Mobile number must be 10 digits" required>
+
+        <label for="email">Email ID:</label>
+        <input type="email" id="email" name="email" required>
+
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>
