@@ -15,13 +15,20 @@
             padding: 15px;
             text-align: left;
         }
-        img {
+        img, iframe {
             max-width: 100px;
             height: auto;
+            display: none; /* Hide images and PDFs initially */
         }
         iframe {
             width: 200px;
             height: 300px;
+        }
+        .show {
+            display: block;
+        }
+        .hidden {
+            display: none;
         }
     </style>
 </head>
@@ -39,7 +46,6 @@
                 <th>Photos</th>
                 <th>Signature</th>
                 <th>PDF Documents</th>
-                <!-- Add other fields as needed -->
             </tr>
         </thead>
         <tbody id="panTableBody">
@@ -48,58 +54,98 @@
     </table>
 
     <script>
-       document.addEventListener('DOMContentLoaded', async function () {
-    try {
-        const response = await fetch('/get-all-pan-applications');
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+        const correctPassword = 'Anju@rahul'; // Password for access
+
+        function promptPassword(callback, type, path, elementId) {
+            const userPassword = prompt('Enter the password to view or download this content:');
+            if (userPassword === correctPassword) {
+                callback(type, path, elementId);
+            } else {
+                alert('Incorrect password!');
+            }
         }
-        const data = await response.json();
-        console.log('Fetched Data:', data); // Debugging
 
-        const tableBody = document.getElementById('panTableBody');
-        if (Array.isArray(data)) {
-            data.forEach(application => {
-                console.log('Application:', application); // Debugging
+        function setupDownloadButton(type, path, elementId) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.textContent = 'Download'; // Change button text to 'Download'
+                element.href = `/uploads/${path}`; // Set the href to the path of the file
+                element.download = ''; // Set the download attribute to trigger download
+                element.classList.remove('hidden'); // Show the button
+            } else {
+                console.error('Element not found:', elementId);
+            }
+        }
 
-                const row = document.createElement('tr');
-
-                let photos = '';
-                if (application.filePath) {
-                    photos += `<img src="/uploads/${application.filePath}" alt="Photo"> `;
+        document.addEventListener('DOMContentLoaded', async function () {
+            try {
+                const response = await fetch('/get-all-pan-applications');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
                 }
+                const data = await response.json();
+                console.log('Fetched Data:', data); // Debugging
 
-                let signature = '';
-                if (application.signaturePath) {
-                    signature += `<img src="/uploads/${application.signaturePath}" alt="Signature"> `;
+                const tableBody = document.getElementById('panTableBody');
+                if (Array.isArray(data)) {
+                    data.forEach(application => {
+                        console.log('Application:', application); // Debugging
+
+                        const row = document.createElement('tr');
+
+                        let photoHTML = '';
+                        if (application.filePath) {
+                            photoHTML = `<button onclick="promptPassword(setupDownloadButton, 'photo', '${application.filePath}', 'photo-${application.uniqueNumber}')">Download Photo</button>
+                                         <a id="photo-${application.uniqueNumber}" class="hidden" href="" download></a>`;
+                        }
+
+                        let signatureHTML = '';
+                        if (application.signaturePath) {
+                            signatureHTML = `<button onclick="promptPassword(setupDownloadButton, 'signature', '${application.signaturePath}', 'signature-${application.uniqueNumber}')">Download Signature</button>
+                                             <a id="signature-${application.uniqueNumber}" class="hidden" href="" download></a>`;
+                        }
+
+                        let pdfHTML = '';
+                        if (application.documentsPath) {
+                            pdfHTML = `<button onclick="promptPassword(setupDownloadButton, 'pdf', '${application.documentsPath}', 'pdf-${application.uniqueNumber}')">Download PDF</button>
+                                       <a id="pdf-${application.uniqueNumber}" class="hidden" href="" download></a>`;
+                        }
+
+                        row.innerHTML = `
+                            <td>${application.uniqueNumber || 'N/A'}</td>
+                            <td>${application.first_name || ''} ${application.middle_name || ''} ${application.last_name || ''}</td>
+                            <td>${application.email || 'N/A'}</td>
+                            <td>${application.mobile || 'N/A'}</td>
+                            <td>${application.status || 'N/A'}</td>
+                            <td>${photoHTML || 'N/A'}</td>
+                            <td>${signatureHTML || 'N/A'}</td>
+                            <td>${pdfHTML || 'N/A'}</td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                } else {
+                    console.error('Data is not an array:', data);
                 }
+            } catch (error) {
+                console.error('Error fetching PAN applications:', error);
+            }
+        });
 
-                let pdfs = '';
-                if (application.documentsPath) {
-                    pdfs += `<iframe src="/uploads/${application.documentsPath}" type="application/pdf"></iframe> `;
+        function filterTable() {
+            const input = document.getElementById('searchInput').value.toLowerCase();
+            const rows = document.querySelectorAll('#panTableBody tr');
+            rows.forEach(row => {
+                const cells = row.getElementsByTagName('td');
+                let match = false;
+                for (let i = 0; i < cells.length; i++) {
+                    if (cells[i].textContent.toLowerCase().includes(input)) {
+                        match = true;
+                        break;
+                    }
                 }
-
-                row.innerHTML = `
-                    <td>${application.uniqueNumber || 'N/A'}</td>
-                    <td>${application.first_name || ''} ${application.middle_name || ''} ${application.last_name || ''}</td>
-                    <td>${application.email || 'N/A'}</td>
-                    <td>${application.mobile || 'N/A'}</td>
-                    <td>${application.status || 'N/A'}</td>
-                    <td>${photos || 'N/A'}</td>
-                    <td>${signature || 'N/A'}</td>
-                    <td>${pdfs || 'N/A'}</td>
-                `;
-                tableBody.appendChild(row);
+                row.style.display = match ? '' : 'none';
             });
-        } else {
-            console.error('Data is not an array:', data);
         }
-    } catch (error) {
-        console.error('Error fetching PAN applications:', error);
-    }
-});
-
     </script>
 </body>
 </html>
-
