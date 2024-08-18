@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>RA DIGITAL INDIA Cyber Cafe</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 15px;
+            text-align: left;
+        }
+        img, iframe {
+            max-width: 100px;
+            height: auto;
+            display: none; /* Hide images and PDFs initially */
+        }
+        iframe {
+            width: 200px;
+            height: 300px;
+        }
+        .show {
+            display: block;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>PAN Card Applications</h1>
+    <input type="text" id="searchInput" placeholder="Search..." onkeyup="filterTable()">
+    <table id="panTable">
+        <thead>
+            <tr>
+                <th>Unique Number</th>
+                <th>Category of Applicant</th>
+                <th>Date</th>
+                <th>City</th>
+                <th>Area Code</th>
+                <th>AO Type</th>
+                <th>Range Code</th>
+                <th>AO No</th>
+                <th>Title</th>
+                <th>Last Name</th>
+                <th>First Name</th>
+                <th>Middle Name</th>
+                <th>Name on Card</th>
+                <th>Gender</th>
+                <th>DOB</th>
+                <th>Single Parent</th>
+                <th>Mother Last Name</th>
+                <th>Mother First Name</th>
+                <th>Mother Middle Name</th>
+                <th>Father First Name</th>
+                <th>Father Middle Name</th>
+                <th>Name on Card (Parent)</th>
+                <th>Address Type</th>
+                <th>Flat</th>
+                <th>Building</th>
+                <th>Street</th>
+                <th>Locality</th>
+                <th>Town</th>
+                <th>State</th>
+                <th>Pincode</th>
+                <th>Country</th>
+                <th>ISD Code</th>
+                <th>Mobile</th>
+                <th>Email</th>
+                <th>Mobile</th>
+                <th>Status</th>
+                <th>Photos</th>
+                <th>Signature</th>
+                <th>PDF Documents</th>
+            </tr>
+        </thead>
+        <tbody id="panTableBody">
+            <!-- Rows will be added dynamically -->
+        </tbody>
+    </table>
+
+    <script>
+        const correctPassword = 'Anju@rahul'; // Password for access
+
+        function promptPassword(callback, type, path, elementId) {
+            const userPassword = prompt('Enter the password to view or download this content:');
+            if (userPassword === correctPassword) {
+                callback(type, path, elementId);
+            } else {
+                alert('Incorrect password!');
+            }
+        }
+
+        function setupDownloadButton(type, path, elementId) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.textContent = 'Download'; // Change button text to 'Download'
+                element.href = `/uploads/${path}`; // Set the href to the path of the file
+                element.download = ''; // Set the download attribute to trigger download
+                element.classList.remove('hidden'); // Show the button
+            } else {
+                console.error('Element not found:', elementId);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', async function () {
+            try {
+                const response = await fetch('/get-all-pan-applications');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const data = await response.json();
+                console.log('Fetched Data:', data); // Debugging
+
+                const tableBody = document.getElementById('panTableBody');
+                if (Array.isArray(data)) {
+                    data.forEach(application => {
+                        console.log('Application:', application); // Debugging
+
+                        const row = document.createElement('tr');
+
+                        let photoHTML = '';
+                        if (application.filePath) {
+                            photoHTML = `<button onclick="promptPassword(setupDownloadButton, 'photo', '${application.filePath}', 'photo-${application.uniqueNumber}')">Download Photo</button>
+                                         <a id="photo-${application.uniqueNumber}" class="hidden" href="" download></a>`;
+                        }
+
+                        let signatureHTML = '';
+                        if (application.signaturePath) {
+                            signatureHTML = `<button onclick="promptPassword(setupDownloadButton, 'signature', '${application.signaturePath}', 'signature-${application.uniqueNumber}')">Download Signature</button>
+                                             <a id="signature-${application.uniqueNumber}" class="hidden" href="" download></a>`;
+                        }
+
+                        let pdfHTML = '';
+                        if (application.documentsPath) {
+                            pdfHTML = `<button onclick="promptPassword(setupDownloadButton, 'pdf', '${application.documentsPath}', 'pdf-${application.uniqueNumber}')">Download PDF</button>
+                                       <a id="pdf-${application.uniqueNumber}" class="hidden" href="" download></a>`;
+                        }
+
+                        row.innerHTML = `
+                            <td>${application.uniqueNumber || 'N/A'}</td>
+                            <td>${application.category_of_applicant || 'N/A'}</td>
+                            <td>${application.date || 'N/A'}</td>
+                            <td>${application.city || 'N/A'}</td>
+                            <td>${application.area_code || 'N/A'}</td>
+                            <td>${application.aotype || 'N/A'}</td>
+                            <td>${application.range_code || 'N/A'}</td>
+                            <td>${application.ao_no || 'N/A'}</td>
+                            <td>${application.title || 'N/A'}</td>
+                            <td>${application.last_name || 'N/A'}</td>
+                            <td>${application.first_name || 'N/A'}</td>
+                            <td>${application.middle_name || 'N/A'}</td>
+                            <td>${application.name_on_card || 'N/A'}</td>
+                            <td>${application.gender || 'N/A'}</td>
+                            <td>${application.dob || 'N/A'}</td>
+                            <td>${application.single_parent || 'N/A'}</td>
+                            <td>${application.mother_last_name || 'N/A'}</td>
+                            <td>${application.mother_first_name || 'N/A'}</td>
+                            <td>${application.mother_middle_name || 'N/A'}</td>
+                            <td>${application.father_first_name || 'N/A'}</td>
+                            <td>${application.father_middle_name || 'N/A'}</td>
+                            <td>${application.name_on_card_parent || 'N/A'}</td>
+                            <td>${application.address_type || 'N/A'}</td>
+                            <td>${application.flat || 'N/A'}</td>
+                            <td>${application.building || 'N/A'}</td>
+                            <td>${application.street || 'N/A'}</td>
+                            <td>${application.locality || 'N/A'}</td>
+                            <td>${application.town || 'N/A'}</td>
+                            <td>${application.state || 'N/A'}</td>
+                            <td>${application.pincode || 'N/A'}</td>
+                            <td>${application.country || 'N/A'}</td>
+                            <td>${application.isd_code || 'N/A'}</td>
+                            <td>${application.mobile || 'N/A'}</td>
+                            <td>${application.email || 'N/A'}</td>
+                            <td>${application.mobile || 'N/A'}</td>
+                            <td>${application.status || 'N/A'}</td>
+                            <td>${photoHTML || 'N/A'}</td>
+                            <td>${signatureHTML || 'N/A'}</td>
+                            <td>${pdfHTML || 'N/A'}</td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                } else {
+                    console.error('Data is not an array:', data);
+                }
+            } catch (error) {
+                console.error('Error fetching PAN applications:', error);
+            }
+        });
+
+        function filterTable() {
+            const input = document.getElementById('searchInput').value.toLowerCase();
+            const rows = document.querySelectorAll('#panTableBody tr');
+            rows.forEach(row => {
+                const cells = row.getElementsByTagName('td');
+                let match = false;
+                for (let i = 0; i < cells.length; i++) {
+                    if (cells[i].textContent.toLowerCase().includes(input)) {
+                        match = true;
+                        break;
+                    }
+                }
+                row.style.display = match ? '' : 'none';
+            });
+        }
+    </script>
+</body>
+</html>
