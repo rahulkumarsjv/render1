@@ -15,6 +15,9 @@ const PaymentAadhar = require('./models/PaymentAadharIndex');
 const LostAadhar = require('./models/lost-submit-form');
 const Pana49form = require('./models/Pana49form');
 const CorrectionPan = require('./models/correctionpan');
+const AyushmanCard = require('./models/AyushmanCard');
+const Fingerprint = require('./models/AadharFingerprint');
+const Aadharporinadd = require('./models/Aadharporinadd');
 const Shop = require('./models/utipsa');
 const crypto = require('crypto');
 require('dotenv').config();
@@ -349,6 +352,15 @@ app.get('/sign_up', (req, res) => {
 app.get('/opin_mone', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'opin_mone.html'));
 });
+app.get('/ayushmancarddownload', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'ayushmancarddownload.html'));
+});
+app.get('/fingerprintaadharidregistration', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'fingerprintaadharidregistration.html'));
+});
+app.get('/addpoint', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'fingerprintaadharidregistration.html'));
+});
 
 // Lost Aadhaar form route
 app.post('/submit-form', checkAuth, async (req, res) => {
@@ -650,6 +662,180 @@ app.post('/submit-lost-pan', checkAuth, async (req, res) => {
   }
 });
 
+
+app.post('/ayushmancarddata', async (req, res) => {
+  try {
+    const { status, selectproof, parameter } = req.body;
+
+    // Retrieve the user from session
+    const user = await User.findById(req.session.userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const requiredBalance = 30;
+    if (user.walletBalance < requiredBalance) {
+      return res.status(400).json({ message: 'Insufficient wallet balance' });
+    }
+
+    // Deduct ₹30 from the user's wallet balance
+    user.walletBalance -= requiredBalance;
+    await user.save();
+
+    // Create a new AyushmanCard document
+    const newCard = new AyushmanCard({
+      status,
+      selectproof,
+      parameter,
+      createdAt: new Date()
+    });
+
+    // Save the AyushmanCard document
+    await newCard.save();
+
+    // Optionally, log the transaction (if you have a Transaction model)
+    const transaction = new Transaction({
+      userId: user._id,
+      amount: requiredBalance,
+      type: 'debit',
+      description: 'Ayushman Card retailer ID create',
+      date: new Date()
+    });
+
+    await transaction.save();
+
+    res.status(200).send('AyushmanCard data saved successfully and ₹30 deducted from balance');
+  } catch (error) {
+    console.error('Error saving data:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+
+// Handle GET request to fetch data
+app.get('/ayushmancarddata', async (req, res) => {
+  try {
+      const results = await AyushmanCard.find(); // Fetch all documents
+      res.json(results);
+  } catch (error) {
+      console.error('Error fetching data:', error);
+      res.status(500).send('Internal Server Error');
+  }
+});
+
+
+app.post('/AadharFingerprint', async (req, res) => {
+  try {
+    const { fullname, mobileNumber, emailId, stateName, shopName } = req.body;
+
+    // Retrieve the user from session
+    const user = await User.findById(req.session.userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const requiredBalance = 700;
+    if (user.walletBalance < requiredBalance) {
+      return res.status(400).json({ message: 'Insufficient wallet balance' });
+    }
+
+    // Deduct ₹30 from the user's wallet balance
+    user.walletBalance -= requiredBalance;
+    await user.save();
+
+    // Create a new AyushmanCard document
+    const newCard = new Fingerprint({
+      fullname,
+      mobileNumber,
+      emailId,
+      stateName,
+      shopName,
+      createdAt: new Date()
+    });
+
+    // Save the AyushmanCard document
+    await newCard.save();
+
+    // Optionally, log the transaction (if you have a Transaction model)
+    const transaction = new Transaction({
+      userId: user._id,
+      amount: requiredBalance,
+      type: 'debit',
+      description: 'Aadhar fingerprint retailer ID create ',
+      date: new Date()
+    });
+
+    await transaction.save();
+
+    res.status(200).send('Aadhar fingerprint 24 se 72 ghante please wait activate verify account retailer ID aur Password please check email  ');
+  } catch (error) {
+    console.error('Error saving data:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+app.get('/AadharFingerprint', async (req, res) => {
+  try {
+      const results = await Fingerprint.find(); // Fetch all documents
+      res.json(results);
+  } catch (error) {
+      console.error('Error fetching data:', error);
+      res.status(500).send('Internal Server Error');
+  }
+});
+
+app.post('/addpoint', async (req, res) => {
+  try {
+    const { point, rupess, mobile_number, email } = req.body;
+
+    if (!req.session.userId) {
+      return res.status(401).json({ message: 'User not logged in or session expired' });
+    }
+
+    const user = await User.findById(req.session.userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const requiredBalance = 400;
+    if (user.walletBalance < requiredBalance) {
+      return res.status(400).json({ message: 'Insufficient wallet balance' });
+    }
+
+    user.walletBalance -= requiredBalance;
+    await user.save();
+
+    const newCard = new Aadharporinadd({
+      point,
+      rupess,
+      mobile_number,
+      email,
+      createdAt: new Date(),
+    });
+
+    await newCard.save();
+
+    const transaction = new Transaction({
+      userId: user._id,
+      amount: requiredBalance,
+      type: 'debit',
+      description: 'Aadharporinadd',
+      date: new Date(),
+    });
+
+    await transaction.save();
+
+    res.status(200).send('Aadhar fingerprint 12 ghante please wait activate verify account money aad');
+  } catch (error) {
+    console.error('Error saving data:', error); // Log the specific error
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+
+
 // // Define the User model
 // const User = mongoose.model('User', new mongoose.Schema({
 //   email: String,
@@ -786,6 +972,7 @@ app.post('/submit-newpan-application', upload.fields([
   }
 });
 
+
 app.use('/uploads', express.static('uploads'));
 
 app.post('/submit-correctpan-application', upload.fields([
@@ -876,6 +1063,8 @@ app.post('/submit-correctpan-application', upload.fields([
   }
 });
 
+// Form submission route with wallet balance deduction
+
 
 // Example in Express.js
 app.get('/get-all-pan-applications', async (req, res) => {
@@ -945,8 +1134,23 @@ app.get('/api/transactions', checkAuth, async (req, res) => {
     if (!user) {
       return res.status(404).send('User not found');
     }
-    const transactions = await Transaction.find({ userId: user._id }).sort({ date: -1 });
-    res.json({ transactions });
+
+    // Fetch transactions and populate the user's email based on the userId reference
+    const transactions = await Transaction.find({ userId: user._id })
+      .sort({ date: -1 })
+      .populate('userId', 'email'); // This populates the email field of the user
+
+    // Map the transactions to include the user's email and other necessary details
+    const transactionsWithDetails = transactions.map((transaction) => ({
+      _id: transaction._id,
+      amount: transaction.amount,
+      type: transaction.type,
+      description: transaction.description,
+      date: transaction.date,
+      userEmail: transaction.userId.email, // This will contain the email of the user
+    }));
+
+    res.json({ transactions: transactionsWithDetails });
   } catch (error) {
     console.error('Error fetching transactions:', error);
     res.status(500).json({ message: 'Error fetching transactions' });
@@ -1113,6 +1317,65 @@ app.get('/api/data/paymentaadhars', async (req, res) => {
   }
 });
 
+app.get('/api/data/Fingerprint', async (req, res) => {
+  try {
+    const data = await Fingerprint.find(); // Fetch all records from the collection
+
+    if (!data || data.length === 0) {
+      return res.status(404).json({ message: 'No records found' }); // Handle case where no data is found
+    }
+
+    res.json(data); // Send the retrieved data as a JSON response
+  } catch (error) {
+    console.error('Error fetching data:', error); // Log the error for debugging
+    res.status(500).json({ error: 'Failed to fetch data' }); // Send an error response
+  }
+});
+
+app.get('/api/data/AyushmanCard', async (req, res) => {
+  try {
+    const data = await AyushmanCard.find(); // Fetch all records from the collection
+
+    if (!data || data.length === 0) {
+      return res.status(404).json({ message: 'No records found' }); // Handle case where no data is found
+    }
+
+    res.json(data); // Send the retrieved data as a JSON response
+  } catch (error) {
+    console.error('Error fetching data:', error); // Log the error for debugging
+    res.status(500).json({ error: 'Failed to fetch data' }); // Send an error response
+  }
+});
+
+// Fetch data from various collections
+app.get('/api/data/aadharporinadd', async (req, res) => {
+  try {
+    const data = await Aadharporinadd.find();
+    if (!data.length) {
+      return res.status(404).json({ message: 'No records found' });
+    }
+    res.json(data);
+  } catch (error) {
+    console.error('Error fetching Aadharporinadd data:', error);
+    res.status(500).json({ message: 'Failed to fetch data' });
+  }
+});
+
+app.get('/api/data/shop', async (req, res) => {
+  try {
+    const data = await Shop.find();
+    if (!data.length) {
+      return res.status(404).json({ message: 'No records found' });
+    }
+    res.json(data);
+  } catch (error) {
+    console.error('Error fetching shop data:', error.message);
+    res.status(500).json({ message: 'Failed to fetch data', details: error.message });
+  }
+});
+
+// Add other routes as needed for different collections
+
 app.get('/api/data/shop', async (req, res) => {
   try {
     const data = await Shop.find(); // Fetch all records from the collection
@@ -1130,18 +1393,32 @@ app.get('/api/data/shop', async (req, res) => {
 
 app.get('/api/data/transactions', async (req, res) => {
   try {
-    const data = await Transaction.find(); // Fetch all records from the 'transactions' collection
+    // Fetch all transactions and populate the user field to include user data
+    const transactions = await Transaction.find()
+      .populate('userId', 'email') // Populate the userId field with the user's email
+      .exec();
 
-    if (!data || data.length === 0) {
-      return res.status(404).json({ message: 'No records found' }); // Handle case where no data is found
+    if (!transactions || transactions.length === 0) {
+      return res.status(404).json({ message: 'No records found' });
     }
 
-    res.json(data); // Send the retrieved data as a JSON response
+    // Format the data to include user email
+    const responseData = transactions.map(transaction => ({
+      _id: transaction._id,
+      amount: transaction.amount,
+      type: transaction.type,
+      description: transaction.description,
+      date: transaction.date,
+      userEmail: transaction.userId ? transaction.userId.email : 'N/A' // Add user email
+    }));
+
+    res.json(responseData); // Send the formatted data as a JSON response
   } catch (error) {
-    console.error('Error fetching data:', error); // Log the error for debugging
-    res.status(500).json({ error: 'Failed to fetch data', details: error.message }); // Send an error response
+    console.error('Error fetching data:', error);
+    res.status(500).json({ error: 'Failed to fetch data', details: error.message });
   }
 });
+
 
 
 app.listen(port, () => {
