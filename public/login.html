@@ -4,25 +4,168 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>RA DIGITAL INDIA Cyber Cafe</title>
+  <link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
   <link rel="stylesheet" href="css/signup.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f0f0f0;
+      overflow: hidden;
+    }
+
+    .gif {
+      position: absolute;
+      left: -100px;
+      animation: slideIn 5s forwards; /* Animation for the GIF sliding in */
+      opacity: 1;
+      transition: opacity 2s ease; /* Smooth transition for fading out */
+    }
+
+    .login-container, .logingif {
+      opacity: 0;
+      transition: opacity 2s ease; /* Smooth transition for fading in */
+    }
+
+    .login-container {
+      position: relative;
+    }
+
+    .logingif {
+      position: relative;
+      margin-left: 20px; /* Adjust spacing between login form and second image */
+    }
+
+    @keyframes slideIn {
+      0% {
+        left: -100px;
+      }
+      100% {
+        left: 50%;
+        transform: translateX(-50%);
+      }
+    }
+
+    .form-holder {
+      margin-bottom: 15px;
+    }
+
+    input.form-control {
+      width: 100%;
+      padding: 10px;
+      margin: 5px 0;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    .passwordforreg {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+    }
+
+    .formitpassword, .register {
+      margin: 0;
+    }
+
+    .formitpassword a, .register a {
+      text-decoration: none;
+      color: #007bff;
+    }
+
+    .formitpassword a:hover, .register a:hover {
+      text-decoration: underline;
+    }
+
+    h1 {
+      position: absolute;
+      top: 5%;
+      transition: opacity 2s ease; /* Smooth transition for fading out */
+    }
+  </style>
 </head>
 <body>
-  <div class="login-container">
-    <form action="/login" method="post">
-      <h3>Login</h3>
-      <div class="form-holder">
-        <input type="text" class="form-control" placeholder="Email" name="email" required>
-      </div>
-      <div class="form-holder">
-        <input type="password" class="form-control" placeholder="Password" name="password" required>
-      </div>
-      <button type="submit">Login</button>
-      <div class="passwordforreg">
-      <div class="formitpassword"><a href="sendotp.html">Forgot Password</a></div>
-      <div class="register"><a href="sign_up.html">Register</a></div>
+  <center><h1 id="intro-text">Show Login Page wait.........</h1></center>
+  <div class="gif">
+    <img src="./images/imagelogin-unscreen.gif" alt="Login Animation">
+  </div>
+  <!-- This section is hidden initially and will appear after the animation -->
+  <div class="content-container" style="display: flex; justify-content: center; align-items: center;">
+    <div class="login-container">
+      <form action="/login" method="post">
+        <h3>Login</h3>
+        <div class="form-holder" class="animate__animated animate__fadeInUp">
+          <input type="text" class="form-control" placeholder="Email" name="email" required>
+        </div>
+        <div class="form-holder">
+          <input type="password" class="form-control" placeholder="Password" name="password" required>
+        </div>
+        <button type="submit">Login</button>
+        <div class="passwordforreg">
+          <div class="formitpassword"><a href="sendotp.html">Forgot Password</a></div>
+          <div class="register"><a href="sign_up.html">Register</a></div>
+        </div>
+      </form>
     </div>
-    </form>
+    <div class="logingif">
+      <img src="./images/gifim-unscreen-unscreen.gif" alt="Static Image">
+    </div>
   </div>
   <script src="js/jquery-3.3.1.min.js"></script>
+  <script>
+    // Function to handle text-to-speech
+    function speak(text) {
+      const speech = new SpeechSynthesisUtterance(text);
+      speech.lang = 'en-US';
+      window.speechSynthesis.speak(speech);
+    }
+
+    // Repeatedly speak the text until the GIF is hidden
+    function repeatSpeak() {
+      const interval = setInterval(() => {
+        speak("Show Login Page wait...");
+      }, 2000); // Speak every 2 seconds
+
+      // When the GIF reaches the center and the animation ends
+      document.querySelector('.gif').addEventListener('animationend', function() {
+        // Stop the interval when the GIF is hidden
+        clearInterval(interval);
+
+        // Start fading out the GIF and fading in the login form
+        const gif = document.querySelector('.gif');
+        const loginContainer = document.querySelector('.login-container');
+        const logingif = document.querySelector('.logingif');
+        const introText = document.querySelector('#intro-text');
+
+        // Fade out the GIF and intro text, and fade in the login form and second image
+        gif.style.opacity = '0';
+        introText.style.opacity = '0';
+        loginContainer.style.opacity = '1';
+        logingif.style.opacity = '1';
+
+        // Set display to none for the GIF and intro text after fade-out
+        setTimeout(() => {
+          gif.style.display = 'none';
+          introText.style.display = 'none';
+        }, 2000); // Match the transition duration
+      });
+    }
+
+    // Start the repeated speech when the page loads
+    window.onload = repeatSpeak;
+  </script>
 </body>
 </html>
