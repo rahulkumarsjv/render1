@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RA DIGITAL INDIA Cyber Cafe</title>
+    <link rel="stylesheet" href="./css/fingerprintaddhar.css">
+    <link rel="stylesheet" href="/css/home.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+        integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link rel="stylesheet" href="opin_moine.css">
+</head>
+<body>
+    <header class="header">
+        <div class="navborder">
+            <div class="iconnavbaar">&#9776;</div> <!-- Using HTML entity for the menu icon -->
+            <div class="nav-right">
+                <div class="profile">Wallet Balance:</div>
+                <div class="bullet">
+                    <p><span id="walletBalance">Loading...</span></p>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="home">
+        <div class="navbara">
+            <div class="navbar"><a href="home.html"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a>
+            </div>
+            <div class="navbar"><a href="Aadhar_muan_card.html"><i class="fas fa-id-card"></i> <span>Aadhar
+                        Card</span></a></div>
+            <div class="navbar"><a href="new_pan_card_appy.html"><i class="fas fa-address-card"></i> <span>Pan
+                        Card</span></a></div>
+            <div class="navbar"><a href="lost_aadhar_no.html"><i class="fas fa-copy"></i> <span>Duplicate EID TO
+                        PDF</span></a></div>
+            <div class="navbar"><a href="mobiletopdf"><i class="fas fa-mobile-alt"></i> <span>Mobile Number to Aadhar
+                        PDF</span></a></div>
+            <div class="navbar"><a href="Generateeid"><i class="fas fa-id-badge"></i> <span>Generate EID to
+                        UID</span></a></div>
+            <div class="navbar"><a href="Duplicateeid"><i class="fas fa-clone"></i> <span>Duplicate EID to
+                        UID</span></a></div>
+            <div class="navbar"><a href="pannotouid"><i class="fas fa-exchange-alt"></i> <span>PAN No to UID</span></a>
+            </div>
+            <div class="navbar"><a href="Lost-pan_number.html"><i class="fas fa-question-circle"></i> <span>Lost PAN
+                        No</span></a></div>
+            <div class="navbar"><a href="profile.html"><i class="fa-solid fa-user"></i><span>Profile</span></a></div>
+            <div class="navbar"><a href="payment.html"><i class="fa-solid fa-user"></i><span>ADD Payment</span></a>
+            </div>
+            <div class="navbar"><a href="transaction.html"><i class="fa-solid fa-user"></i><span>Transaction</span></a>
+            </div>
+            <div class="navbar"><button id="logout"><i class="fa-solid fa-user"></i> <span>Logout</span></button></div>
+        </div>
+        <div class="ayushman">
+            <div class="ayushmannote">
+    <h1>Fingerprint Aadhar ID Registration</h1>
+    <form id="fingerprintAadharForm" action="/AadharFingerprint" method="POST">
+        <!-- Mobile Number -->
+        <div>
+            <label for="Fullname">Full Name:</label>
+            <input type="text" id="fullname" name="fullname" required>
+        </div>
+        <div>
+            <label for="mobileNumber">Mobile Number:</label>
+            <input type="text" id="mobileNumber" name="mobileNumber" required>
+        </div>
+
+        <!-- Email ID -->
+        <div>
+            <label for="emailId">Email ID:</label>
+            <input type="email" id="emailId" name="emailId" required>
+        </div>
+
+        <!-- State Name -->
+        <div>
+            <label for="stateName">State Name:</label>
+            <input type="text" id="stateName" name="stateName" required>
+        </div>
+
+        <!-- Shop Name -->
+        <div>
+            <label for="shopName">Shop Name:</label>
+            <input type="text" id="shopName" name="shopName" required>
+        </div>
+
+        <!-- Submit Button -->
+        <div>
+            <button type="submit">Submit</button>
+        </div>
+    </form>
+    <div id="results"></div>
+            </div>
+        </div>
+        
+        <div id="modal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn" id="closeBtn">&times;</span>
+                <p>कृपा ध्यान दें आधार फिंगरप्रिंट पोर्टल की हमारे तरफ से सेल्फ रहेगा और इसमें कोई दिक्कत नहीं आती है यह काफी टाइम से हम चल रहे हैं <br>
+
+                    पूरा इसका रजिस्ट्रेशन शुल्क ₹200 है और मैक्सिमम आपको 50 पॉइंट डालना होगा 1 पॉइंट 20 रुपए पड़ेगा
+                    <p>kripya Dhyan Den is Aadhar fingerprint portal ka Hamare taraf se self Rahega aur ismein koi dikkat nahin aati hai yah Kafi time se Ham chala rahe hain
+
+                    Full iska registration fees ₹200 hai <br>aur maximum aapko 50 point dalvana hoga 1 point 20 rupess Padega</p><br>
+                    <form action="/addpoint" method="POST">
+                        <label for="point">Point</label><br>
+                        <input type="number" name="point" id="point" required style="width: 100%; height: 30px;"><br><br>
+                        <label for="rupess">Rupess</label><br>
+                        <input type="number" name="rupess" id="rupess" required style="width: 100%; height: 30px;"><br><br>
+                        <label for="number">Mobile Number</label><br>
+                        <input type="number" name="mobile_number" id="mobile_number" required style="width: 100%; height: 30px;"><br><br>
+                        <label for="email">Email ID</label><br>
+                        <input type="email" name="email" id="email" required style="width: 100%; height: 40px;"><br><br>
+                        <button type="submit">Add rupess</button>
+                    </form>
+                    <script>
+                        // Define the conversion rate
+                        const conversionRate = 20;
+                
+                        // Get references to the input fields
+                        const pointInput = document.getElementById('point');
+                        const rupeesInput = document.getElementById('rupess');
+                
+                        // Add an event listener to update the rupees value when points are entered
+                        pointInput.addEventListener('input', function() {
+                            // Calculate the rupees based on the points entered
+                            const points = parseFloat(pointInput.value);
+                            const rupees = points * conversionRate;
+                
+                            // Update the rupees input field
+                            rupeesInput.value = rupees;
+                        });
+                    </script>
+            </div>
+        </div>
+    </div>
+            <script src="opin_modol.js"></script>
+        </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('fingerprintAadharForm');
+
+            form.addEventListener('submit', async function(event) {
+                event.preventDefault(); // Prevent the form from submitting the traditional way
+
+                const formData = new FormData(form);
+                const data = Object.fromEntries(formData.entries());
+
+                try {
+                    const response = await fetch('/AadharFingerprint', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    });
+
+                    if (response.ok) {
+                        alert('Data added successfully!');
+                        fetchData(); // Fetch data to update the table
+                    } else {
+                        alert('Insufficient wallet balance');
+                    }
+                } catch (error) {
+                    console.error('Error submitting the form:', error);
+                }
+            });
+
+            // Function to fetch and display data
+            async function fetchData() {
+                try {
+                    const response = await fetch('/AadharFingerprint'); // Adjust if necessary
+                    if (response.ok) {
+                        const data = await response.json();
+                        displayResults(data);
+                    } else {
+                        console.error('Error fetching data:', response.statusText);
+                    }
+                } catch (error) {
+                    console.error('Fetch error:', error);
+                }
+            }
+
+            // Function to display data in a table
+            function displayResults(data) {
+                const resultsContainer = document.getElementById('results');
+                
+                if (Array.isArray(data) && data.length > 0) {
+                    let html = `
+                        <table border="1" cellpadding="10" cellspacing="0" id="tableayus">
+                            <thead>
+                                <tr>
+                                    <th>fullname</th>
+                                    <th>mobile Number</th>
+                                    <th>email Id</th>
+                                    <th>state Name Id</th>
+                                    <th>shopName Id</th>
+                                    <th>Created At</th>
+                                    <th>Result</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `;
+                    
+                    data.forEach(item => {
+                        html += `
+                            <tr>
+                                <td>${item.fullname}</td>
+                                <td>${item.mobileNumber}</td>
+                                <td>${item.emailId}</td>
+                                <td>${item.stateName}</td>
+                                <td>${item.shopName}</td>
+                                <td>${new Date(item.createdAt).toLocaleString()}</td>
+                                <td>${item.result}</td>
+                            </tr>
+                        `;
+                    });
+                    
+                    html += `
+                            </tbody>
+                        </table>
+                    `;
+                    
+                    resultsContainer.innerHTML = html;
+                } else {
+                    resultsContainer.innerHTML = '<p>No data found.</p>';
+                }
+            }
+
+            // Initial data fetch when the page loads
+            fetchData();
+        });
+        
+        // Fetch and display wallet balance
+        fetch('/api/wallet-balance')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.walletBalance !== undefined) {
+                    document.getElementById('walletBalance').textContent = data.walletBalance;
+                } else {
+                    console.error('Error: Wallet balance not found');
+                }
+            })
+            .catch(error => console.error('Error fetching wallet balance:', error));
+           
+            document.querySelector('.iconnavbaar').addEventListener('click', function () {
+            const navbara = document.querySelector('.navbara');
+            navbara.classList.toggle('collapsed');
+        });
+
+        document.querySelectorAll('.printservicebo').forEach(item => {
+            item.addEventListener('click', function () {
+                const link = item.querySelector('a');
+                if (link) {
+                    window.location.href = link.href;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
