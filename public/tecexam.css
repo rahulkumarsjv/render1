@@ -1,0 +1,57 @@
+.tec{
+    border: solid 1px ;
+    background-color: black;
+}
+h2,p{
+    color: #fff;
+    text-align: center;
+    margin-top: 2%;
+}
+
+.tecexam {
+   width: 100%;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+  }
+  
+  .tecexam label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  
+  .tecexam input[type="text"],
+  .tecexam input[type="tel"],
+  .tecexam input[type="email"],
+  .tecexam textarea {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 16px;
+  }
+  
+  .tecexam input[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+  }
+  
+  .tecexam input[type="submit"]:hover {
+    background-color: #45a049;
+  }
+  
+  .tecexam textarea {
+    resize: vertical; /* Allow vertical resizing */
+  }
+  
