@@ -18,6 +18,7 @@ const CorrectionPan = require('./models/correctionpan');
 const AyushmanCard = require('./models/AyushmanCard');
 const Fingerprint = require('./models/AadharFingerprint');
 const Aadharporinadd = require('./models/Aadharporinadd');
+const Tecexam = require('./models/Tecexam');
 const Shop = require('./models/utipsa');
 const crypto = require('crypto');
 require('dotenv').config();
@@ -834,6 +835,20 @@ app.post('/addpoint', async (req, res) => {
   }
 });
 
+app.post('/tecexam', async (req, res) => {
+  const { name, mobile_number, email, address } = req.body;
+
+  try {
+    const newTecExam = new Tecexam({ name, mobile_number, email, address });
+    await newTecExam.save();
+    res.send('Data successful  tec exam 24 Ghanta ke andar call back aaega');
+  } catch (err) {
+    console.error('Error saving data to MongoDB:', err); // Log the error
+    res.status(500).send(`An error occurred while saving data: ${err.message}`); // Send the error message
+  }
+});
+
+
 
 
 // // Define the User model
@@ -1379,6 +1394,21 @@ app.get('/api/data/shop', async (req, res) => {
 app.get('/api/data/shop', async (req, res) => {
   try {
     const data = await Shop.find(); // Fetch all records from the collection
+
+    if (!data || data.length === 0) {
+      return res.status(404).json({ message: 'No records found' }); // Handle case where no data is found
+    }
+
+    res.json(data); // Send the retrieved data as a JSON response
+  } catch (error) {
+    console.error('Error fetching data:', error.message); // Log the error for debugging
+    res.status(500).json({ error: 'Failed to fetch data', details: error.message }); // Send an error response
+  }
+});
+
+app.get('/api/data/tecexam', async (req, res) => {
+  try {
+    const data = await Tecexam.find(); // Fetch all records from the collection
 
     if (!data || data.length === 0) {
       return res.status(404).json({ message: 'No records found' }); // Handle case where no data is found
