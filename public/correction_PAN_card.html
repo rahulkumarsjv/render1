@@ -6,9 +6,9 @@
     <link rel="stylesheet" href="newpancard.css">
 </head>
 <body>
-    <h1>PAN Card Application Form</h1>
+    <h1>correctpan PAN Card Application Form</h1>
     <div class="newpancardappy">
-        <form action="/submit-correctionpan-appy-application" method="post" enctype="multipart/form-data">
+        <form action="/submit-correctpan-application" method="post" enctype="multipart/form-data">
 
         <label for="category">Pan Number*</label>
         <input type="text" id="pannumber" name="pannumber" placeholder="Pan Number" required><br>
@@ -149,10 +149,10 @@
         </select><br>
 
         <label for="Pancard_proof">Pan Card Proof*</label>
-        <input type="text" id="identity-proof" name="identity_proof" required><br>
+        <input type="text" id="identity-proof" name="PanCaed_Copy_proof" required><br>
 
         <label for="identity-proof">Identity Proof*</label>
-        <input type="text" id="identity-proof" name="identity_proof" required><br>
+        <input type="text" id="photos" name="photos" required><br>
 
         <label for="address-proof">Address Proof*</label>
         <input type="text" id="address-proof" name="address_proof" required><br>
@@ -175,7 +175,7 @@
         <label for="verification-date">Verification Date*</label>
         <input type="date" id="verification-date" name="verification_date" required><br>
         <label for="image">Pan Caed Copy</label>
-        <input type="file" id="image" name="image" required>
+        <input type="file" id="Pan_Caed_Copy" name="Pan_Caed_Copy" required>
         <label for="image">Image</label>
         <input type="file" id="file" name="file" required>
         <label for="signature">Signature</label>
@@ -193,6 +193,8 @@
         <button type="submit">Submit</button>
     </form>
 </div>
-    <script>alert("PAN card service abhi Nahin chal rahi isko jald Hi Sahi Karke jald se aapko available Kiya jaega  पैन कार्ड सेवा अभी नहीं चल रही इसको जल्दी ही सही करके जल्द से जल्द आपका उपलब्ध किया जाएगा")</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Load jQuery first -->
+    <script src="logout.js"></script> <!-- Include the logout.js file -->
+    <script src="login-check.js"></script> <!-- Include the login-check.js file -->
 </body>
 </html>
