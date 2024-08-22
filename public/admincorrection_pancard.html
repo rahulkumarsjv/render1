@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>RA DIGITAL INDIA Cyber Cafe</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table, th, td {
+            border: 1px solid black;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+        }
+
+        img {
+            max-width: 100px;
+            height: auto;
+        }
+
+        iframe {
+            width: 100px;
+            height: 100px;
+        }
+
+        .download-button {
+            display: inline-block;
+            padding: 5px 10px;
+            margin: 2px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .download-button:hover {
+            background-color: #0056b3;
+        }
+
+        .file-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .file-container img,
+        .file-container iframe {
+            margin-right: 10px;
+        }
+
+        .file-container button {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Correction: PAN Card Applications</h1>
+    <input type="text" id="searchInput" placeholder="Search..." onkeyup="filterTable()">
+    <table id="panTable">
+        <thead>
+            <tr>
+                <!-- Table Headers -->
+                <th>Unique Number</th>
+                <th>PAN Number</th>
+                <th>Category</th>
+                <th>City</th>
+                <th>Area Code</th>
+                <th>AO Type</th>
+                <th>Range Code</th>
+                <th>AO No</th>
+                <th>Title</th>
+                <th>Last Name</th>
+                <th>First Name</th>
+                <th>Middle Name</th>
+                <th>Name on Card</th>
+                <th>Gender</th>
+                <th>Single Parent</th>
+                <th>Mother Last Name</th>
+                <th>Mother First Name</th>
+                <th>Mother Middle Name</th>
+                <th>Father Last Name</th>
+                <th>Father First Name</th>
+                <th>Father Middle Name</th>
+                <th>Name on Card (Parent)</th>
+                <th>Address Type</th>
+                <th>Flat</th>
+                <th>Building</th>
+                <th>Street</th>
+                <th>Locality</th>
+                <th>Town</th>
+                <th>State</th>
+                <th>Pincode</th>
+                <th>Country</th>
+                <th>ISD Code</th>
+                <th>Mobile</th>
+                <th>Email</th>
+                <th>Aadhaar</th>
+                <th>Income Source</th>
+                <th>PAN Card Proof</th>
+                <th>Identity Proof</th>
+                <th>Address Proof</th>
+                <th>DOB Proof</th>
+                <th>Declaration</th>
+                <th>Verifier Name</th>
+                <th>Verification Place</th>
+                <th>Verification Date</th>
+                <th>PAN Option</th>
+                <th>PAN Card Copy</th>
+                <th>Photo</th>
+                <th>Signature</th>
+                <th>PDF</th>
+            </tr>
+        </thead>
+        <tbody id="panTableBody">
+            <!-- Rows will be added dynamically -->
+        </tbody>
+    </table>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', async function () {
+        try {
+            const response = await fetch('/api/pan-applications');
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const data = await response.json();
+
+            const tableBody = document.getElementById('panTableBody');
+            data.forEach(panApplication => {
+                const row = document.createElement('tr');
+
+                // Create content for PAN Card Copies
+                const panCardCopyContent = panApplication.Pan_Caed_CopyPaths && panApplication.Pan_Caed_CopyPaths.length > 0
+                    ? panApplication.Pan_Caed_CopyPaths.map(file => 
+                        `<div class="file-container">
+                            <img src="/uploads/${file}" alt="PAN Card Copy">
+                            <button class="download-button" onclick="promptPasswordAndDownload('/uploads/${file}')">Download</button>
+                        </div>`
+                    ).join('')
+                    : 'N/A';
+
+                // Create content for Photos
+                const photosContent = panApplication.filePaths && panApplication.filePaths.length > 0
+                    ? panApplication.filePaths.map(file => 
+                        `<div class="file-container">
+                            <img src="/uploads/${file}" alt="Photo">
+                            <button class="download-button" onclick="promptPasswordAndDownload('/uploads/${file}')">Download</button>
+                        </div>`
+                    ).join('')
+                    : 'N/A';
+
+                // Create content for Signatures
+                const signatureContent = panApplication.signaturePaths && panApplication.signaturePaths.length > 0
+                    ? panApplication.signaturePaths.map(file => 
+                        `<div class="file-container">
+                            <img src="/uploads/${file}" alt="Signature">
+                            <button class="download-button" onclick="promptPasswordAndDownload('/uploads/${file}')">Download</button>
+                        </div>`
+                    ).join('')
+                    : 'N/A';
+
+                // Create content for PDFs
+                const pdfContent = panApplication.documentsPaths && panApplication.documentsPaths.length > 0
+                    ? panApplication.documentsPaths.map(file => 
+                        `<div class="file-container">
+                            <iframe src="/uploads/${file}" type="application/pdf"></iframe>
+                            <button class="download-button" onclick="promptPasswordAndDownload('/uploads/${file}')">Download</button>
+                        </div>`
+                    ).join('')
+                    : 'N/A';
+
+                row.innerHTML = `
+                    <td>${panApplication.uniqueNumber || 'N/A'}</td>
+                    <td>${panApplication.pannumber || 'N/A'}</td>
+                    <td>${panApplication.category || 'N/A'}</td>
+                    <td>${panApplication.city || 'N/A'}</td>
+                    <td>${panApplication.area_code || 'N/A'}</td>
+                    <td>${panApplication.aotype || 'N/A'}</td>
+                    <td>${panApplication.range_code || 'N/A'}</td>
+                    <td>${panApplication.ao_no || 'N/A'}</td>
+                    <td>${panApplication.title || 'N/A'}</td>
+                    <td>${panApplication.last_name || 'N/A'}</td>
+                    <td>${panApplication.first_name || 'N/A'}</td>
+                    <td>${panApplication.middle_name || 'N/A'}</td>
+                    <td>${panApplication.name_on_card || 'N/A'}</td>
+                    <td>${panApplication.gender || 'N/A'}</td>
+                    <td>${panApplication.single_parent || 'N/A'}</td>
+                    <td>${panApplication.mother_last_name || 'N/A'}</td>
+                    <td>${panApplication.mother_first_name || 'N/A'}</td>
+                    <td>${panApplication.mother_middle_name || 'N/A'}</td>
+                    <td>${panApplication.father_last_name || 'N/A'}</td>
+                    <td>${panApplication.father_first_name || 'N/A'}</td>
+                    <td>${panApplication.father_middle_name || 'N/A'}</td>
+                    <td>${panApplication.name_on_card_parent || 'N/A'}</td>
+                    <td>${panApplication.address_type || 'N/A'}</td>
+                    <td>${panApplication.flat || 'N/A'}</td>
+                    <td>${panApplication.building || 'N/A'}</td>
+                    <td>${panApplication.street || 'N/A'}</td>
+                    <td>${panApplication.locality || 'N/A'}</td>
+                    <td>${panApplication.town || 'N/A'}</td>
+                    <td>${panApplication.state || 'N/A'}</td>
+                    <td>${panApplication.pincode || 'N/A'}</td>
+                    <td>${panApplication.country || 'N/A'}</td>
+                    <td>${panApplication.isd_code || 'N/A'}</td>
+                    <td>${panApplication.mobile || 'N/A'}</td>
+                    <td>${panApplication.email || 'N/A'}</td>
+                    <td>${panApplication.aadhaar || 'N/A'}</td>
+                    <td>${panApplication.income_source || 'N/A'}</td>
+                    <td>${panApplication.pan_card_proof || 'N/A'}</td>
+                    <td>${panApplication.identity_proof || 'N/A'}</td>
+                    <td>${panApplication.address_proof || 'N/A'}</td>
+                    <td>${panApplication.dob_proof || 'N/A'}</td>
+                    <td>${panApplication.declaration || 'N/A'}</td>
+                    <td>${panApplication.verifier_name || 'N/A'}</td>
+                    <td>${panApplication.verification_place || 'N/A'}</td>
+                    <td>${panApplication.verification_date || 'N/A'}</td>
+                    <td>${panApplication.pan_option || 'N/A'}</td>
+                    <td>${panCardCopyContent}</td>
+                    <td>${photosContent}</td>
+                    <td>${signatureContent}</td>
+                    <td>${pdfContent}</td>
+                `;
+
+                tableBody.appendChild(row);
+            });
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    });
+
+    function promptPasswordAndDownload(fileUrl) {
+        const password = prompt("Enter the password to download this file:");
+        if (password === "Anju@rahul") { // Password check
+            const link = document.createElement('a');
+            link.href = fileUrl;
+            link.download = fileUrl.split('/').pop(); // Use the file name from the URL
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } else {
+            alert("Incorrect password.");
+        }
+    }
+
+    function filterTable() {
+        const input = document.getElementById('searchInput');
+        const filter = input.value.toLowerCase();
+        const table = document.getElementById('panTable');
+        const rows = table.getElementsByTagName('tr');
+
+        for (let i = 1; i < rows.length; i++) {
+            const cells = rows[i].getElementsByTagName('td');
+            let found = false;
+            for (let j = 0; j < cells.length; j++) {
+                if (cells[j].textContent.toLowerCase().indexOf(filter) > -1) {
+                    found = true;
+                    break;
+                }
+            }
+            rows[i].style.display = found ? '' : 'none';
+        }
+    }
+    </script>
+</body>
+
+</html>
