@@ -39,20 +39,20 @@ const correctionPanSchema = new Schema({
   email: String,
   aadhaar: String,
   income_source: String,
+  pancard_proof: [String],
   identity_proof: [String],
   address_proof: [String],
   dob_proof: [String],
   declaration: String,
+  Pan_Caed_CopyPaths: [String], // Array of file paths for Pan_Caed_Copy
+  filePaths: [String], // Array of file paths for file
+  signaturePaths: [String], // Array of file paths for signature
+  documentsPaths: [String], // Array of file paths for documents
   verifier_name: String,
   verification_place: String,
   verification_date: Date,
-  image: String,
-  file: String,
-  signature: String,
-  documents: String,
   pan_option: String,
-  uniqueId: String,
-  pan_status: String,
+  uniqueNumber: String,
 });
 
 const CorrectionPan = mongoose.models.CorrectionPan || mongoose.model('CorrectionPan', correctionPanSchema);
