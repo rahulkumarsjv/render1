@@ -20,6 +20,7 @@ const Fingerprint = require('./models/AadharFingerprint');
 const Aadharporinadd = require('./models/Aadharporinadd');
 const Tecexam = require('./models/Tecexam');
 const Shop = require('./models/utipsa');
+const Altruist = require('./models/panaltruist');
 const crypto = require('crypto');
 require('dotenv').config();
 const cors = require('cors');
@@ -28,7 +29,7 @@ const app = express();
 
 app.use(cors()); // Enable CORS for all routes
 app.use(express.json());
-const port = process.env.PORT || 10000;
+const port = process.env.PORT || 3000;
 
 // // Connect to MongoDB
 // mongoose.connect('mongodb+srv://rahul199202012:gexBdbMGUqtwE3Nq@cluster0.k7xol6w.mongodb.net/rndigitalindia', {
@@ -66,18 +67,6 @@ app.use(session({
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
-// // File upload setup
-// const storage = multer.diskStorage({
-//   destination: function (req, file, cb) {
-//     cb(null, 'uploads/'); // Folder where files will be stored
-//   },
-//   filename: function (req, file, cb) {
-//     cb(null, Date.now() + path.extname(file.originalname)); // File name with timestamp
-//   }
-// });
-
-// const upload = multer({ storage: storage });
-// const upload = multer({ dest: 'uploads/' });
 
 // Middleware to log session details
 app.use((req, res, next) => {
@@ -777,6 +766,89 @@ app.post('/AadharFingerprint', async (req, res) => {
   }
 });
 
+
+// Serve static files from /uploads directory
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// Set storage engine for Multer
+const storage = multer.diskStorage({
+    destination: './uploads/',
+    filename: (req, file, cb) => {
+        cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+    }
+});
+
+// Initialize upload
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: 10 * 1024 * 1024 }, // 10 MB limit
+    fileFilter: (req, file, cb) => {
+        checkFileType(file, cb);
+    }
+});
+
+// Function to check file type
+function checkFileType(file, cb) {
+    const filetypes = /jpeg|jpg|png|pdf/;
+    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+    const mimetype = filetypes.test(file.mimetype);
+
+    if (mimetype && extname) {
+        return cb(null, true);
+    } else {
+        cb('Error: Images and PDFs Only!');
+    }
+}
+
+// Route to handle file uploads and form data
+app.post('/pan-altruist', upload.fields([
+    { name: 'panCardUpload', maxCount: 1 },
+    { name: 'aadharCardUpload', maxCount: 1 }
+]), async (req, res) => {
+    try {
+        console.log('Files:', req.files); // Debugging statement to check the contents of req.files
+        console.log('Body:', req.body); // Debugging statement to check the contents of req.body
+
+        const panCardUpload = req.files['panCardUpload'] ? req.files['panCardUpload'][0].filename : null;
+        const aadharCardUpload = req.files['aadharCardUpload'] ? req.files['aadharCardUpload'][0].filename : null;
+
+        const { shopName, name, email, mobileNumber, panCardNo, aadharCardNo, pan_option } = req.body;
+
+        // Create a new Altruist document
+        const panaltruist = new Altruist({
+            shopName,
+            name,
+            email,
+            mobileNumber,
+            panCardNo,
+            aadharCardNo,
+            panCardUpload,
+            aadharCardUpload,
+            pan_option,
+        });
+
+        // Save the new document to the database
+        await panaltruist.save();
+
+        // Return success response
+        res.json({ message: 'New PAN Card PAN Altruist retailer ID created successfully. Please wait 2 days for email confirmation' });
+    } catch (error) {
+        // Log the error and return a 500 status with a generic message
+        console.error('Error submitting PAN Card application:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
+
+app.get('/pan-altruist', async (req, res) => {
+  try {
+      const results = await Altruist.find(); // Fetch all documents
+      res.json(results);
+  } catch (error) {
+      console.error('Error fetching data:', error);
+      res.status(500).send('Internal Server Error');
+  }
+});
+
 app.get('/AadharFingerprint', async (req, res) => {
   try {
       const results = await Fingerprint.find(); // Fetch all documents
@@ -850,7 +922,6 @@ app.post('/tecexam', async (req, res) => {
 
 
 
-
 // // Define the User model
 // const User = mongoose.model('User', new mongoose.Schema({
 //   email: String,
@@ -886,21 +957,21 @@ app.post('/tecexam', async (req, res) => {
 // }));
 
 // Multer setup for file uploads
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-      cb(null, path.join(__dirname, 'uploads'));
-  },
-  filename: function (req, file, cb) {
-      const savedFilename = Date.now() + path.extname(file.originalname);
-      cb(null, savedFilename);
-  }
-});
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//       cb(null, path.join(__dirname, 'uploads'));
+//   },
+//   filename: function (req, file, cb) {
+//       const savedFilename = Date.now() + path.extname(file.originalname);
+//       cb(null, savedFilename);
+//   }
+// });
 
 
-const upload = multer({ storage: storage });
-app.use(express.static('public'));
-// Serve static files from the 'uploads' directory
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// const upload = multer({ storage: storage });
+// app.use(express.static('public'));
+// // Serve static files from the 'uploads' directory
+// app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Middleware for session management
 app.use(session({
@@ -988,23 +1059,25 @@ app.post('/submit-newpan-application', upload.fields([
 });
 
 
+// Setting up the static directory for serving uploaded files
 app.use('/uploads', express.static('uploads'));
 
+// Route for submitting PAN Card Correction Application
 app.post('/submit-correctpan-application', upload.fields([
-  { name: 'Pan_Caed_Copy', maxCount: 1 },
-  { name: 'file', maxCount: 1 },
-  { name: 'signature', maxCount: 1 },
-  { name: 'documents', maxCount: 1 }
+  { name: 'Pan_Caed_Copy', maxCount: 10 }, // Allow up to 10 files for Pan_Caed_Copy
+  { name: 'file', maxCount: 10 }, // Allow up to 10 files for file
+  { name: 'signature', maxCount: 10 }, // Allow up to 10 files for signature
+  { name: 'documents', maxCount: 10 } // Allow up to 10 files for documents
 ]), async (req, res) => {
   try {
       console.log('Files:', req.files);
       console.log('Body:', req.body);
 
-      // Extract file paths
-      const Pan_Caed_CopyPath = req.files['Pan_Caed_Copy'] ? req.files['Pan_Caed_Copy'][0].filename : null;
-      const filePath = req.files['file'] ? req.files['file'][0].filename : null;
-      const signaturePath = req.files['signature'] ? req.files['signature'][0].filename : null;
-      const documentsPath = req.files['documents'] ? req.files['documents'][0].filename : null;
+      // Extract file paths for each file type as an array
+      const Pan_Caed_CopyPaths = req.files['Pan_Caed_Copy'] ? req.files['Pan_Caed_Copy'].map(file => file.filename) : [];
+      const filePaths = req.files['file'] ? req.files['file'].map(file => file.filename) : [];
+      const signaturePaths = req.files['signature'] ? req.files['signature'].map(file => file.filename) : [];
+      const documentsPaths = req.files['documents'] ? req.files['documents'].map(file => file.filename) : [];
 
       // Extract other form fields from req.body
       const {
@@ -1032,8 +1105,8 @@ app.post('/submit-correctpan-application', upload.fields([
       // Generate a 14-digit unique number
       const uniqueNumber = (Math.floor(Math.random() * 90000000000000) + 10000000000000).toString();
 
-      // Initialize the correctionPan instance
-      const CoorrectionPan = new CorrectionPan({
+      // Create and save the CorrectionPan document
+      const correctionPan = new CorrectionPan({
           pannumber, category, date, city, area_code, aotype, range_code, ao_no,
           title, last_name, first_name, middle_name, name_on_card,
           gender, dob, single_parent, mother_last_name, mother_first_name,
@@ -1041,14 +1114,13 @@ app.post('/submit-correctpan-application', upload.fields([
           father_middle_name, name_on_card_parent, address_type, flat,
           building, street, locality, town, state, pincode, country,
           isd_code, mobile, email, aadhaar, income_source, pancard_proof, identity_proof,
-          address_proof, dob_proof, declaration, filePath, 
-          signaturePath, documentsPath, Pan_Caed_CopyPath,
+          address_proof, dob_proof, declaration, Pan_Caed_CopyPaths,
+          filePaths, signaturePaths, documentsPaths,
           verifier_name, verification_place, verification_date,
           pan_option, uniqueNumber
       });
 
-      // Save the correctionPan document
-      await CoorrectionPan.save();
+      await correctionPan.save();
 
       // Update user wallet balance
       user.walletBalance -= requiredBalance;
@@ -1065,18 +1137,13 @@ app.post('/submit-correctpan-application', upload.fields([
 
       await transaction.save();
 
-      res.json({ message: 'correctpan PAN Card application submitted successfully!' });
+      res.json({ message: 'Correct PAN Card application submitted successfully!' });
   } catch (error) {
       console.error('Error submitting PAN Card application:', error);
-      if (error.name === 'ValidationError') {
-          res.status(400).json({ message: 'Validation Error', details: error.errors });
-      } else if (error.name === 'MongoError') {
-          res.status(500).json({ message: 'Database Error', details: error.message });
-      } else {
-          res.status(500).json({ message: 'Internal Server Error', details: error.message });
-      }
+      res.status(500).json({ message: 'Internal Server Error', details: error.message });
   }
 });
+
 
 // Form submission route with wallet balance deduction
 
@@ -1214,6 +1281,9 @@ app.get('/adminRegistration', (req, res) => {
 app.get('/displayData', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'displayData.html'));
 });
+app.get('/admincorrection_pancard', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'admincorrection_pancard.html'));
+});
 
 app.post('/admin_login', async (req, res) => {
   const { email, password } = req.body;
@@ -1283,14 +1353,29 @@ app.get('/fetch-admin-data', async (req, res) => {
 
 
 
+// app.get('/api/data/correctionpans', async (req, res) => {
+//   try {
+//       const correctionPans = await CorrectionPan.find();
+//       res.json(correctionPans);
+//   } catch (error) {
+//       res.status(500).json({ error: 'Failed to fetch correction PAN data' });
+//   }
+// });
 app.get('/api/data/correctionpans', async (req, res) => {
   try {
-      const correctionPans = await CorrectionPan.find();
-      res.json(correctionPans);
+    const data = await CorrectionPan.find(); // Fetch all records from the collection
+    
+    if (!data || data.length === 0) {
+      return res.status(404).json({ message: 'No records found' }); // Handle case where no data is found
+    }
+
+    res.json(data); // Send the retrieved data as a JSON response
   } catch (error) {
-      res.status(500).json({ error: 'Failed to fetch correction PAN data' });
+    console.error('Error fetching data:', error); // Log the error for debugging
+    res.status(500).json({ error: 'Failed to fetch data' }); // Send an error response
   }
 });
+
 
 app.get('/api/data/lostaadhars', async (req, res) => {
   try {
@@ -1299,6 +1384,16 @@ app.get('/api/data/lostaadhars', async (req, res) => {
   } catch (error) {
       res.status(500).json({ error: 'Failed to fetch lost Aadhar data' });
   }
+});
+
+// Route to fetch data from the Altruist collection
+app.get('/api/data/pan-altruist', async (req, res) => {
+    try {
+        const altruists = await Altruist.find();
+        res.json(altruists);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch PAN Altruist data' });
+    }
 });
 
 
