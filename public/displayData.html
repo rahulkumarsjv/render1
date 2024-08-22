@@ -5,6 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RA DIGITAL INDIA Display Data</title>
     <link rel="stylesheet" href="displaydata.css">
+    <style>
+            table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        img {
+            max-width: 100px;
+            height: auto;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -16,7 +33,8 @@
         <h1>View Data</h1>
         <button onclick="fetchData('users')">View All Users</button>
         <button onclick="fetchData('correctionpans')">View Correction Pans</button>
-        <a href="./admina49form.html"> <button> pan a49 form</button></a>
+        <a href="./admincorrection_pancard.html"><button>View Correction Pan card</button></a>
+        <a href="./admina49form.html"><button>pan a49 form</button></a>
         <button onclick="fetchData('Shop')">View UTi Psa ID</button>
         <button onclick="fetchData('lostaadhars')">View Lost Aadhaar</button>
         <button onclick="fetchData('lostpans')">View Lost Pans</button>
@@ -24,7 +42,8 @@
         <button onclick="fetchData('Aadharporinadd')">View Fingerprint add money</button>
         <button onclick="fetchData('AyushmanCard')"> view Ayushman Card download</button>
         <button onclick="fetchData('TecExam')">view Tec Exam pass</button>
-        <button onclick="fetchData('paymentaadhars')">View Payment Aadhaar</button>
+        <button onclick="fetchData('pan-altruist')">view New PAN Card PAN Altruist retailer ID created</button>
+        <button onclick="fetchData('paymentaadhars')">View </button>
         <button onclick="fetchData('transactions')">View Transactions</button>
         <button onclick="logout()">Logout</button>
 
