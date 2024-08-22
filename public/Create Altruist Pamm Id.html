@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop Details Form</title>
+    <link rel="stylesheet" href="altuist.css">
+    <link rel="stylesheet" href="/css/home.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+        integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <header class="header">
+        <div class="navborder">
+            <div class="iconnavbaar">&#9776;</div> <!-- Using HTML entity for the menu icon -->
+            <div class="nav-right">
+                <div class="profile">Wallet Balance:</div>
+                <div class="bullet">
+                    <p><span id="walletBalance">Loading...</span></p>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="home">
+        <div class="navbara">
+            <div class="navbar"><a href="home.html"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a>
+            </div>
+            <div class="navbar"><a href="Aadhar_muan_card.html"><i class="fas fa-id-card"></i> <span>Aadhar
+                        Card</span></a></div>
+            <div class="navbar"><a href="new_pan_card_appy.html"><i class="fas fa-address-card"></i> <span>Pan
+                        Card</span></a></div>
+            <div class="navbar"><a href="lost_aadhar_no.html"><i class="fas fa-copy"></i> <span>Duplicate EID TO
+                        PDF</span></a></div>
+            <div class="navbar"><a href="mobiletopdf"><i class="fas fa-mobile-alt"></i> <span>Mobile Number to Aadhar
+                        PDF</span></a></div>
+            <div class="navbar"><a href="Generateeid"><i class="fas fa-id-badge"></i> <span>Generate EID to
+                        UID</span></a></div>
+            <div class="navbar"><a href="Duplicateeid"><i class="fas fa-clone"></i> <span>Duplicate EID to
+                        UID</span></a></div>
+            <div class="navbar"><a href="pannotouid"><i class="fas fa-exchange-alt"></i> <span>PAN No to UID</span></a>
+            </div>
+            <div class="navbar"><a href="Lost-pan_number.html"><i class="fas fa-question-circle"></i> <span>Lost PAN
+                        No</span></a></div>
+            <div class="navbar"><a href="profile.html"><i class="fa-solid fa-user"></i><span>Profile</span></a></div>
+            <div class="navbar"><a href="payment.html"><i class="fa-solid fa-user"></i><span>ADD Payment</span></a>
+            </div>
+            <div class="navbar"><a href="transaction.html"><i class="fa-solid fa-user"></i><span>Transaction</span></a>
+            </div>
+            <div class="navbar"><button id="logout"><i class="fa-solid fa-user"></i> <span>Logout</span></button></div>
+        </div>
+    <div class="panaltuist">
+    <h2>Shop Details Form</h2>
+    <form action="/pan-altruist" method="POST" enctype="multipart/form-data">
+        <label for="shopName">Shop Name:</label><br>
+        <input type="text" id="shopName" name="shopName" required><br><br>
+
+        <label for="name">Name:</label><br>
+        <input type="text" id="name" name="name" required><br><br>
+
+        <label for="email">Email:</label><br>
+        <input type="email" id="email" name="email" required><br><br>
+
+        <label for="mobileNumber">Mobile Number:</label><br>
+        <input type="tel" id="mobileNumber" name="mobileNumber" required><br><br>
+
+        <label for="panCardNo">PAN Card Number:</label><br>
+        <input type="text" id="panCardNo" name="panCardNo" required><br><br>
+
+        <label for="aadharCardNo">Aadhar Card Number:</label><br>
+        <input type="text" id="aadharCardNo" name="aadharCardNo" required><br><br>
+
+        <label for="panCardUpload">PAN Card Upload:</label><br>
+        <input type="file" id="panCardUpload" name="panCardUpload" accept="image/*,application/pdf" required><br><br>
+
+        <label for="aadharCardUpload">Aadhar Card Upload:</label><br>
+        <input type="file" id="aadharCardUpload" name="aadharCardUpload" accept="image/*,application/pdf" required><br><br>
+
+        <button type="submit">Submit</button>
+    </form>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Load jQuery first -->
+    <script src="logout.js"></script> <!-- Include the logout.js file -->
+    <script src="login-check.js"></script> <!-- Include the login-check.js file -->
+    <script>
+        document.querySelector('.iconnavbaar').addEventListener('click', function () {
+            const navbara = document.querySelector('.navbara');
+            navbara.classList.toggle('collapsed');
+        });
+
+        document.querySelectorAll('.printservicebo').forEach(item => {
+            item.addEventListener('click', function () {
+                const link = item.querySelector('a');
+                if (link) {
+                    window.location.href = link.href;
+                }
+            });
+        });
+    </script>
+    <script>
+        // Fetch and display wallet balance
+        fetch('/api/wallet-balance')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.walletBalance !== undefined) {
+                    document.getElementById('walletBalance').textContent = data.walletBalance;
+                } else {
+                    console.error('Error: Wallet balance not found');
+                }
+            })
+            .catch(error => console.error('Error fetching wallet balance:', error));
+           
+    </script>
+
+</body>
+
+</html>
+
