@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RA DIGITAL INDIA Cyber Cafe</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .PanApplicationAck {
+            position: relative;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            width: 80%;
+            max-width: 800px;
+            margin: 20px auto;
+            height: auto;
+            color: #000;
+        }
+
+        .PanApplicationAck::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("./images/RA\ DIGITAL\ INDIA\ Cyber\ Cafe.jpg");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center center;
+            opacity: 0.2;
+            z-index: -1;
+            border-radius: 8px;
+        }
+
+        .PanApplicationAck h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #000000;
+            text-align: center;
+        }
+
+        .PanApplicationAck p {
+            font-size: 16px;
+            line-height: 1.5;
+            color: #000;
+            margin: 10px 0;
+        }
+
+        .PanApplicationAck span {
+            font-weight: bold;
+            color: #000;
+        }
+
+        .PanApplicationAck p:last-child {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #777;
+        }
+        #datetime{
+            color: #000;
+        }
+        #name{
+            margin-left: 25%;
+        }
+        #uniqueNumber{
+            margin-left: 32%;
+        }
+        #gender{
+            margin-left: 51%;
+        }
+        #dob{
+            margin-left: 34%;
+        }
+        #fatherName{
+            margin-left: 45%;
+        }
+        #email{
+            margin-left: 51%;
+        }
+        #address{
+            margin-left: 51%;
+        }
+        #number{
+            margin-left: 22%;
+        }
+    </style>
+</head>
+<body>
+    <div class="PanApplicationAck">
+        <h1>PAN Application Acknowledgement Receipt (Form 49A)</h1>
+        <p>Received Rs.110.00/- (incl. of taxes) from:</p>
+        <p>Name as to be printed on PAN card: <span id="name">RAHUL</span></p>
+        <p>Application No./Coupon No.: <span id="uniqueNumber">c7e48c87b857f3</span></p>
+        <p>Gender: <span id="gender">male</span></p>
+        <p>Date of Birth/Incorporation: <span id="dob">2024-08-22</span></p>
+        <p>Father's Name: <span id="fatherName">N/A</span></p>
+        <p>Email ID: <span id="email">rahul199202012@gmail.com</span></p>
+        <p>Address: <span id="address">N/A</span></p>
+        <p>AADHAAR Card issued by UIDAI (In Copy)</p>
+        <p>Customer care number helpline number: <span id="number">7061805159</span></p>
+        <p id="datetime"></p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async function () {
+            try {
+                // Fetch PAN application data
+                const response = await fetch('/get-all-pan-applications');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const data = await response.json();
+                console.log('Fetched Data:', data);
+
+                if (Array.isArray(data)) {
+                    data.forEach(application => {
+                        console.log('Application:', application);
+
+                        // Update fields with fetched data
+                        document.getElementById('name').textContent = application.first_name || 'N/A';
+                        document.getElementById('uniqueNumber').textContent = application.uniqueNumber || 'N/A';
+                        document.getElementById('gender').textContent = application.gender || 'N/A';
+
+                        const dob = new Date(application.dob);
+                        document.getElementById('dob').textContent = dob.toISOString().split('T')[0] || 'N/A';
+
+                        // Check if father's name and address are correctly fetched
+                        document.getElementById('fatherName').textContent = application.father_first_name || 'N/A';
+                        document.getElementById('email').textContent = application.email || 'N/A';
+                        document.getElementById('address').textContent = application.state|| 'N/A';
+                    });
+                } else {
+                    console.error('Data is not an array:', data);
+                }
+
+                // Display current date and time
+                const now = new Date();
+                const formattedDate = now.toLocaleDateString();
+                const formattedTime = now.toLocaleTimeString();
+                document.getElementById('datetime').textContent = `Date and Time: ${formattedDate} ${formattedTime}`;
+
+            } catch (error) {
+                console.error('Error fetching PAN applications:', error);
+            }
+        });
+    </script>
+</body>
+</html>
