@@ -35,7 +35,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-image: url("./images/RA\ DIGITAL\ INDIA\ Cyber\ Cafe.jpg");
+            background-image: url("./images/RA DIGITAL INDIA Cyber Cafe.jpg");
             background-size: cover;
             background-repeat: no-repeat;
             background-position: center center;
@@ -68,37 +68,65 @@
             font-size: 14px;
             color: #777;
         }
+
         #datetime{
             color: #000;
         }
+
         #name{
             margin-left: 25%;
         }
+
         #uniqueNumber{
             margin-left: 32%;
         }
+
         #gender{
             margin-left: 51%;
         }
+
         #dob{
             margin-left: 34%;
         }
+
         #fatherName{
             margin-left: 45%;
         }
+
         #email{
             margin-left: 51%;
         }
+
         #address{
             margin-left: 51%;
         }
+
         #number{
             margin-left: 22%;
+        }
+
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .download-btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #2196F3;
+            color: white;
+        }
+
+        .hidden {
+            display: none;
         }
     </style>
 </head>
 <body>
-    <div class="PanApplicationAck">
+    <div class="PanApplicationAck" id="panApplicationAck">
         <h1>PAN Application Acknowledgement Receipt (Form 49A)</h1>
         <p>Received Rs.110.00/- (incl. of taxes) from:</p>
         <p>Name as to be printed on PAN card: <span id="name">RAHUL</span></p>
@@ -111,8 +139,12 @@
         <p>AADHAAR Card issued by UIDAI (In Copy)</p>
         <p>Customer care number helpline number: <span id="number">7061805159</span></p>
         <p id="datetime"></p>
+        <div class="button-container">
+            <button class="download-btn" id="downloadBtn" onclick="downloadScreenshot()">Download</button>
+        </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.0/html2canvas.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', async function () {
             try {
@@ -139,7 +171,7 @@
                         // Check if father's name and address are correctly fetched
                         document.getElementById('fatherName').textContent = application.father_first_name || 'N/A';
                         document.getElementById('email').textContent = application.email || 'N/A';
-                        document.getElementById('address').textContent = application.state|| 'N/A';
+                        document.getElementById('address').textContent = application.state || 'N/A';
                     });
                 } else {
                     console.error('Data is not an array:', data);
@@ -155,6 +187,23 @@
                 console.error('Error fetching PAN applications:', error);
             }
         });
+
+        function downloadScreenshot() {
+            const button = document.getElementById('downloadBtn');
+            button.classList.add('hidden'); // Hide the button
+
+            html2canvas(document.getElementById('panApplicationAck')).then(canvas => {
+                const link = document.createElement('a');
+                link.href = canvas.toDataURL('image/png');
+                link.download = 'PAN_Application_Acknowledgement.png';
+                link.click();
+
+                button.classList.remove('hidden'); // Show the button again
+            }).catch(error => {
+                console.error('Error generating screenshot:', error);
+                button.classList.remove('hidden'); // Show the button again in case of error
+            });
+        }
     </script>
 </body>
 </html>
