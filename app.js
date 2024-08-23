@@ -29,7 +29,7 @@ const app = express();
 
 app.use(cors()); // Enable CORS for all routes
 app.use(express.json());
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 10000;
 
 // // Connect to MongoDB
 // mongoose.connect('mongodb+srv://rahul199202012:gexBdbMGUqtwE3Nq@cluster0.k7xol6w.mongodb.net/rndigitalindia', {
@@ -257,43 +257,6 @@ app.post('/login', async (req, res) => {
     res.status(500).send('Error logging in');
   }
 });
-// Login route
-// app.post('/login', async (req, res) => {
-//   const { email, password } = req.body;
-
-//   try {
-//     const user = await User.findOne({ email });
-//     if (user && await bcrypt.compare(password, user.password)) {
-//       req.session.userId = user._id;
-//       res.redirect('/profile.html');
-//     } else {
-//       res.status(401).send('Invalid email or password');
-//     }
-//   } catch (error) {
-//     console.error('Error logging in:', error);
-//     res.status(500).send('Error logging in');
-//   }
-// });
-
-// // Route to handle password reset
-// app.post('/reset-password', async (req, res) => {
-//   const { newPassword } = req.body;
-//   const email = req.session.email; // Retrieve the email stored in session after OTP verification
-
-//   if (!newPassword || !email) {
-//     return res.status(400).json({ message: 'New password and email are required' });
-//   }
-
-//   try {
-//     const hashedPassword = await bcrypt.hash(newPassword, 10);
-//     await User.findOneAndUpdate({ email }, { password: hashedPassword });
-
-//     res.json({ message: 'Password updated successfully' });
-//   } catch (error) {
-//     console.error('Error updating password:', error);
-//     res.status(500).json({ message: 'Error updating password' });
-//   }
-// });
 
 // Logout route
 app.get('/logout', (req, res) => {
@@ -483,58 +446,6 @@ app.post('/submit-shop-details', checkAuth, async (req, res) => {
     res.status(500).json({ message: 'Error submitting form', error: error.message });
   }
 });
-
-
-
-// // Mobile to Aadhaar form route
-// app.post('/mobiletoaadhar', checkAuth, async (req, res) => {
-//   const { name, number } = req.body;
-
-//   if (!number || number.length !== 10) {
-//     return res.status(400).json({ message: 'Invalid mobile number' });
-//   }
-
-//   try {
-//     const user = await User.findById(req.session.userId);
-//     if (!user) {
-//       console.error('User not found');
-//       return res.status(404).json({ message: 'User not found' });
-//     }
-
-//     const requiredBalance = 200;
-//     if (user.walletBalance < requiredBalance) {
-//       console.error('Insufficient wallet balance');
-//       return res.status(400).json({ message: 'Insufficient wallet balance' });
-//     }
-
-//     user.walletBalance -= requiredBalance;
-//     await user.save();
-
-//     const mobileToAadhar = new MobileToLostAadhar({
-//       userId: user._id,
-//       name: name,
-//       mobileNumber: number,
-//       status: 'Pending'
-//     });
-
-//     await mobileToAadhar.save();
-
-//     const transaction = new Transaction({
-//       userId: user._id,
-//       amount: requiredBalance,
-//       type: 'debit',
-//       description: 'Mobile to Aadhar form submission fee',
-//       date: new Date()
-//     });
-
-//     await transaction.save();
-
-//     res.status(201).json({ message: 'Record saved successfully' });
-//   } catch (error) {
-//     console.error('Error submitting form:', error);
-//     res.status(500).json({ message: 'Error submitting form' });
-//   }
-// });
 
 app.post('/userpayment', checkAuth, async (req, res) => {
   const { name, number1, numberutrno, email, amount } = req.body;
@@ -920,59 +831,6 @@ app.post('/tecexam', async (req, res) => {
   }
 });
 
-
-
-// // Define the User model
-// const User = mongoose.model('User', new mongoose.Schema({
-//   email: String,
-//   walletBalance: Number,
-// }));
-
-// Define the Pana49form model
-// const Pana49form = mongoose.model('Pana49form', new mongoose.Schema({
-//   // Add all necessary fields here
-//   filePath: String,
-//   signaturePath: String,
-//   documentsPath: String,
-//   uniqueNumber: String,
-// }));
-
-// // Define the CorrectionPan model
-// const CorrectionPan = mongoose.model('CorrectionPan', new mongoose.Schema({
-//   // Add all necessary fields here
-//   pancard_proof: String,
-//   image: String,
-//   signature: String,
-//   documents: String,
-//   uniqueNumber: String,
-// }));
-
-// // Define the Transaction model
-// const Transaction = mongoose.model('Transaction', new mongoose.Schema({
-//   userId: mongoose.Schema.Types.ObjectId,
-//   amount: Number,
-//   type: String,
-//   description: String,
-//   date: Date,
-// }));
-
-// Multer setup for file uploads
-// const storage = multer.diskStorage({
-//   destination: function (req, file, cb) {
-//       cb(null, path.join(__dirname, 'uploads'));
-//   },
-//   filename: function (req, file, cb) {
-//       const savedFilename = Date.now() + path.extname(file.originalname);
-//       cb(null, savedFilename);
-//   }
-// });
-
-
-// const upload = multer({ storage: storage });
-// app.use(express.static('public'));
-// // Serve static files from the 'uploads' directory
-// app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
 // Middleware for session management
 app.use(session({
   secret: 'your-secret-key', // Replace with your own secret
@@ -1051,7 +909,8 @@ app.post('/submit-newpan-application', upload.fields([
 
       await transaction.save();
 
-      res.json({ message: 'New PAN Card application submitted successfully!' });
+      // res.json({ message: 'New PAN Card application submitted successfully!' });
+      res.redirect('applicaacknow.html')
   } catch (error) {
       console.error('Error submitting PAN Card application:', error);
       res.status(500).json({ message: 'Internal Server Error' });
@@ -1137,7 +996,8 @@ app.post('/submit-correctpan-application', upload.fields([
 
       await transaction.save();
 
-      res.json({ message: 'Correct PAN Card application submitted successfully!' });
+      // res.json({ message: 'Correct PAN Card application submitted successfully!' });
+      res.redirect('applicacknowpanc.html')
   } catch (error) {
       console.error('Error submitting PAN Card application:', error);
       res.status(500).json({ message: 'Internal Server Error', details: error.message });
@@ -1283,6 +1143,22 @@ app.get('/displayData', (req, res) => {
 });
 app.get('/admincorrection_pancard', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'admincorrection_pancard.html'));
+});
+
+app.get('/applicaacknow', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'applicaacknow.html'));
+});
+
+app.get('/applicacknowpanc', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'applicacknowpanc.html'));
+});
+
+app.get('/UTIPSAtrackPANstatus', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'UTIPSAtrackPANstatus.html'));
+});
+
+app.get('/utipsaapplicationstatus', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'utipsaapplicationstatus.html'));
 });
 
 app.post('/admin_login', async (req, res) => {
