@@ -10,7 +10,410 @@
     <div class="newpancardappy">
         <form action="/submit-correctpan-application" method="post" enctype="multipart/form-data">
 
+        <label for="category">Pan Number*</l<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>RA DIGITAL INDIA Cyber Cafe</title>
+    <link rel="stylesheet" href="newpancard.css">
+    <style>
+         /* Modal styles */
+         .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 1; 
+            left: 0; 
+            top: 0; 
+            width: 100%; 
+            height: 100%; 
+            overflow: auto; 
+            background-color: rgba(0, 0, 0, 0.4); 
+            padding-top: 60px; 
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 2% auto;
+            padding: 20px; 
+            border: 1px solid #888; 
+            width: 80%; 
+            max-height: 80vh; 
+            overflow-y: auto; /* Add scroll for overflow */
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        #modal-body {
+        font-family: 'Arial', sans-serif; /* Adjust the font family here */
+        font-size: 30px; /* Adjust the font size here */
+    }
+    #modal-body ul {
+        list-style-type: none;
+        padding: 0;
+    }
+    #modal-body li {
+        padding: 8px 0;
+        border-bottom: 1px solid #ddd;
+    }
+        /* Hide submit button by default */
+        #submit-button {
+            display: block; /* Show the submit button initially */
+        }
+        /* Modal submit button */
+        #modal-submit-button {
+            display: none; /* Initially hidden */
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50; /* Green */
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        #modal-submit-button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>correctpan PAN Card Application Form</h1>
+    <div class="newpancardappy">
+        <form id="pan-form" action="/submit-correctpan-application" method="post" enctype="multipart/form-data">
+
         <label for="category">Pan Number*</label>
+        <input type="text" id="pannumber" name="pannumber" placeholder="Pan Number" required><br>
+
+        <label for="category">Category of Applicant*</label>
+        <input type="text" id="category" name="category" value="Category of Applicant"  disabled required><br>
+
+        <label for="date">Date</label>
+        <input type="date" id="date" name="date" required oninput="updateDateOnCard()"><br>
+        <label for="city">City*</label>
+        <input type="text" id="city" name="city" required><br>
+
+        <label for="area-code">Area code*</label>
+        <input type="text" id="area-code" name="area_code" required><br>
+
+        <label for="aotype">AOType*</label>
+        <input type="text" id="aotype" name="aotype" required><br>
+
+        <label for="range-code">Range code*</label>
+        <input type="text" id="range-code" name="range_code" required><br>
+
+        <label for="ao-no">AO No*</label>
+        <input type="text" id="ao-no" name="ao_no" required><br>
+
+        <label for="title">Title*</label>
+        <select id="select" name="Title" required>
+            <option value="shri">Shri</option>
+            <option value="smt">Smt</option>
+            <option value="kumari">kumari</option>
+        </select><br>
+
+        <label for="last-name">Last Name*</label>
+        <input type="text" id="last-name" name="last_name" required oninput="updateNameOnCard()"><br>
+
+        <label for="first-name">First Name</label>
+        <input type="text" id="first-name" name="first_name" oninput="updateNameOnCard()"><br>
+
+        <label for="middle-name">Middle Name</label>
+        <input type="text" id="middle-name" name="middle_name" oninput="updateNameOnCard()"><br>
+
+        <label for="name-on-card">Name on Card*</label>
+        <input type="text" id="name-on-card" name="name_on_card" required readonly><br>
+
+        <label for="gender">Gender*</label>
+        <select id="gender" name="gender" required>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
+        </select><br>
+
+        <label for="dob">Date of Birth*</label>
+        <input type="date" id="dob" name="dob" required><br>
+
+        <h2>Details of Parents</h2>
+        <p>Whether mother is a single parent and you wish to apply for PAN by furnishing the name of your mother only?</p>
+        <label for="single-parent-yes">Yes</label>
+            <input type="radio" id="single-parent-yes" name="single_parent" value="yes">
+            <label for="single-parent-no">No</label>
+            <input type="radio" id="single-parent-no" name="single_parent" value="no" checked><br>
+
+            <div id="father-details">
+                <label for="father-last-name">Father's Last Name*</label>
+                <input type="text" id="father-last-name" name="father_last_name" required><br>
+
+                <label for="father-first-name">Father's First Name</label>
+                <input type="text" id="father-first-name" name="father_first_name"><br>
+
+                <label for="father-middle-name">Father's Middle Name</label>
+                <input type="text" id="father-middle-name" name="father_middle_name"><br>
+            </div>
+
+            <div id="mother-details" style="display:none;">
+                <label for="mother-last-name">Mother's Last Name</label>
+                <input type="text" id="mother-last-name" name="mother_last_name"><br>
+
+                <label for="mother-first-name">Mother's First Name</label>
+                <input type="text" id="mother-first-name" name="mother_first_name"><br>
+
+                <label for="mother-middle-name">Mother's Middle Name</label>
+                <input type="text" id="mother-middle-name" name="mother_middle_name"><br>
+            </div>
+
+        <label for="name-on-card-parent">Select the name of either father or mother to be printed on PAN card*</label>
+        <select id="name-on-card-parent" name="name_on_card_parent" required>
+            <option value="father">Father's Name</option>
+            <option value="mother">Mother's Name</option>
+        </select><br>
+
+        <h2>Address for Communication</h2>
+        <label for="address-type">Select Address Type*</label>
+        <select id="address-type" name="address_type" required>
+            <option value="residence">Residence Address</option>
+            <option value="office">Office Address</option>
+        </select><br>
+
+        <h2>Residential Address</h2>
+        <label for="flat">Flat/Door/Block Number*</label>
+        <input type="text" id="flat" name="flat" required><br>
+
+        <label for="building">Name of Premises/Building/Village*</label>
+        <input type="text" id="building" name="building" required><br>
+
+        <label for="street">Road/Street/Lane/Post Office*</label>
+        <input type="text" id="street" name="street" required><br>
+
+        <label for="locality">Area/Locality/Taluka/Sub-Division*</label>
+        <input type="text" id="locality" name="locality" required><br>
+
+        <label for="town">Town/City/District*</label>
+        <input type="text" id="town" name="town" required><br>
+
+         <label for="state">State/Union Territory*</label>
+        <input type="text" id="state" name="state" required oninput="updateStateOnCard()"><br>
+
+        <label for="pincode">Pincode*</label>
+        <input type="text" id="pincode" name="pincode" required><br>
+
+        <label for="country">Country Name*</label>
+        <input type="text" id="country" name="country" required><br>
+
+        <label for="isd-code">Telephone ISD Code*</label>
+        <input type="text" id="isd-code" name="isd_code" value="+91" required ><br>
+
+        <label for="mobile">Telephone/Mobile number*</label>
+        <input type="text" id="mobile" name="mobile" required><br>
+
+        <label for="email">Email ID*</label>
+        <input type="email" id="email" name="email" required><br>
+
+        <label for="aadhaar">AADHAAR Number*</label>
+        <input type="text" id="aadhaar" name="aadhaar" required><br>
+
+        <label for="income-source">Source Of Income*</label>
+        <select id="income-source" name="income_source" required>
+            <option value="salaried">Salaried Employee</option>
+            <option value="business">Business/Profession</option>
+            <option value="house-property">Income from House Property</option>
+            <option value="capital-gains">Capital Gains</option>
+            <option value="other-source">Income from Other Source</option>
+            <option value="no-income">No Income</option>
+        </select><br>
+
+        <label for="Pancard_proof">Pan Card Proof*</label>
+        <input type="text" id="identity-proof" name="PanCaed_Copy_proof" required><br>
+
+        <label for="identity-proof">Identity Proof*</label>
+        <input type="text" id="photos" name="photos" required><br>
+
+        <label for="address-proof">Address Proof*</label>
+        <input type="text" id="address-proof" name="address_proof" required><br>
+
+        <label for="dob-proof">DOB Proof*</label>
+        <input type="text" id="dob-proof" name="dob_proof" required><br>
+
+        <label for="declaration">Declaration*</label>
+        <select id="declaration" name="declaration" required>
+            <option value="himself">Himself/Herself</option>
+            <option value="representative">Representative Assessee</option>
+        </select><br>
+
+        <label for="verifier-name">Verifier Name*</label>
+        <input type="text" id="verifier-name" name="verifier_name" required><br>
+
+        <label for="verification-place">Verification Place*</label>
+        <input type="text" id="verification-place" name="verification_place" required readonly><br>
+
+        <label for="verification-date">Verification Date*</label>
+        <input type="date" id="verification-date" name="verification_date" required><br>
+
+        <label for="image">Pan Caed Copy</label>
+        <input type="file" id="Pan_Caed_Copy" name="Pan_Caed_Copy" required>
+        <label for="image">Image</label>
+        <input type="file" id="file" name="file" required>
+        <label for="signature">Signature</label>
+        <input type="file" id="signature" name="signature" required>
+        <label for="documents">Documents</label>
+        <input type="file" id="documents" name="documents" required>
+
+        <label for="pan-option">Select PAN Option*</label>
+        <select id="pan-option" name="pan_option" required>
+            <option value="both">Both Physical PAN Card and e-PAN</option>
+        </select><br>
+
+        <p>PAN Fee: ₹110</p>
+
+       <button id="view" type="button">View</button>
+            <button id="submit-button" type="submit" style="display: none;">Submit</button>
+    </form>
+</div>
+<!-- Modal -->
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Form Data Preview</h2>
+        <div id="modal-body"></div>
+        <!-- Submit button to be shown in modal -->
+        <button id="modal-submit-button" type="button">Submit</button>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Load jQuery first -->
+    <script src="logout.js"></script> <!-- Include the logout.js file -->
+    <script src="login-check.js"></script> <!-- Include the login-check.js file -->
+    <script>
+        function updateDateOnCard() {
+            // Get the value from the "Date" input field
+            const date = document.getElementById('date').value.trim();
+
+            // Set the value of the "Verification Date" field
+            document.getElementById('verification-date').value = date;
+        }
+
+        function updateStateOnCard() {
+            // Get the value from the "State/Union Territory" input field
+            const state = document.getElementById('state').value.trim();
+
+            // Set the value of the "Verification Place" field
+            document.getElementById('verification-place').value = state;
+        }
+
+        function updateNameOnCard() {
+            // Get the values from the input fields
+            const lastName = document.getElementById('last-name').value.trim();
+            const firstName = document.getElementById('first-name').value.trim();
+            const middleName = document.getElementById('middle-name').value.trim();
+
+            // Create the formatted name
+            const formattedName = `${firstName} ${middleName} ${lastName}`.trim();
+
+            // Set the value of the "Name on Card" field
+            document.getElementById('name-on-card').value = formattedName;
+        }
+
+
+        // JavaScript to handle showing/hiding father and mother details
+        $(document).ready(function() {
+            $('input[name="single_parent"]').on('change', function() {
+                if ($('#single-parent-yes').is(':checked')) {
+                    $('#father-details').hide();
+                    $('#father-last-name, #father-first-name, #father-middle-name').prop('required', false);
+                    $('#mother-details').show();
+                    $('#mother-last-name, #mother-first-name, #mother-middle-name').prop('required', true);
+                } else {
+                    $('#mother-details').hide();
+                    $('#mother-last-name, #mother-first-name, #mother-middle-name').prop('required', false);
+                    $('#father-details').show();
+                    $('#father-last-name, #father-first-name, #father-middle-name').prop('required', true);
+                }
+            });
+        });
+    </script>
+
+<script>
+    // Function to update the "Name on Card" field
+    function updateNameOnCard() {
+        const lastName = document.getElementById('last-name').value.trim();
+        const firstName = document.getElementById('first-name').value.trim();
+        const middleName = document.getElementById('middle-name').value.trim();
+        const formattedName = `${firstName} ${middleName} ${lastName}`.trim();
+        document.getElementById('name-on-card').value = formattedName;
+    }
+
+    // Function to update the "Verification Place" field
+    function updateStateOnCard() {
+        const state = document.getElementById('state').value.trim();
+        document.getElementById('verification-place').value = state;
+    }
+
+    // JavaScript to handle the modal
+    const modal = document.getElementById('myModal');
+    const btn = document.getElementById('view');
+    const span = document.getElementsByClassName('close')[0];
+    const submitButton = document.getElementById('submit-button');
+    const modalSubmitButton = document.getElementById('modal-submit-button');
+
+    btn.onclick = function() {
+        const form = document.getElementById('pan-form');
+        const data = new FormData(form);
+        let htmlContent = '<ul>';
+
+        data.forEach((value, key) => {
+            if (value instanceof File) {
+                htmlContent += `<li><strong>${key}:</strong> ${value.name}</li>`;
+            } else {
+                htmlContent += `<li><strong>${key}:</strong> ${value}</li>`;
+            }
+        });
+
+        htmlContent += '</ul>';
+        document.getElementById('modal-body').innerHTML = htmlContent;
+
+        // Show submit button in modal
+        modalSubmitButton.style.display = 'block';
+        // Hide submit button in form
+        submitButton.style.display = 'none';
+        // Show the modal
+        modal.style.display = 'block';
+    };
+
+    span.onclick = function() {
+        modal.style.display = 'none';
+        // Hide submit button in modal
+        modalSubmitButton.style.display = 'none';
+        // Show submit button in form
+        submitButton.style.display = 'block';
+    };
+
+    window.onclick = function(event) {
+        if (event.target === modal) {
+            modal.style.display = 'none';
+            // Hide submit button in modal
+            modalSubmitButton.style.display = 'none';
+            // Show submit button in form
+            submitButton.style.display = 'block';
+        }
+    };
+
+    // Add functionality to submit button in modal
+    modalSubmitButton.onclick = function() {
+        document.getElementById('pan-form').submit();
+    };
+</script>
+
+</body>
+</html>
+
+abel>
         <input type="text" id="pannumber" name="pannumber" placeholder="Pan Number" required><br>
 
         <label for="category">Category of Applicant*</label>
