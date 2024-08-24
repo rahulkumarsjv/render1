@@ -12,10 +12,11 @@
     </div>
     <form id="captchaForm">
         <div class="uniqueNumber">
-            <label for="uniqueNumber">Application /Coupon Number</label><br>            <input type="text" id="uniqueNumber" required>
+            <label for="uniqueNumber">Application / Coupon Number</label><br>
+            <input type="text" id="uniqueNumber" required minlength="14" maxlength="14" pattern="\d{14}" title="Please enter exactly 14 digits">
         </div>
         <div id="captcha2">
-            <label for="captcha" >CAPTCHA:<span id="captcha"></span></label>
+            <label for="captcha">CAPTCHA:<span id="captcha"></span></label>
         </div>
         <div class="captcha1">
             <label for="captchaInput">Enter CAPTCHA:</label><br>
@@ -27,7 +28,7 @@
     <script>
         // Function to generate a random CAPTCHA code
         function generateCaptcha() {
-            return Math.floor(100000 + Math.random() * 900000); // Simple 4-digit number
+            return Math.floor(100000 + Math.random() * 900000); // 6-digit number
         }
 
         // Function to display CAPTCHA on the page
