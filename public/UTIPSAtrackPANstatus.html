@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CAPTCHA Form</title>
+    <link rel="stylesheet" href="utipsatr.css">
+</head>
+<body>
+    <div class="radigiral">
+        <h1>RA Digital India Portal Cyber Cafe.</h1>
+    </div>
+    <form id="captchaForm">
+        <div class="uniqueNumber">
+            <label for="uniqueNumber">Application /Coupon Number</label><br>            <input type="text" id="uniqueNumber" required>
+        </div>
+        <div id="captcha2">
+            <label for="captcha" >CAPTCHA:<span id="captcha"></span></label>
+        </div>
+        <div class="captcha1">
+            <label for="captchaInput">Enter CAPTCHA:</label><br>
+            <input type="text" id="captchaInput" required>
+        </div>
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+        // Function to generate a random CAPTCHA code
+        function generateCaptcha() {
+            return Math.floor(100000 + Math.random() * 900000); // Simple 4-digit number
+        }
+
+        // Function to display CAPTCHA on the page
+        function displayCaptcha() {
+            const captchaCode = generateCaptcha();
+            document.getElementById('captcha').innerText = captchaCode;
+            console.log('Generated CAPTCHA:', captchaCode); // Debug: log the generated CAPTCHA
+            return captchaCode;
+        }
+
+        // Store CAPTCHA code in a variable
+        let currentCaptchaCode = displayCaptcha();
+
+        // Handle form submission
+        document.getElementById('captchaForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const captchaInput = parseInt(document.getElementById('captchaInput').value);
+            const uniqueNumber = document.getElementById('uniqueNumber').value;
+
+            console.log('Entered CAPTCHA:', captchaInput); // Debug: log the entered CAPTCHA
+            console.log('Current CAPTCHA Code:', currentCaptchaCode); // Debug: log the current CAPTCHA code
+
+            // Check CAPTCHA
+            if (captchaInput !== currentCaptchaCode) {
+                alert('Invalid CAPTCHA code');
+                currentCaptchaCode = displayCaptcha(); // Generate a new CAPTCHA code
+                return;
+            }
+
+            // Retrieve local storage data
+            let storedData = JSON.parse(localStorage.getItem('uniqueNumbers')) || [];
+            console.log('Stored Data:', storedData); // Debug: log the current stored data
+
+            // Check if the unique number already exists
+            const existingEntry = storedData.find(entry => entry.uniqueNumber === uniqueNumber);
+
+            if (existingEntry) {
+                // If unique number already exists
+                alert('Unique number already exists. Redirecting to the next page...');
+                window.location.href = `utipsaapplicationstatus.html?uniqueNumber=${uniqueNumber}`; // Pass unique number to next page
+            } else {
+                // Add new unique number with pending status
+                storedData.push({
+                    uniqueNumber: uniqueNumber,
+                    status: 'pending',
+                    timestamp: Date.now() // Store current time
+                });
+                localStorage.setItem('uniqueNumbers', JSON.stringify(storedData));
+                console.log('Updated Stored Data:', storedData); // Debug: log the updated stored data
+                alert('Unique number added. Redirecting to the next page...');
+                window.location.href = `utipsaapplicationstatus.html?uniqueNumber=${uniqueNumber}`; // Pass unique number to next page
+            }
+        });
+
+        // Function to update status after 24 hours
+        function updateStatuses() {
+            let storedData = JSON.parse(localStorage.getItem('uniqueNumbers')) || [];
+            const now = Date.now();
+
+            storedData.forEach(entry => {
+                if (entry.status === 'pending' && now - entry.timestamp > 24 * 60 * 60 * 1000) {
+                    entry.status = 'approved'; // Update status after 24 hours
+                }
+            });
+
+            localStorage.setItem('uniqueNumbers', JSON.stringify(storedData));
+            console.log('Updated Stored Data with Statuses:', storedData); // Debug: log updated statuses
+        }
+
+        // Call updateStatuses when the page loads
+        updateStatuses();
+    </script>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application Status</title>
+</head>
+<style>
+    body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 20px;
+    margin: 0;
+}
+
+#statusInfo {
+    width: 90%;
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+p {
+    font-size: 1.2em;
+    margin: 10px 0;
+}
+
+#uniqueNumber, #status {
+    font-weight: bold;
+    color: #333;
+}
+
+/* Responsive Design */
+@media (max-width: 900px) {
+    h1 {
+        font-size: 1.5em;
+        padding: 15px;
+    }
+
+    #statusInfo {
+        width: 95%;
+        padding: 15px;
+    }
+
+    p {
+        font-size: 1em;
+    }
+}
+
+</style>
+<body>
+    <h1>Application Status</h1>
+    <div id="statusInfo">
+        <p>Unique Number: <span id="uniqueNumber"></span></p>
+        <p>Status: <span id="status"></span></p>
+    </div>
+
+    <script>
+        // Function to get query parameter value by name
+        function getQueryParam(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        // Function to display status
+        function displayStatus() {
+            const uniqueNumber = getQueryParam('uniqueNumber');
+            const storedData = JSON.parse(localStorage.getItem('uniqueNumbers')) || [];
+
+            if (uniqueNumber) {
+                const entry = storedData.find(item => item.uniqueNumber === uniqueNumber);
+
+                if (entry) {
+                    document.getElementById('uniqueNumber').innerText = entry.uniqueNumber;
+                    document.getElementById('status').innerText = entry.status;
+                } else {
+                    document.getElementById('uniqueNumber').innerText = 'Not found';
+                    document.getElementById('status').innerText = 'N/A';
+                }
+            } else {
+                document.getElementById('uniqueNumber').innerText = 'No unique number provided';
+                document.getElementById('status').innerText = 'N/A';
+            }
+        }
+
+        // Call displayStatus on page load
+        displayStatus();
+    </script>
+</body>
+</html>
