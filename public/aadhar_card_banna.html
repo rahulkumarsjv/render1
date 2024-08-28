@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aadhar Card Application</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="opin_moine.css">
+    <link rel="stylesheet" href="/css/home.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+        integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+.form-container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input {
+    width: calc(100% - 20px);
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #218838;
+}
+
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="navborder">
+            <div class="iconnavbaar">&#9776;</div> <!-- Using HTML entity for the menu icon -->
+            <div class="nav-right">
+                <div class="profile">Wallet Balance:</div>
+                <div class="bullet">
+                    <p><span id="walletBalance">Loading...</span></p>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="home">
+        <div class="navbara">
+            <div class="navbar"><a href="home.html"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a>
+            </div>
+            <div class="navbar"><a href="Aadhar_muan_card.html"><i class="fas fa-id-card"></i> <span>Aadhar
+                        Card</span></a></div>
+            <div class="navbar"><a href="new_pan_card_appy.html"><i class="fas fa-address-card"></i> <span>Pan
+                        Card</span></a></div>
+            <div class="navbar"><a href="lost_aadhar_no.html"><i class="fas fa-copy"></i> <span>Duplicate EID TO
+                        PDF</span></a></div>
+            <div class="navbar"><a href="mobiletopdf"><i class="fas fa-mobile-alt"></i> <span>Mobile Number to Aadhar
+                        PDF</span></a></div>
+            <div class="navbar"><a href="Generateeid"><i class="fas fa-id-badge"></i> <span>Generate EID to
+                        UID</span></a></div>
+            <div class="navbar"><a href="Duplicateeid"><i class="fas fa-clone"></i> <span>Duplicate EID to
+                        UID</span></a></div>
+            <div class="navbar"><a href="pannotouid"><i class="fas fa-exchange-alt"></i> <span>PAN No to UID</span></a>
+            </div>
+            <div class="navbar"><a href="Lost-pan_number.html"><i class="fas fa-question-circle"></i> <span>Lost PAN
+                        No</span></a></div>
+            <div class="navbar"><a href="profile.html"><i class="fa-solid fa-user"></i><span>Profile</span></a></div>
+            <div class="navbar"><a href="payment.html"><i class="fa-solid fa-user"></i><span>ADD Payment</span></a>
+            </div>
+            <div class="navbar"><a href="transaction.html"><i class="fa-solid fa-user"></i><span>Transaction</span></a>
+            </div>
+            <div class="navbar"><button id="logout"><i class="fa-solid fa-user"></i> <span>Logout</span></button></div>
+        </div>
+    <div class="form-container">
+        <h1>Aadhar Card Application Form</h1>
+        <form id="aadharForm" action="/submit-aadharuclappy" method="POST">
+            <div class="form-group">
+                <label for="fullname">Full Name:</label>
+                <input type="text" id="fullname" name="fullname" required maxlength="100" placeholder="Enter your full name">
+            </div>
+            
+            <div class="form-group">
+                <label for="shopName">Shop Name:</label>
+                <input type="text" id="shopName" name="shopName" required maxlength="100" placeholder="Enter your shop name">
+            </div>
+            
+            <div class="form-group">
+                <label for="aadharNumber">Aadhar Number:</label>
+                <input type="text" id="aadharNumber" name="aadharNumber" required maxlength="12" pattern="\d{12}" placeholder="Enter 12-digit Aadhar number">
+            </div>
+            
+            <div class="form-group">
+                <label for="panNumber">PAN Number:</label>
+                <input type="text" id="panNumber" name="panNumber" maxlength="10" pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}" placeholder="Enter 10-character PAN number">
+            </div>
+            
+            <div class="form-group">
+                <label for="address">Address:</label>
+                <input type="text" id="address" name="address" required maxlength="255" placeholder="Enter your address">
+            </div>
+            
+            <div class="form-group">
+                <label for="pinCode">Pin Code:</label>
+                <input type="text" id="pinCode" name="pinCode" required maxlength="6" pattern="\d{6}" placeholder="Enter 6-digit pin code">
+            </div>
+            
+            <div class="form-group">
+                <label for="mobileNumber">Mobile Number:</label>
+                <input type="tel" id="mobileNumber" name="mobileNumber" required maxlength="15" pattern="[0-9]{10,15}" placeholder="Enter your mobile number">
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required maxlength="100" placeholder="Enter your email address">
+            </div>
+            
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" id="closeBtn">&times;</span>
+            <p>किसी निजी कंपनी के माध्यम से आधार कार्ड के लिए आवेदन करने के लिए, कृपया सुनिश्चित करें कि मूल दस्तावेज़ जमा किए गए हैं। छवियों/पीडीएफ को संपादित करना या वापस करना स्वीकार नहीं किया जाएगा। सिस्टम डुप्लिकेट का पता लगाएगा, <br>
+                और हम किसी भी समस्या के लिए ज़िम्मेदारी नहीं लेते हैं। अगर सब कुछ सही है तो आपको अपना आधार आईडी प्राप्त होगा। ध्यान दें कि अगर भविष्य में आपके आधार कार्ड में कोई समस्या आती है तो हम रिफंड नहीं देते हैं <br> अगर ज़रूरत पड़ी तो
+                दोबारा आवेदन करने पर आधार आईडी प्रदान की जाएगी। निजी कंपनियाँ राशि वापस नहीं करती हैं जैसे ही आप आधार यूसीएल के लिए आवेदन करेंगे, आपको 24 घंटे के अंदर कंपनी की तरफ से कॉल आएगा, और फिर आपको आपकी आईडी मिल जाएगी</p>
+
+                <p>To apply for an Aadhar card through a private company, please ensure that original documents are submitted. Editing or returning images/PDFs will not be accepted. The system will detect duplicates, and we do not take responsibility for any issues.
+                    <br>aYou will receive your Aadhar ID if everything is correct. Note that we do not offer refunds if there are issues with your Aadhar card in the future. If needed, the Aadhar ID will be provided upon reapplication. Private companies do not refund amounts<br>
+                    As soon as you apply for Aadhar UCL, you will receive a call from the company within 24 hours, and then you will receive your ID</p><br>
+            </div>
+        </div>
+    </div>
+                <script src="opin_modol.js"></script>
+                    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Load jQuery first -->
+    <script src="logout.js"></script> <!-- Include the logout.js file -->
+    <script src="login-check.js"></script> <!-- Include the login-check.js file -->
+    <script>
+        document.getElementById('aadharForm').addEventListener('submit', function(event) {
+            const fullname = document.getElementById('fullname').value;
+            const shopName = document.getElementById('shopName').value;
+            const aadharNumber = document.getElementById('aadharNumber').value;
+            const panNumber = document.getElementById('panNumber').value;
+            const address = document.getElementById('address').value;
+            const pinCode = document.getElementById('pinCode').value;
+            const mobileNumber = document.getElementById('mobileNumber').value;
+            const email = document.getElementById('email').value;
+        
+            if (!fullname || !shopName || !aadharNumber || !panNumber || !address || !pinCode || !mobileNumber || !email) {
+                alert('All fields are required!');
+                event.preventDefault();
+            }
+        });
+        </script> 
+        <script>
+            // Fetch and display wallet balance
+            fetch('/api/wallet-balance')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.walletBalance !== undefined) {
+                        document.getElementById('walletBalance').textContent = data.walletBalance;
+                    } else {
+                        console.error('Error: Wallet balance not found');
+                    }
+                })
+                .catch(error => console.error('Error fetching wallet balance:', error));
+               
+        </script>
+           
+</body>
+</html>
