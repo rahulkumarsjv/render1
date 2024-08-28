@@ -21,6 +21,8 @@ const Aadharporinadd = require('./models/Aadharporinadd');
 const Tecexam = require('./models/Tecexam');
 const Shop = require('./models/utipsa');
 const Altruist = require('./models/panaltruist');
+const Aadharuclappy = require('./models/Aadharuclappy'); // Ensure the correct path is used
+const DataModel = require('./models/Data'); // Import your schema
 const crypto = require('crypto');
 require('dotenv').config();
 const cors = require('cors');
@@ -313,6 +315,9 @@ app.get('/fingerprintaadharidregistration', (req, res) => {
 });
 app.get('/addpoint', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'fingerprintaadharidregistration.html'));
+});
+app.get('/aadhar_card_banna', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'aadhar_card_banna.html'));
 });
 
 // Lost Aadhaar form route
@@ -1005,19 +1010,39 @@ app.post('/submit-correctpan-application', upload.fields([
 });
 
 
-// Form submission route with wallet balance deduction
 
+app.post('/submit-aadharuclappy', async (req, res) => {
+  const { fullname, shopName, aadharNumber, panNumber, address, pinCode, mobileNumber, email } = req.body;
+  
+  // Check if all fields are provided
+  if (!fullname || !shopName || !aadharNumber || !panNumber || !address || !pinCode || !mobileNumber || !email) {
+      return res.status(400).json({ message: 'All fields are required' });
+  }
 
-// Example in Express.js
-app.get('/get-all-pan-applications', async (req, res) => {
+  // Validate mobile number length
+  if (mobileNumber.length < 10 || mobileNumber.length > 15) {
+      return res.status(400).json({ message: 'Mobile number must be between 10 and 15 digits' });
+  }
+
   try {
-      const applications = await Pana49form.find(); // Adjust query as needed
-      res.json(applications); // Ensure this is an array
+      const newCard = new Aadharuclappy({
+          fullname,
+          shopName,
+          aadharNumber,
+          panNumber,
+          address,
+          pinCode,
+          mobileNumber,
+          email
+      });
+
+      await newCard.save();
+      res.status(201).json({ message: 'Please submit the Aadhar application. You will receive a callback within 24 hours' });
   } catch (error) {
-      console.error('Error fetching PAN applications:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
+      res.status(500).json({ message: 'Error submitting form', error: error.message });
   }
 });
+
 
 app.get('/api/pan-applications', async (req, res) => {
   try {
@@ -1202,6 +1227,23 @@ app.get('/api/data/users', async (req, res) => {
   }
 });
 
+
+
+app.get('/api/data/Aadharuclappy', async (req, res) => {
+  try {
+      const data = await Aadharuclappy.find(); // Fetch all records from the collection
+
+      if (!data || data.length === 0) {
+          return res.status(404).json({ message: 'No records found' }); // Handle case where no data is found
+      }
+
+      res.json(data); // Send the retrieved data as a JSON response
+  } catch (error) {
+      console.error('Error fetching data:', error); // Log the error for debugging
+      res.status(500).json({ error: 'Failed to fetch data' }); // Send an error response
+  }
+});
+
 app.get('/api/data/pana49forms', async (req, res) => {
   try {
     const data = await Pana49form.find(); // Fetch all records from the collection
@@ -1227,16 +1269,6 @@ app.get('/fetch-admin-data', async (req, res) => {
   }
 });
 
-
-
-// app.get('/api/data/correctionpans', async (req, res) => {
-//   try {
-//       const correctionPans = await CorrectionPan.find();
-//       res.json(correctionPans);
-//   } catch (error) {
-//       res.status(500).json({ error: 'Failed to fetch correction PAN data' });
-//   }
-// });
 app.get('/api/data/correctionpans', async (req, res) => {
   try {
     const data = await CorrectionPan.find(); // Fetch all records from the collection
@@ -1418,6 +1450,52 @@ app.get('/api/data/transactions', async (req, res) => {
     console.error('Error fetching data:', error);
     res.status(500).json({ error: 'Failed to fetch data', details: error.message });
   }
+});
+
+
+// Define your schema and model
+const yourSchema = new mongoose.Schema({
+  name: String,
+  value: String
+});
+
+const YourModel = mongoose.model('YourModel', yourSchema);
+
+// Middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Serve static files (HTML, CSS, JS)
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Route to fetch data by ID
+app.get('/api/data/id/:id', (req, res) => {
+  const id = req.params.id;
+  YourModel.findById(id, (err, data) => {
+      if (err) {
+          console.error('Error fetching data:', err);
+          return res.status(500).json({ error: 'Server error' });
+      }
+      if (!data) {
+          return res.status(404).json({ error: 'Data not found' });
+      }
+      res.json(data);
+  });
+});
+
+// Route to update data by ID
+app.post('/api/data/id/:id', (req, res) => {
+  const id = req.params.id;
+  YourModel.findByIdAndUpdate(id, req.body, { new: true }, (err, data) => {
+      if (err) {
+          console.error('Error updating data:', err);
+          return res.status(500).json({ error: 'Server error' });
+      }
+      if (!data) {
+          return res.status(404).json({ error: 'Data not found' });
+      }
+      res.json(data);
+  });
 });
 
 
