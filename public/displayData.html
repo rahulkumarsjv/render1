@@ -6,7 +6,7 @@
     <title>RA DIGITAL INDIA Display Data</title>
     <link rel="stylesheet" href="displaydata.css">
     <style>
-            table {
+        table {
             width: 100%;
             border-collapse: collapse;
         }
@@ -25,31 +25,37 @@
 </head>
 <body>
     <div class="container">
+        <!-- Search section -->
         <div class="search-section">
             <input type="text" id="searchInput" placeholder="Search by name, address, or ID">
             <button onclick="searchData()">Search</button>
         </div>
 
+        <!-- Button section -->
         <h1>View Data</h1>
-        <button onclick="fetchData('users')">View All Users</button>
-        <button onclick="fetchData('correctionpans')">View Correction Pans</button>
-        <a href="./admincorrection_pancard.html"><button>View Correction Pan card</button></a>
-        <a href="./admina49form.html"><button>pan a49 form</button></a>
-        <button onclick="fetchData('Shop')">View UTi Psa ID</button>
-        <button onclick="fetchData('lostaadhars')">View Lost Aadhaar</button>
-        <button onclick="fetchData('lostpans')">View Lost Pans</button>
-        <button onclick="fetchData('Fingerprint')">View Aadhar Fingerprint retailer ID</button>
-        <button onclick="fetchData('Aadharporinadd')">View Fingerprint add money</button>
-        <button onclick="fetchData('AyushmanCard')"> view Ayushman Card download</button>
-        <button onclick="fetchData('TecExam')">view Tec Exam pass</button>
-        <button onclick="fetchData('pan-altruist')">view New PAN Card PAN Altruist retailer ID created</button>
-        <button onclick="fetchData('paymentaadhars')">View </button>
-        <button onclick="fetchData('transactions')">View Transactions</button>
-        <button onclick="logout()">Logout</button>
+        <div class="button-section">
+            <!-- Your existing buttons -->
+            <button onclick="fetchData('Aadharuclappy')">View Aadhar UCL Apply</button>
+            <button onclick="fetchData('users')">View Users</button>
+            <button onclick="fetchData('correctionpans')">View Correction Pans</button>
+            <button onclick="fetchData('Shop')">View UTI Psa ID</button>
+            <button onclick="fetchData('lostaadhars')">View Lost Aadhaar</button>
+            <button onclick="fetchData('lostpans')">View Lost Pans</button>
+            <button onclick="fetchData('Fingerprint')">View Aadhaar Fingerprint Retailer ID</button>
+            <button onclick="fetchData('Aadharporinadd')">View Fingerprint Add Money</button>
+            <button onclick="fetchData('AyushmanCard')">View Ayushman Card Download</button>
+            <button onclick="fetchData('TecExam')">View TEC Exam Pass</button>
+            <button onclick="fetchData('pan-altruist')">View New PAN Card (PAN Altruist Retailer ID Created)</button>
+            <button onclick="fetchData('paymentaadhars')">View Payment Aadhars</button>
+            <button onclick="fetchData('transactions')">View Transactions</button>
+            <button onclick="logout()">Logout</button>
+        </div>
 
+        <!-- Data display section -->
         <div id="dataDisplay"></div>
 
-        <div id="editForm">
+        <!-- Edit form section -->
+        <div id="editForm" style="display: none;">
             <h2>Edit Data</h2>
             <form id="editDataForm" onsubmit="submitEditForm(event)">
                 <!-- Dynamic inputs will be inserted here -->
@@ -57,6 +63,7 @@
             </form>
         </div>
     </div>
+
 
     <script src="displayData.js"></script>
 </body>
