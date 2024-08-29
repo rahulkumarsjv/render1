@@ -1,0 +1,102 @@
+body {
+    background-color: #04244d; /* Dark blue background similar to the image */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+  }
+  
+  .passbook-container {
+    width: 300px;
+    background-color: #00274d;
+    color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .passbook-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #001233;
+    border-bottom: 2px solid #0073e6;
+  }
+  
+  .logo-section {
+    display: flex;
+    align-items: center;
+  }
+  
+  .logo {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+  }
+  
+  .bank-name {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .bank-name h2 {
+    margin: 0;
+    font-size: 16px;
+  }
+  
+  .bank-name p {
+    margin: 0;
+    font-size: 12px;
+  }
+  
+  .icons-section {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .icon {
+    font-size: 20px;
+  }
+  
+  .passbook-body {
+    text-align: center;
+    padding: 20px 10px;
+  }
+  
+  .passbook-body h1 {
+    margin: 0;
+    font-size: 22px;
+    color: #ffffff;
+  }
+  
+  .passbook-body h3 {
+    margin: 0;
+    font-size: 16px;
+    color: #ffffff;
+  }
+  
+  .account-info {
+    margin-top: 20px;
+    text-align: left;
+  }
+  
+  .info-field {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  
+  .info-field label {
+    font-size: 14px;
+    color: #ffffff;
+  }
+  
+  .info-field span {
+    border-bottom: 1px solid white;
+    width: 100px;
+    display: inline-block;
+  }
+  
