@@ -23,6 +23,7 @@ const Shop = require('./models/utipsa');
 const Altruist = require('./models/panaltruist');
 const Aadharuclappy = require('./models/Aadharuclappy'); // Ensure the correct path is used
 const DataModel = require('./models/Data'); // Import your schema
+const Jiopaymankbank = require('./models/jiopaymankbankauto');
 const crypto = require('crypto');
 require('dotenv').config();
 const cors = require('cors');
@@ -318,6 +319,12 @@ app.get('/addpoint', (req, res) => {
 });
 app.get('/aadhar_card_banna', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'aadhar_card_banna.html'));
+});
+app.get('/jiopaymankbank', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'jiopaymankbank.html'));
+});
+app.get('/jiopaymankbankauto', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'jiopaymankbankauto.html'));
 });
 
 // Lost Aadhaar form route
@@ -775,6 +782,80 @@ app.get('/AadharFingerprint', async (req, res) => {
   }
 });
 
+// routes/jiopaymanban.js
+app.post('/jiopaymanban', checkAuth, async (req, res) => {
+  const { accountNo, ifscCode, name, fatherName, date_of_birth, address, mobileNumber, emailId, branch, branchAddress, accountOpenDate } = req.body;
+
+  try {
+      const user = await User.findById(req.session.userId);
+      if (!user) {
+          return res.status(404).json({ message: 'User not found' });
+      }
+
+      const requiredBalance = 300;
+      if (user.walletBalance < requiredBalance) {
+          return res.status(400).json({ message: 'Insufficient wallet balance' });
+      }
+
+      user.walletBalance -= requiredBalance;
+      await user.save();
+
+      const jiopaymankbankEntry = new Jiopaymankbank({
+          userId: user._id,
+          accountNo,
+          ifscCode,
+          name,
+          fatherName,
+          date_of_birth,
+          address,
+          mobileNumber,
+          emailId,
+          branch,
+          branchAddress,
+          accountOpenDate,
+      });
+
+      await jiopaymankbankEntry.save();
+
+      // Generate a unique 14-digit number
+      const uniqueNumber = generateUniqueNumber();
+
+      const transaction = new Transaction({
+          userId: user._id,
+          amount: requiredBalance,
+          type: 'debit',
+          description: 'Jio Payment Bank copy passbook order ',
+          date: new Date(),
+          uniqueNumber: uniqueNumber // Save the unique number with the transaction
+      });
+
+      await transaction.save();
+
+      res.status(200).json({ message: 'Data saved successfully', uniqueNumber: uniqueNumber });
+  } catch (error) {
+      console.error('Error saving data:', error);
+      res.status(500).json({ message: 'Error saving data', error: error.message });
+  }
+});
+
+// Function to generate a unique 14-digit number
+function generateUniqueNumber() {
+  return crypto.randomBytes(7).toString('hex').toUpperCase(); // Generate a 14-digit hexadecimal string
+}
+
+
+// Define the route to fetch account details
+app.get('/api/account-details', async (req, res) => {
+  try {
+      const bankDetails = await Jiopaymankbank.find(); // Fetch all records
+      res.status(200).json(bankDetails);
+  } catch (error) {
+      console.error('Error fetching bank details:', error);
+      res.status(500).json({ message: 'Error fetching bank details', error: error.message });
+  }
+});
+
+
 app.post('/addpoint', async (req, res) => {
   try {
     const { point, rupess, mobile_number, email } = req.body;
@@ -1075,26 +1156,6 @@ app.get('/LostPAN', checkAuth, async (req, res) => {
   }
 });
 
-
-
-// app.get('/api/transactions', checkAuth, async (req, res) => {
-//   try {
-//     const transactions = await Transaction.find({ userId: req.session.userId }).sort({ date: -1 });
-
-//     const formattedTransactions = transactions.map(transaction => ({
-//       date: transaction.date.toISOString().split('T')[0], // Format the date
-//       credit: transaction.type === 'addition' ? transaction.amount : 0,
-//       debit: transaction.type === 'deduction' ? transaction.amount : 0,
-//       description: transaction.description
-//     }));
-
-//     res.json(formattedTransactions);
-//   } catch (error) {
-//     console.error('Error fetching transactions:', error);
-//     res.status(500).json({ error: 'Server error' });
-//   }
-// });
-
 app.get('/api/transactions', checkAuth, async (req, res) => {
   try {
     const user = await User.findById(req.session.userId);
@@ -1210,6 +1271,18 @@ app.post('/admin_login', async (req, res) => {
   }
 });
 
+app.get('/api/data/:collectionName', async (req, res) => {
+  const { collectionName } = req.params;
+  try {
+      const collection = mongoose.connection.db.collection(collectionName);
+      const data = await collection.find().toArray();
+      res.json(data);
+  } catch (error) {
+      console.error('Error fetching data:', error);
+      res.status(500).json({ error: 'Error fetching data' });
+  }
+});
+
 app.get('/displayData', (req, res) => {
   if (!req.session.user) {
     return res.redirect('/admin_login');
@@ -1217,288 +1290,49 @@ app.get('/displayData', (req, res) => {
   res.sendFile(path.join(__dirname, 'displayData.html'));
 });
 
+// Serve static files
+app.use(express.static('public'));
 
-app.get('/api/data/users', async (req, res) => {
+// Fetch Data
+app.get('/api/data/:collectionName', async (req, res) => {
+  const { collectionName } = req.params;
   try {
-      const users = await mongoose.model('User').find();
-      res.json(users);
-  } catch (error) {
-      res.status(500).json({ error: 'Failed to fetch users' });
-  }
-});
-
-
-
-app.get('/api/data/Aadharuclappy', async (req, res) => {
-  try {
-      const data = await Aadharuclappy.find(); // Fetch all records from the collection
-
-      if (!data || data.length === 0) {
-          return res.status(404).json({ message: 'No records found' }); // Handle case where no data is found
-      }
-
-      res.json(data); // Send the retrieved data as a JSON response
-  } catch (error) {
-      console.error('Error fetching data:', error); // Log the error for debugging
-      res.status(500).json({ error: 'Failed to fetch data' }); // Send an error response
-  }
-});
-
-app.get('/api/data/pana49forms', async (req, res) => {
-  try {
-    const data = await Pana49form.find(); // Fetch all records from the collection
-
-    if (!data || data.length === 0) {
-      return res.status(404).json({ message: 'No records found' }); // Handle case where no data is found
-    }
-
-    res.json(data); // Send the retrieved data as a JSON response
-  } catch (error) {
-    console.error('Error fetching data:', error); // Log the error for debugging
-    res.status(500).json({ error: 'Failed to fetch data' }); // Send an error response
-  }
-});
-
-app.get('/fetch-admin-data', async (req, res) => {
-  try {
-      const adminUsers = await AdminUser.find();
-      res.json(adminUsers);
-  } catch (error) {
-      console.error('Error fetching admin user data:', error);
-      res.status(500).json({ message: 'Internal Server Error' });
-  }
-});
-
-app.get('/api/data/correctionpans', async (req, res) => {
-  try {
-    const data = await CorrectionPan.find(); // Fetch all records from the collection
-    
-    if (!data || data.length === 0) {
-      return res.status(404).json({ message: 'No records found' }); // Handle case where no data is found
-    }
-
-    res.json(data); // Send the retrieved data as a JSON response
-  } catch (error) {
-    console.error('Error fetching data:', error); // Log the error for debugging
-    res.status(500).json({ error: 'Failed to fetch data' }); // Send an error response
-  }
-});
-
-
-app.get('/api/data/lostaadhars', async (req, res) => {
-  try {
-      const lostAadhars = await LostAadhar.find();
-      res.json(lostAadhars);
-  } catch (error) {
-      res.status(500).json({ error: 'Failed to fetch lost Aadhar data' });
-  }
-});
-
-// Route to fetch data from the Altruist collection
-app.get('/api/data/pan-altruist', async (req, res) => {
-    try {
-        const altruists = await Altruist.find();
-        res.json(altruists);
-    } catch (error) {
-        res.status(500).json({ error: 'Failed to fetch PAN Altruist data' });
-    }
-});
-
-
-// Route to fetch lost PANs
-app.get('/api/data/lostpans', async (req, res) => {
-  try {
-      const lostPans = await LostPAN.find();
-      if (!lostPans || lostPans.length === 0) {
-          return res.status(404).json({ message: 'No records found' });
-      }
-      res.json(lostPans);
-  } catch (error) {
-      console.error('Error fetching lost PAN data:', error);
-      res.status(500).json({ error: 'Failed to fetch lost PAN data' });
-  }
-});
-
-// Define the route to fetch data for 'paymentaadhars'
-app.get('/api/data/paymentaadhars', async (req, res) => {
-  try {
-    const data = await PaymentAadhar.find(); // Fetch all records from the collection
-
-    if (!data || data.length === 0) {
-      return res.status(404).json({ message: 'No records found' }); // Handle case where no data is found
-    }
-
-    res.json(data); // Send the retrieved data as a JSON response
-  } catch (error) {
-    console.error('Error fetching data:', error); // Log the error for debugging
-    res.status(500).json({ error: 'Failed to fetch data' }); // Send an error response
-  }
-});
-
-app.get('/api/data/Fingerprint', async (req, res) => {
-  try {
-    const data = await Fingerprint.find(); // Fetch all records from the collection
-
-    if (!data || data.length === 0) {
-      return res.status(404).json({ message: 'No records found' }); // Handle case where no data is found
-    }
-
-    res.json(data); // Send the retrieved data as a JSON response
-  } catch (error) {
-    console.error('Error fetching data:', error); // Log the error for debugging
-    res.status(500).json({ error: 'Failed to fetch data' }); // Send an error response
-  }
-});
-
-app.get('/api/data/AyushmanCard', async (req, res) => {
-  try {
-    const data = await AyushmanCard.find(); // Fetch all records from the collection
-
-    if (!data || data.length === 0) {
-      return res.status(404).json({ message: 'No records found' }); // Handle case where no data is found
-    }
-
-    res.json(data); // Send the retrieved data as a JSON response
-  } catch (error) {
-    console.error('Error fetching data:', error); // Log the error for debugging
-    res.status(500).json({ error: 'Failed to fetch data' }); // Send an error response
-  }
-});
-
-// Fetch data from various collections
-app.get('/api/data/aadharporinadd', async (req, res) => {
-  try {
-    const data = await Aadharporinadd.find();
-    if (!data.length) {
-      return res.status(404).json({ message: 'No records found' });
-    }
-    res.json(data);
-  } catch (error) {
-    console.error('Error fetching Aadharporinadd data:', error);
-    res.status(500).json({ message: 'Failed to fetch data' });
-  }
-});
-
-app.get('/api/data/shop', async (req, res) => {
-  try {
-    const data = await Shop.find();
-    if (!data.length) {
-      return res.status(404).json({ message: 'No records found' });
-    }
-    res.json(data);
-  } catch (error) {
-    console.error('Error fetching shop data:', error.message);
-    res.status(500).json({ message: 'Failed to fetch data', details: error.message });
-  }
-});
-
-// Add other routes as needed for different collections
-
-app.get('/api/data/shop', async (req, res) => {
-  try {
-    const data = await Shop.find(); // Fetch all records from the collection
-
-    if (!data || data.length === 0) {
-      return res.status(404).json({ message: 'No records found' }); // Handle case where no data is found
-    }
-
-    res.json(data); // Send the retrieved data as a JSON response
-  } catch (error) {
-    console.error('Error fetching data:', error.message); // Log the error for debugging
-    res.status(500).json({ error: 'Failed to fetch data', details: error.message }); // Send an error response
-  }
-});
-
-app.get('/api/data/tecexam', async (req, res) => {
-  try {
-    const data = await Tecexam.find(); // Fetch all records from the collection
-
-    if (!data || data.length === 0) {
-      return res.status(404).json({ message: 'No records found' }); // Handle case where no data is found
-    }
-
-    res.json(data); // Send the retrieved data as a JSON response
-  } catch (error) {
-    console.error('Error fetching data:', error.message); // Log the error for debugging
-    res.status(500).json({ error: 'Failed to fetch data', details: error.message }); // Send an error response
-  }
-});
-
-app.get('/api/data/transactions', async (req, res) => {
-  try {
-    // Fetch all transactions and populate the user field to include user data
-    const transactions = await Transaction.find()
-      .populate('userId', 'email') // Populate the userId field with the user's email
-      .exec();
-
-    if (!transactions || transactions.length === 0) {
-      return res.status(404).json({ message: 'No records found' });
-    }
-
-    // Format the data to include user email
-    const responseData = transactions.map(transaction => ({
-      _id: transaction._id,
-      amount: transaction.amount,
-      type: transaction.type,
-      description: transaction.description,
-      date: transaction.date,
-      userEmail: transaction.userId ? transaction.userId.email : 'N/A' // Add user email
-    }));
-
-    res.json(responseData); // Send the formatted data as a JSON response
-  } catch (error) {
-    console.error('Error fetching data:', error);
-    res.status(500).json({ error: 'Failed to fetch data', details: error.message });
-  }
-});
-
-
-// Define your schema and model
-const yourSchema = new mongoose.Schema({
-  name: String,
-  value: String
-});
-
-const YourModel = mongoose.model('YourModel', yourSchema);
-
-// Middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-// Serve static files (HTML, CSS, JS)
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Route to fetch data by ID
-app.get('/api/data/id/:id', (req, res) => {
-  const id = req.params.id;
-  YourModel.findById(id, (err, data) => {
-      if (err) {
-          console.error('Error fetching data:', err);
-          return res.status(500).json({ error: 'Server error' });
-      }
-      if (!data) {
-          return res.status(404).json({ error: 'Data not found' });
-      }
+      const collection = db.collection(collectionName);
+      const data = await collection.find().toArray();
       res.json(data);
-  });
+  } catch (error) {
+      console.error(`Error fetching data from ${collectionName}:`, error);
+      res.status(500).json({ error: `Error fetching data from ${collectionName}` });
+  }
 });
 
-// Route to update data by ID
-app.post('/api/data/id/:id', (req, res) => {
-  const id = req.params.id;
-  YourModel.findByIdAndUpdate(id, req.body, { new: true }, (err, data) => {
-      if (err) {
-          console.error('Error updating data:', err);
-          return res.status(500).json({ error: 'Server error' });
-      }
-      if (!data) {
-          return res.status(404).json({ error: 'Data not found' });
-      }
-      res.json(data);
-  });
+// Update Data
+app.put('/api/data/update/:id', async (req, res) => {
+  try {
+      const collection = db.collection('yourCollectionName');
+      const result = await collection.updateOne(
+          { _id: new ObjectId(req.params.id) },  // Ensure the ID is converted to an ObjectId
+          { $set: req.body }
+      );
+      res.json({ success: result.modifiedCount > 0 });
+  } catch (error) {
+      res.status(500).json({ success: false, error: error.message });
+  }
 });
 
-
+// Delete Data
+app.delete('/api/data/delete/:id', async (req, res) => {
+  try {
+      const collection = db.collection('yourCollectionName');
+      const result = await collection.deleteOne(
+          { _id: new ObjectId(req.params.id) }  // Convert the ID to ObjectId for MongoDB
+      );
+      res.json({ success: result.deletedCount > 0 });
+  } catch (error) {
+      console.error(error);  // Log the error to see the exact issue
+      res.status(500).json({ success: false, error: error.message });
+  }
+});
 
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
