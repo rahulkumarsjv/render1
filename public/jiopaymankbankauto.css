@@ -29,7 +29,7 @@
     height: 170px;
     width: 8%;
     position: absolute;
-    top: 125%;
+    top: 100%;
     left: 68%;
     justify-content: center;
     align-items: center;
@@ -38,7 +38,7 @@
 }
 .singh {
     position: absolute; /* Position the div absolutely */
-    top: 150%; /* 90% from the top of its containing element */
+    top: 125%; /* 90% from the top of its containing element */
     left: 57%; /* 70% from the left of its containing element */
     width: 20%; /* Width of the div is 20% of the containing element */
     transform: translate(-70%, -90%); /* Adjust position relative to its center */
