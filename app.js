@@ -32,7 +32,7 @@ const app = express();
 
 app.use(cors()); // Enable CORS for all routes
 app.use(express.json());
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 10000;
 
 // // Connect to MongoDB
 // mongoose.connect('mongodb+srv://rahul199202012:gexBdbMGUqtwE3Nq@cluster0.k7xol6w.mongodb.net/rndigitalindia', {
