@@ -782,7 +782,6 @@ app.get('/AadharFingerprint', async (req, res) => {
   }
 });
 
-// routes/jiopaymanban.js
 app.post('/jiopaymanban', checkAuth, async (req, res) => {
   const { accountNo, ifscCode, name, fatherName, date_of_birth, address, mobileNumber, emailId, branch, branchAddress, accountOpenDate } = req.body;
 
@@ -800,6 +799,8 @@ app.post('/jiopaymanban', checkAuth, async (req, res) => {
       user.walletBalance -= requiredBalance;
       await user.save();
 
+      const uniqueNumber = generateUniqueNumber();
+
       const jiopaymankbankEntry = new Jiopaymankbank({
           userId: user._id,
           accountNo,
@@ -813,20 +814,18 @@ app.post('/jiopaymanban', checkAuth, async (req, res) => {
           branch,
           branchAddress,
           accountOpenDate,
+          uniqueNumber // Include this field
       });
 
       await jiopaymankbankEntry.save();
-
-      // Generate a unique 14-digit number
-      const uniqueNumber = generateUniqueNumber();
 
       const transaction = new Transaction({
           userId: user._id,
           amount: requiredBalance,
           type: 'debit',
-          description: 'Jio Payment Bank copy passbook order ',
+          description: 'Jio Payment Bank copy passbook order',
           date: new Date(),
-          uniqueNumber: uniqueNumber // Save the unique number with the transaction
+          uniqueNumber // Save the unique number with the transaction
       });
 
       await transaction.save();
