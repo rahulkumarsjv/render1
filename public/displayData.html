@@ -25,45 +25,42 @@
 </head>
 <body>
     <div class="container">
-        <!-- Search section -->
         <div class="search-section">
             <input type="text" id="searchInput" placeholder="Search by name, address, or ID">
             <button onclick="searchData()">Search</button>
         </div>
 
-        <!-- Button section -->
         <h1>View Data</h1>
         <div class="button-section">
-            <!-- Your existing buttons -->
-            <button onclick="fetchData('Aadharuclappy')">View Aadhar UCL Apply</button>
-            <button onclick="fetchData('users')">View Users</button>
+            <!-- Add buttons for each collection -->
+            <button onclick="fetchData('aadharporinadds')">View Aadhar Porin Adds</button>
+            <button onclick="fetchData('aadharuclappies')">View Aadhar UCL Applies</button>
+            <button onclick="fetchData('adminusers')">View Admin Users</button>
+            <button onclick="fetchData('altruists')">View Altruists</button>
+            <button onclick="fetchData('ayushmancards')">View Ayushman Cards</button>
+            <button onclick="fetchData('ayushmandatas')">View Ayushman Datas</button>
             <button onclick="fetchData('correctionpans')">View Correction Pans</button>
-            <button onclick="fetchData('Shop')">View UTI Psa ID</button>
+            <button onclick="fetchData('datas')">View Datas</button>
+            <button onclick="fetchData('fingerprints')">View Fingerprints</button>
+            <button onclick="fetchData('generics')">View Generics</button>
+            <button onclick="fetchData('jiopaymankbanks')">View Jio Payment Bank</button>
             <button onclick="fetchData('lostaadhars')">View Lost Aadhaar</button>
             <button onclick="fetchData('lostpans')">View Lost Pans</button>
-            <button onclick="fetchData('Fingerprint')">View Aadhaar Fingerprint Retailer ID</button>
-            <button onclick="fetchData('Aadharporinadd')">View Fingerprint Add Money</button>
-            <button onclick="fetchData('AyushmanCard')">View Ayushman Card Download</button>
-            <button onclick="fetchData('TecExam')">View TEC Exam Pass</button>
-            <button onclick="fetchData('pan-altruist')">View New PAN Card (PAN Altruist Retailer ID Created)</button>
-            <button onclick="fetchData('paymentaadhars')">View Payment Aadhars</button>
+            <button onclick="fetchData('mobiletolostshowaadhars')">View Mobile to Lost Show Aadhaar</button>
+            <button onclick="fetchData('newaadharcards')">View New Aadhaar Cards</button>
+            <button onclick="fetchData('pana49forms')">View Pana49 Forms</button>
+            <button onclick="fetchData('paymentaadhars')">View Payment Aadhaar</button>
+            <button onclick="fetchData('records')">View Records</button>
+            <button onclick="fetchData('shops')">View Shops</button>
+            <button onclick="fetchData('tecexams')">View TEC Exams</button>
             <button onclick="fetchData('transactions')">View Transactions</button>
+            <button onclick="fetchData('users')">View Users</button>
+
             <button onclick="logout()">Logout</button>
         </div>
 
-        <!-- Data display section -->
-        <div id="dataDisplay"></div>
-
-        <!-- Edit form section -->
-        <div id="editForm" style="display: none;">
-            <h2>Edit Data</h2>
-            <form id="editDataForm" onsubmit="submitEditForm(event)">
-                <!-- Dynamic inputs will be inserted here -->
-                <button type="submit">Update</button>
-            </form>
-        </div>
+        <div id="dataDisplay" class="data-display"></div>
     </div>
-
 
     <script src="displayData.js"></script>
 </body>
