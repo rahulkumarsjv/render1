@@ -2,172 +2,126 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RA DIGITAL INDIA Cyber Cafe</title>
-    <link rel="stylesheet" href="jiopaymankbankauto.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <title>Account Details</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table, th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
 </head>
 <body>
-    <div class="content">
-        <div class="container">
-            <div class="d-flex align-items-center justify-content-center text-center mt-4">
-                <img src="./images/jiologo.png" class="img-fluid me-3" style="width: 5%;" alt="Responsive image">
-                <h1 class="m-0">Jio Payments Bank</h1>
-            </div>
-        </div>
-        <div class="please mt-3" style="font-size: 100%;">
-            <p>अपनी पासबुक को सावधानीपूर्वक रखें, अपनी पासबुक पर हस्ताक्षर करें, पासबुक को नियमित रुप से अद्यतन करें, किसी भी प्रकार की विसंगति होने की सूचना तत्काल दी जानी चाहिए <br>पासबुक कों ना मोड़े। यदि पासबुक खो जाती है या खराब हो जाती है तो निर्धारित शुल्क का भुगतान करने के बाद अद्यतन शेष के साथ डुप्लीकेट पासबुक जारी की जायेगी</p>
-            <p>Do not Fold the Passbook, If a Passbook is lost or Spoiled, a Duplicate Passbook will be given With Latest Balance after Payment of Stipulated Charges.</p>
-            <p>कृपया अपनी व्यक्तिगत जानकारी, प्रयोक्ता आई. डी., पिन, पासवर्ड किसी को न बताएँ, कॉल या ई-मेल के माध्यम से इस प्रकार की जानकारी मांगे जाने पर शाखा को तुरन्त सूचित किया जाना चाहिए</p>
-            <p>Please Do not Give your Personal Information, User ID, Pins, Password to anyone. any Calls or E-mails Requesting for such information should be notified to the Branch Immediately.</p>
-            <p>नामांकन सुविधा का प्रयोग करें</p>
-            <p>Use Nomination Facility</p>
-            <p>ब्याज की गणना दैनिक आधार पर की जाएगी और महीने की समाप्ति पर जमा किया जाएगा।</p>
-            <p>Interest is Calculated on Daily Basis and Credited to Accounts with End of the Months.</p>
-        </div>
-        <div class="d-flex flex-row border">
-            <div class=" m-0" >
-                <div class="Accounts">
-                    <h2 class="mt-1" id="Accountss"> Account No:</h2>    
-                </div>
-                <div class="Accounts" id="Accountss">
-                    <h2 class="mt-3">IFSC Code:</h2>
-                </div>
-                <div class="Accounts" id="Accountss">
-                    <h2 class="mt-3">Name:</h2>
-                </div>
-                <div class="Accounts" id="Accountss">
-                    <h2 class="mt-3">Father Name:</h2>
-                </div>
-                <div class="Accounts" id="Accountss">
-                    <h2 class="mt-2">date of birth:</h2>
-                </div>
-                <div class="Accounts" id="Accountss">
-                    <h2 class="mt-4">Address:</h2>
-                </div>
-                <div class="Accounts" id="Accountss">
-                    <h2 class="mt-5">Mobile No:</h2>
-                </div>
-                <div class="Accounts" id="Accountss">
-                    <h2 class="mt-4">Email Id:</h2>
-                </div>
-                <div class="Accounts" id="Accountss">
-                    <h2 class="mt-4">Branch:</h2>
-                </div>
-                <div class="Accounts" id="Accountss">
-                    <h2 class="mt-4">Branch Address:</h2>
-                </div>
-                <div class="Accounts" id="Accountss">
-                    <h2 class="mt-3">accountOpenDate</h2>
-                </div>
-            </div>
-            <div class="col-md-4" style="font-size: 20px; margin-top: 1%; margin-left: 20%;">
-                <div class="accountsshow">
-                    <p id="accountno"></p>
-                </div>
-                <div class="accountsshow">
-                    <p id="ifsccode"></p>
-                </div>
-                <div class="accountsshow">
-                    <p id="name"></p>
-                </div>
-                <div class="accountsshow">
-                    <p id="fathername"></p>
-                </div>
-                <div class="accountsshow">
-                    <p id="fathername"></p>
-                </div>
-                <div class="accountsshow">
-                    <p id="date_of_birth"></p>
-                </div>
-                <div class="accountsshow">
-                    <p id="address"></p>
-                </div>
-                <div class="accountsshow">
-                    <p id="mobilenumber"></p>
-                </div>
-                <div class="accountsshow">
-                    <p id="email"></p>
-                </div>
-                <div class="accountsshow">
-                    <p id="branch"></p>
-                </div>
-                <div class="accountsshow">
-                    <p id="branchAddress"></p>
-                </div>
-                <div class="accountsshow">
-                    <p id="accountOpenDate"></p>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="photo">PHOTO</div>
-        <div class="singh" style="margin-top: 20%; margin-left: 50%; width: 50%;">
-            <img src="./images/singh-removebg-preview.png" alt="photo">
-        </div>
-        <button id="downloadPDF" style="position: absolute; top:2%; left: 5%;">Download Full Page</button>
 
-        <script src="jiopaymankbankautoprin.js"></script> 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<h2>Account Details</h2>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            document.getElementById('downloadPDF').addEventListener('click', function () {
-                // Hide the button before taking the screenshot
-                const button = document.getElementById('downloadPDF');
-                button.style.display = 'none'; // Hide button
+<table>
+    <tr>
+        <th>Field</th>
+        <th>Value</th>
+    </tr>
+    <tr>
+        <td>User ID</td>
+        <td id="user-id">Loading...</td>
+    </tr>
+    <tr>
+        <td>Order ID</td>
+        <td id="order-id">Loading...</td>
+    </tr>
+    <tr>
+        <td>Account Number</td>
+        <td id="accountno">Loading...</td>
+    </tr>
+    <tr>
+        <td>IFSC Code</td>
+        <td id="ifsccode">Loading...</td>
+    </tr>
+    <tr>
+        <td>Name</td>
+        <td id="name">Loading...</td>
+    </tr>
+    <tr>
+        <td>Father's Name</td>
+        <td id="fathername">Loading...</td>
+    </tr>
+    <tr>
+        <td>Date of Birth</td>
+        <td id="date_of_birth">Loading...</td>
+    </tr>
+    <tr>
+        <td>Address</td>
+        <td id="address">Loading...</td>
+    </tr>
+    <tr>
+        <td>Mobile Number</td>
+        <td id="mobilenumber">Loading...</td>
+    </tr>
+    <tr>
+        <td>Email ID</td>
+        <td id="email">Loading...</td>
+    </tr>
+    <tr>
+        <td>Branch</td>
+        <td id="branch">Loading...</td>
+    </tr>
+    <tr>
+        <td>Branch Address</td>
+        <td id="branchAddress">Loading...</td>
+    </tr>
+    <tr>
+        <td>Account Open Date</td>
+        <td id="accountOpenDate">Loading...</td>
+    </tr>
+</table>
 
-                // Capture the entire webpage including scrolling content
-                html2canvas(document.body, {
-                    scale: 2, // Increase the resolution for better quality
-                    useCORS: true, // Handle cross-origin images
-                    allowTaint: true // Allow cross-origin images to be rendered in canvas
-                }).then(function (canvas) {
-                    // Import jsPDF library from the global window object
-                    const { jsPDF } = window.jspdf;
-                    const pdf = new jsPDF('p', 'mm', 'a4'); // Create a new PDF document in portrait mode
+<script>
+    async function fetchAccountDetails() {
+        try {
+            const response = await fetch('/api/account-details');
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const data = await response.json();
 
-                    // Calculate image dimensions for PDF
-                    const imgData = canvas.toDataURL('image/png');
-                    const pageWidth = pdf.internal.pageSize.getWidth();
-                    const pageHeight = pdf.internal.pageSize.getHeight();
-                    const imgWidth = pageWidth;
-                    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            console.log('Fetched data:', data); // Log the data to see its structure
 
-                    let position = 0;
+            if (Array.isArray(data) && data.length > 0) {
+                const account = data[0]; // Use the first item from the array
 
-                    // Add the image to the PDF
-                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                document.getElementById('user-id').innerText = account.userId || 'N/A';
+                document.getElementById('order-id').innerText = account.orderId || 'N/A';
+                document.getElementById('accountno').innerText = account.accountNo || 'N/A';
+                document.getElementById('ifsccode').innerText = account.ifscCode || 'N/A';
+                document.getElementById('name').innerText = account.name || 'N/A';
+                document.getElementById('fathername').innerText = account.fatherName || 'N/A';
+                document.getElementById('date_of_birth').innerText = account.date_of_birth || 'N/A';
+                document.getElementById('address').innerText = account.address || 'N/A';
+                document.getElementById('mobilenumber').innerText = account.mobileNumber || 'N/A';
+                document.getElementById('email').innerText = account.emailId || 'N/A';
+                document.getElementById('branch').innerText = account.branch || 'N/A';
+                document.getElementById('branchAddress').innerText = account.branchAddress || 'N/A';
+                document.getElementById('accountOpenDate').innerText = account.accountOpenDate || 'N/A';
+            } else {
+                console.error('No account details found or data is not an array.');
+            }
+        } catch (error) {
+            console.error('Error fetching account details:', error);
+        }
+    }
 
-                    // If the content is longer than one page, continue adding images
-                    let remainingHeight = imgHeight - pageHeight;
+    window.onload = fetchAccountDetails;
+</script>
 
-                    while (remainingHeight > 0) {
-                        position = position - pageHeight;
-                        pdf.addPage();
-                        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                        remainingHeight -= pageHeight;
-                    }
-
-                    // Save and download the PDF
-                    pdf.save('webpage_screenshot.pdf');
-
-                    // Show the button again after the PDF is downloaded
-                    button.style.display = 'block';
-                }).catch(function (error) {
-                    console.error('Error capturing screenshot:', error);
-                    // Show the button again if there's an error
-                    button.style.display = 'block';
-                });
-            });
-        });
-    </script>
 </body>
 </html>
-    

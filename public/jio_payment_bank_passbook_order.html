@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RA DIGITAL INDIA Cyber Cafe</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .PanApplicationAck {
+            position: relative;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            width: 80%;
+            max-width: 800px;
+            margin: 20px auto;
+            height: auto;
+            color: #000;
+        }
+
+        .PanApplicationAck::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("./images/RA DIGITAL INDIA Cyber Cafe.jpg");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center center;
+            opacity: 0.2;
+            z-index: -1;
+            border-radius: 8px;
+        }
+
+        .PanApplicationAck h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #000000;
+            text-align: center;
+        }
+
+        .PanApplicationAck p {
+            font-size: 16px;
+            line-height: 1.5;
+            color: #000;
+            margin: 10px 0;
+        }
+
+        .PanApplicationAck span {
+            font-weight: bold;
+            color: #000;
+        }
+
+        .PanApplicationAck p:last-child {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #777;
+        }
+
+        #datetime{
+            color: #000;
+        }
+
+        #name{
+            margin-left: 22%;
+        }
+
+        #uniqueNumber{
+            margin-left: 46%;
+        }
+
+        #gender{
+            margin-left: 51%;
+        }
+
+        #dob{
+            margin-left: 34%;
+        }
+
+        #fatherName{
+            margin-left: 45%;
+        }
+
+        #email{
+            margin-left: 51%;
+        }
+
+        #address{
+            margin-left: 51%;
+        }
+
+        #mobilenumber{
+            margin-left: 45%;
+        }
+
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .download-btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #2196F3;
+            color: white;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="PanApplicationAck" id="panApplicationAck">
+        <h1>Jio Payment Bank Passbook Original Copy</h1>
+        <p>Received order PassBookRs RS.300.00/- (incl. of taxes) copy passbook</p>
+        <p>Name as to be printed on Bank Passbook: <span id="name">Loading...</span></p>
+        <p>Order Number: <span id="uniqueNumber">Loading...</span></p>
+        <p>Mobile Number: <span id="mobilenumber">Loading...</span></p>
+        <p>Email ID: <span id="email">Loading...</span></p>
+        <p>Address: <span id="address">Loading...</span></p>
+        <p>Jio Payment Bank head office passbook print provided to all India customers authorized and RN Digital India portal cyber cafe.</p>
+        <p>Jio Payment Bank passbook home delivery (In Copy)</p>
+        <p>Customer care helpline number: <span id="number">7061805159</span></p>
+        <p id="datetime"></p>
+        <div class="button-container">
+            <button class="download-btn" id="downloadBtn" onclick="downloadScreenshot()">Download</button>
+        </div>
+    </div>
+
+    <!-- Include external JS libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.0/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.0/jspdf.umd.min.js"></script>
+    <script>
+        async function fetchAccountDetails() {
+            try {
+                const response = await fetch('/api/account-details', {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const data = await response.json();
+
+                console.log('Fetched data:', data); // Log the data to see its structure
+
+                if (data && Array.isArray(data) && data.length > 0) {
+                    const account = data[0]; // Use the first item from the array
+
+                    document.getElementById('uniqueNumber').innerText = account.uniqueNumber || 'N/A';
+                    document.getElementById('name').innerText = account.name || 'N/A';
+                    document.getElementById('mobilenumber').innerText = account.mobileNumber || 'N/A';
+                    document.getElementById('email').innerText = account.emailId || 'N/A';
+                    document.getElementById('address').innerText = account.address || 'N/A';
+
+                    // Display current date and time
+                    const now = new Date();
+                    document.getElementById('datetime').innerText = now.toLocaleString();
+                } else {
+                    console.error('No account details found or data is not an array.');
+                    displayError('No account details found.');
+                }
+            } catch (error) {
+                console.error('Error fetching account details:', error);
+                displayError('Error fetching account details. Please try again.');
+            }
+        }
+
+        function displayError(message) {
+            document.getElementById('uniqueNumber').innerText = message;
+            document.getElementById('name').innerText = message;
+            document.getElementById('mobilenumber').innerText = message;
+            document.getElementById('email').innerText = message;
+            document.getElementById('address').innerText = message;
+        }
+
+        window.onload = fetchAccountDetails;
+
+        function downloadScreenshot() {
+            const button = document.getElementById('downloadBtn');
+            button.style.display = 'none'; // Hide the button
+
+            html2canvas(document.body, {
+                scale: 2,
+                useCORS: true,
+                allowTaint: true
+            }).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jspdf.jsPDF('p', 'mm', 'a4');
+                const pageWidth = pdf.internal.pageSize.getWidth();
+                const pageHeight = pdf.internal.pageSize.getHeight();
+                const imgWidth = pageWidth;
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+                pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+                pdf.save('jio_payment_bank_passbook.pdf');
+
+                button.style.display = 'block'; // Show the button
+            }).catch(err => {
+                console.error('Error generating screenshot:', err);
+                button.style.display = 'block'; // Show the button in case of error
+            });
+        }
+    </script>
+</body>
+</html>
