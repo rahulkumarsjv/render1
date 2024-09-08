@@ -1231,27 +1231,6 @@ app.post('/aadhar_number', async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 });
-// Handle GET request to fetch Aadhar number data based on logged-in user's email
-app.get('/aadhar_number', async (req, res) => {
-  try {
-    // Retrieve the user from session
-    const user = await User.findById(req.session.userId);
-
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    // Fetch all AadharNumber documents associated with the user's email
-    const results = await Aadhar_Number.find({ email: user.email });
-
-    // Send the filtered results as a JSON response
-    res.json(results);
-  } catch (error) {
-    console.error('Error fetching data:', error);
-    res.status(500).send('Internal Server Error');
-  }
-});
-
 
 app.get('/api/pan-applications', async (req, res) => {
   try {
