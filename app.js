@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const mongodb = require('mongodb');
 const session = require('express-session');
 const bcrypt = require('bcrypt');
 const multer = require('multer');
@@ -24,6 +25,8 @@ const Altruist = require('./models/panaltruist');
 const Aadharuclappy = require('./models/Aadharuclappy'); // Ensure the correct path is used
 const DataModel = require('./models/Data'); // Import your schema
 const Jiopaymankbank = require('./models/jiopaymankbankauto');
+const Kotak = require('./models/Kotak'); // Adjust the path based on the actual location of your model
+const Aadhar_Number = require('./models/aadhartopdfnumber');
 const crypto = require('crypto');
 require('dotenv').config();
 const cors = require('cors');
@@ -1187,6 +1190,7 @@ app.post('/kotat', upload.fields([
       .then(() => res.send('aapka form successful submit ho gaya hai aap kripya 24 ghante ka vate Karen 24 ghante ke andar aapko call back aaega company ke taraf se'))
       .catch(err => res.status(400).send('Error saving record: ' + err.message));
 });
+
 
 // Handle POST request to submit Aadhar number
 app.post('/aadhar_number', async (req, res) => {
