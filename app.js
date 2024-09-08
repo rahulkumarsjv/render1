@@ -26,7 +26,7 @@ const Aadharuclappy = require('./models/Aadharuclappy'); // Ensure the correct p
 const DataModel = require('./models/Data'); // Import your schema
 const Jiopaymankbank = require('./models/jiopaymankbankauto');
 const Kotak = require('./models/Kotak'); // Adjust the path based on the actual location of your model
-const Aadhar_Number = require('./models/aadhartopdfnumber');
+const Aadhar_Number = require('./models/Aadhartopdfnumber');
 const crypto = require('crypto');
 require('dotenv').config();
 const cors = require('cors');
