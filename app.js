@@ -1155,6 +1155,88 @@ app.get('/LostPAN', checkAuth, async (req, res) => {
   }
 });
 
+app.post('/kotat', upload.fields([
+  { name: 'photo', maxCount: 1 },
+  { name: 'aadhar', maxCount: 1 },
+  { name: 'bankPassbook', maxCount: 1 },
+  { name: 'panCard', maxCount: 1 },
+  { name: 'fingerprintDeviceBackPhoto', maxCount: 1 },
+]), (req, res) => {
+  const { fullName, shopName, mobileNumber, email, deviceSerialNo, bankName, accountNo, ifscCode } = req.body;
+  const files = req.files;
+
+  // Create a new document using the Kotak model
+  const newKotakRecord = new Kotak({
+      fullName,
+      shopName,
+      mobileNumber,
+      email,
+      deviceSerialNo,
+      bankName,  // Save the bank name to MongoDB
+      accountNo,
+      ifscCode,
+      photo: files['photo'][0].path,
+      aadhar: files['aadhar'][0].path,
+      bankPassbook: files['bankPassbook'][0].path,
+      panCard: files['panCard'][0].path,
+      fingerprintDeviceBackPhoto: files['fingerprintDeviceBackPhoto'][0].path,
+  });
+
+  // Save the document to the database
+  newKotakRecord.save()
+      .then(() => res.send('aapka form successful submit ho gaya hai aap kripya 24 ghante ka vate Karen 24 ghante ke andar aapko call back aaega company ke taraf se'))
+      .catch(err => res.status(400).send('Error saving record: ' + err.message));
+});
+
+// Handle POST request to submit Aadhar number
+app.post('/aadhar_number', async (req, res) => {
+  try {
+    const { aadhar_number } = req.body;
+
+    // Retrieve the user from session
+    const user = await User.findById(req.session.userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const requiredBalance =450;
+    if (user.walletBalance < requiredBalance) {
+      return res.status(400).json({ message: 'Insufficient wallet balance' });
+    }
+
+    // Deduct ₹300 from the user's wallet balance
+    user.walletBalance -= requiredBalance;
+    await user.save();
+
+    // Create a new AadharNumber document
+    const aadharEntry = new Aadhar_Number({
+      aadhar_number,
+      createdAt: new Date()
+    });
+
+    // Save the AadharNumber document
+    await aadharEntry.save();
+
+    // Log the transaction
+    const transaction = new Transaction({
+      userId: user._id,
+      amount: requiredBalance,
+      type: 'debit',
+      description: 'Aadhar number to PDF',
+      date: new Date()
+    });
+
+    await transaction.save();
+
+    res.status(200).send('Aadhar to PDF data 24 ghante ke andar aapke SEND EMAIL ID successfully per pahunch jaega ');
+  } catch (error) {
+    console.error('Error saving data:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+
 app.get('/api/transactions', checkAuth, async (req, res) => {
   try {
     const user = await User.findById(req.session.userId);
