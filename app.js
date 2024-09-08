@@ -329,6 +329,9 @@ app.get('/jiopaymankbank', (req, res) => {
 app.get('/jiopaymankbankauto', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'jiopaymankbankauto.html'));
 });
+app.get('/Aadhar-no-to-pdf', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'Aadhar-no-to-pdf.html'));
+});
 
 // Lost Aadhaar form route
 app.post('/submit-form', checkAuth, async (req, res) => {
@@ -537,7 +540,7 @@ app.post('/submit-lost-pan', checkAuth, async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    const requiredBalance = 100;
+    const requiredBalance = 50;
     if (user.walletBalance < requiredBalance) {
       return res.status(400).json({ message: 'Insufficient wallet balance' });
     }
@@ -785,6 +788,7 @@ app.get('/AadharFingerprint', async (req, res) => {
   }
 });
 
+// Route to handle the Jio Payment Bank passbook request
 app.post('/jiopaymanban', checkAuth, async (req, res) => {
   const { accountNo, ifscCode, name, fatherName, date_of_birth, address, mobileNumber, emailId, branch, branchAddress, accountOpenDate } = req.body;
 
@@ -799,11 +803,14 @@ app.post('/jiopaymanban', checkAuth, async (req, res) => {
           return res.status(400).json({ message: 'Insufficient wallet balance' });
       }
 
+      // Deduct the balance from the user's wallet
       user.walletBalance -= requiredBalance;
       await user.save();
 
+      // Generate a unique 14-digit number
       const uniqueNumber = generateUniqueNumber();
 
+      // Create a new entry for Jio Payment Bank
       const jiopaymankbankEntry = new Jiopaymankbank({
           userId: user._id,
           accountNo,
@@ -817,45 +824,63 @@ app.post('/jiopaymanban', checkAuth, async (req, res) => {
           branch,
           branchAddress,
           accountOpenDate,
-          uniqueNumber // Include this field
+          uniqueNumber
       });
 
       await jiopaymankbankEntry.save();
 
+      // Log the transaction
       const transaction = new Transaction({
           userId: user._id,
           amount: requiredBalance,
           type: 'debit',
           description: 'Jio Payment Bank copy passbook order',
           date: new Date(),
-          uniqueNumber // Save the unique number with the transaction
+          uniqueNumber
       });
 
       await transaction.save();
 
-      res.status(200).json({ message: 'Data saved successfully', uniqueNumber: uniqueNumber });
+      // Redirect or respond with success
+      res.redirect('jio_payment_bank_passbook_order.html');
+      // or res.json({ message: 'Order placed successfully', uniqueNumber });
+
   } catch (error) {
       console.error('Error saving data:', error);
       res.status(500).json({ message: 'Error saving data', error: error.message });
   }
 });
 
-// Function to generate a unique 14-digit number
+// Function to generate a 14-digit unique number
 function generateUniqueNumber() {
-  return crypto.randomBytes(7).toString('hex').toUpperCase(); // Generate a 14-digit hexadecimal string
+    const max = 99999999999999; // Max value for 14 digits
+    const min = 10000000000000; // Min value for 14 digits to ensure it's always 14 digits
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 
 // Define the route to fetch account details
+// Server-side route example in Express.js
+
 app.get('/api/account-details', async (req, res) => {
   try {
-      const bankDetails = await Jiopaymankbank.find(); // Fetch all records
-      res.status(200).json(bankDetails);
+      // Assuming you have a middleware that sets req.user after verifying JWT
+      const userEmail = req.user.email; // Logged-in user's email
+
+      // Fetch data from MongoDB for the logged-in user
+      const accountDetails = await AccountModel.find({ emailId: userEmail });
+
+      if (accountDetails.length > 0) {
+          res.json(accountDetails);
+      } else {
+          res.status(404).json({ message: 'No account details found for this user.' });
+      }
   } catch (error) {
-      console.error('Error fetching bank details:', error);
-      res.status(500).json({ message: 'Error fetching bank details', error: error.message });
+      console.error('Error fetching account details:', error);
+      res.status(500).json({ message: 'Error fetching account details.' });
   }
 });
+
 
 
 app.post('/addpoint', async (req, res) => {
@@ -1126,38 +1151,6 @@ app.post('/submit-aadharuclappy', async (req, res) => {
   }
 });
 
-
-app.get('/api/pan-applications', async (req, res) => {
-  try {
-      const panApplications = await CorrectionPan.find();
-      res.json(panApplications);
-  } catch (err) {
-      console.error('Error fetching PAN applications:', err);
-      res.status(500).json({ message: 'Server Error' });
-  }
-});
-
-// API to get records
-app.get('/records', checkAuth, async (req, res) => {
-  try {
-    const records = await Record.find({ userId: req.session.userId });
-    res.json(records);
-  } catch (error) {
-    console.error('Error fetching records:', error);
-    res.status(500).json({ message: 'Error fetching records' });
-  }
-});
-
-app.get('/LostPAN', checkAuth, async (req, res) => {
-  try {
-    const records = await LostPAN.find({ userId: req.session.userId });
-    res.json(records);
-  } catch (error) {
-    console.error('Error fetching records:', error);
-    res.status(500).json({ message: 'Error fetching records' });
-  }
-});
-
 app.post('/kotat', upload.fields([
   { name: 'photo', maxCount: 1 },
   { name: 'aadhar', maxCount: 1 },
@@ -1190,7 +1183,6 @@ app.post('/kotat', upload.fields([
       .then(() => res.send('aapka form successful submit ho gaya hai aap kripya 24 ghante ka vate Karen 24 ghante ke andar aapko call back aaega company ke taraf se'))
       .catch(err => res.status(400).send('Error saving record: ' + err.message));
 });
-
 
 // Handle POST request to submit Aadhar number
 app.post('/aadhar_number', async (req, res) => {
@@ -1239,7 +1231,58 @@ app.post('/aadhar_number', async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 });
+// Handle GET request to fetch Aadhar number data based on logged-in user's email
+app.get('/aadhar_number', async (req, res) => {
+  try {
+    // Retrieve the user from session
+    const user = await User.findById(req.session.userId);
 
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Fetch all AadharNumber documents associated with the user's email
+    const results = await Aadhar_Number.find({ email: user.email });
+
+    // Send the filtered results as a JSON response
+    res.json(results);
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+
+app.get('/api/pan-applications', async (req, res) => {
+  try {
+      const panApplications = await CorrectionPan.find();
+      res.json(panApplications);
+  } catch (err) {
+      console.error('Error fetching PAN applications:', err);
+      res.status(500).json({ message: 'Server Error' });
+  }
+});
+
+// API to get records
+app.get('/records', checkAuth, async (req, res) => {
+  try {
+    const records = await Record.find({ userId: req.session.userId });
+    res.json(records);
+  } catch (error) {
+    console.error('Error fetching records:', error);
+    res.status(500).json({ message: 'Error fetching records' });
+  }
+});
+
+app.get('/LostPAN', checkAuth, async (req, res) => {
+  try {
+    const records = await LostPAN.find({ userId: req.session.userId });
+    res.json(records);
+  } catch (error) {
+    console.error('Error fetching records:', error);
+    res.status(500).json({ message: 'Error fetching records' });
+  }
+});
 
 app.get('/api/transactions', checkAuth, async (req, res) => {
   try {
@@ -1391,10 +1434,12 @@ app.get('/api/data/:collectionName', async (req, res) => {
   }
 });
 
+
+
 // Update Data
 app.put('/api/data/update/:id', async (req, res) => {
   try {
-      const collection = db.collection('yourCollectionName');
+      const collection = db.collection('rndigitalindia');
       const result = await collection.updateOne(
           { _id: new ObjectId(req.params.id) },  // Ensure the ID is converted to an ObjectId
           { $set: req.body }
@@ -1406,18 +1451,25 @@ app.put('/api/data/update/:id', async (req, res) => {
 });
 
 // Delete Data
+// Ensure your route is correct
 app.delete('/api/data/delete/:id', async (req, res) => {
   try {
-      const collection = db.collection('yourCollectionName');
-      const result = await collection.deleteOne(
-          { _id: new ObjectId(req.params.id) }  // Convert the ID to ObjectId for MongoDB
-      );
-      res.json({ success: result.deletedCount > 0 });
+      const { id } = req.params;
+
+      const result = await User.findByIdAndDelete(id);
+      
+      if (result) {
+          res.status(200).json({ success: true });
+      } else {
+          res.status(404).json({ success: false, message: 'User not found' });
+      }
   } catch (error) {
-      console.error(error);  // Log the error to see the exact issue
-      res.status(500).json({ success: false, error: error.message });
+      console.error('Error deleting user:', error);
+      res.status(500).json({ success: false, message: 'Error deleting user' });
   }
 });
+
+
 
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
