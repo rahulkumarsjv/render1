@@ -222,5 +222,40 @@
             }
         });
     </script>
+    <script>
+        document.querySelector('.iconnavbaar').addEventListener('click', function () {
+            const navbara = document.querySelector('.navbara');
+            navbara.classList.toggle('collapsed');
+        });
+
+        document.querySelectorAll('.printservicebo').forEach(item => {
+            item.addEventListener('click', function () {
+                const link = item.querySelector('a');
+                if (link) {
+                    window.location.href = link.href;
+                }
+            });
+        });
+    </script>
+    <script>
+        // Fetch and display wallet balance
+        fetch('/api/wallet-balance')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.walletBalance !== undefined) {
+                    document.getElementById('walletBalance').textContent = data.walletBalance;
+                } else {
+                    console.error('Error: Wallet balance not found');
+                }
+            })
+            .catch(error => console.error('Error fetching wallet balance:', error));
+           
+    </script>
+
 </body>
 </html>    
