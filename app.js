@@ -28,7 +28,7 @@ const Jiopaymankbank = require('./models/jiopaymankbankauto');
 const Kotak = require('./models/Kotak'); // Adjust the path based on the actual location of your model
 const Aadhar_Number = require('./models/Aadhartopdfnumber');
 // const E_Shram_Card = require('./models/E_shram_card'); // Correct path
-const AadharToDetails = require('./models/adhart Details')
+const AadharToDetails = require('./models/AdhartDetails')
 const crypto = require('crypto');
 require('dotenv').config();
 const cors = require('cors');
