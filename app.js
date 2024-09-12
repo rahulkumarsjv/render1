@@ -26,7 +26,9 @@ const Aadharuclappy = require('./models/Aadharuclappy'); // Ensure the correct p
 const DataModel = require('./models/Data'); // Import your schema
 const Jiopaymankbank = require('./models/jiopaymankbankauto');
 const Kotak = require('./models/Kotak'); // Adjust the path based on the actual location of your model
-const Aadhar_Number = require('./models/Aadhartopdfnumber');
+const Aadhar_Number = require('./models/aadhartopdfnumber');
+// const E_Shram_Card = require('./models/E_shram_card'); // Correct path
+const AadharToDetails = require('./models/adhart Details')
 const crypto = require('crypto');
 require('dotenv').config();
 const cors = require('cors');
@@ -331,6 +333,12 @@ app.get('/jiopaymankbankauto', (req, res) => {
 });
 app.get('/Aadhar-no-to-pdf', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'Aadhar-no-to-pdf.html'));
+});
+app.get('/E_Shram_card-download', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'E_Shram_card-download.html'));
+});
+app.get('/aadhar_no_to_photo_details', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'aadhar_no_to_photo_details.html'));
 });
 
 // Lost Aadhaar form route
@@ -1196,7 +1204,7 @@ app.post('/aadhar_number', async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    const requiredBalance =450;
+    const requiredBalance =300;
     if (user.walletBalance < requiredBalance) {
       return res.status(400).json({ message: 'Insufficient wallet balance' });
     }
@@ -1231,6 +1239,166 @@ app.post('/aadhar_number', async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 });
+
+const eShramCardSchema = new mongoose.Schema({
+  aadhar_number: { type: String, required: true },
+  email: { type: String, required: true }, // Make sure email is required
+  status: { type: String, default: 'pending' },
+  createdAt: { type: Date, default: Date.now }
+});
+
+const E_Shram_Card = mongoose.model('E_Shram_Card', eShramCardSchema);
+
+// In your route
+app.post('/E_Shram_card', async (req, res) => {
+  try {
+    const { aadhar_number } = req.body;
+
+    // Retrieve the user from session
+    const user = await User.findById(req.session.userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const requiredBalance = 50;
+    if (user.walletBalance < requiredBalance) {
+      return res.status(400).json({ message: 'Insufficient wallet balance' });
+    }
+
+    // Deduct ₹50 from the user's wallet balance
+    user.walletBalance -= requiredBalance;
+    await user.save();
+
+    // Create a new E-Shram card document
+    const eshramEntry = new E_Shram_Card({
+      aadhar_number,
+      email: user.email, // Include email from the user object
+      createdAt: new Date(),
+      status: 'pending'
+    });
+
+    // Save the E-Shram card document
+    await eshramEntry.save();
+
+    // Log the transaction
+    const transaction = new Transaction({
+      userId: user._id,
+      amount: requiredBalance,
+      type: 'debit',
+      description: 'E-Shram card submission',
+      date: new Date()
+    });
+
+    await transaction.save();
+
+    res.status(200).send('E-Shram card application successfully submitted. You will receive the PDF within 24 hours.');
+  } catch (error) {
+    console.error('Error saving data:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+
+// GET route to fetch E-Shram Card submissions for the logged-in user
+app.get('/E_Shram_card_data', async (req, res) => {
+  try {
+    // Retrieve the logged-in user from session
+    const user = await User.findById(req.session.userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Fetch only the E-Shram cards related to the logged-in user's email
+    const eshramCards = await E_Shram_Card.find({ email: user.email });
+
+    res.status(200).json(eshramCards);
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+// const aadhartodetalisSchema = new mongoose.Schema({
+//   aadhar_number: { type: String, required: true },
+//   email: { type: String, required: true }, // Make sure email is required
+//   status: { type: String, default: 'pending' },
+//   createdAt: { type: Date, default: Date.now }
+// });
+
+// const aadhartodetalis = mongoose.model('aadhartodetalis', aadhartodetalisSchema);
+
+// In your route
+app.post('/aadartodetails', async (req, res) => {
+  try {
+    const { aadhar_number } = req.body;
+
+    // Retrieve the user from session
+    const user = await User.findById(req.session.userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const requiredBalance = 150;
+    if (user.walletBalance < requiredBalance) {
+      return res.status(400).json({ message: 'Insufficient wallet balance' });
+    }
+
+    // Deduct ₹150 from the user's wallet balance
+    user.walletBalance -= requiredBalance;
+    await user.save();
+
+    // Create a new Aadhar to Details document
+    const aadharToDetailsEntry = new AadharToDetails({
+      aadhar_number,
+      email: user.email, // Include email from the user object
+      createdAt: new Date(),
+      status: 'pending'
+    });
+
+    // Save the Aadhar to Details document
+    await aadharToDetailsEntry.save();
+
+    // Log the transaction
+    const transaction = new Transaction({
+      userId: user._id,
+      amount: requiredBalance,
+      type: 'debit',
+      description: 'Aadhar to details submission',
+      date: new Date()
+    });
+
+    await transaction.save();
+
+    res.status(200).send('Aadhar to details application successfully submitted. You will receive the photo and details within 24 hours.');
+  } catch (error) {
+    console.error('Error saving data:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+app.get('/aadar_to_details', async (req, res) => {
+  try {
+    // Retrieve the logged-in user from session
+    const user = await User.findById(req.session.userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Fetch only the Aadhar to Details related to the logged-in user's email
+    const aadharToDetailsEntries = await AadharToDetails.find({ email: user.email });
+
+    res.status(200).json(aadharToDetailsEntries);
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+
 
 app.get('/api/pan-applications', async (req, res) => {
   try {
