@@ -113,7 +113,7 @@
 .printservicebo {
     text-decoration: none;
     border: solid white 1px;
-    background-image: linear-gradient(to bottom right, red, yellow);
+   background-color: #000000;
     width: 20%;
     height: 100px;
     align-items: center;
