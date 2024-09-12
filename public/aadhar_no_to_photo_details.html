@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RA DIGITAL INDIA Cyber Cafe</title>
+    <link rel="stylesheet" href="/css/home.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+        integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link rel="stylesheet" href="opin_moine.css">
+    <title>RA DIGITAL INDIA Cyber Cafe</title>
+
+
+    <style>
+        #six,
+        #nine,
+        #ten {
+            background-color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="navborder">
+            <div class="iconnavbaar">&#9776;</div> <!-- Using HTML entity for the menu icon -->
+            <div class="nav-right">
+                <div class="profile">Wallet Balance:</div>
+                <div class="bullet">
+                    <p><span id="walletBalance">Loading...</span></p>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="home">
+        <div class="navbara">
+            <div class="navbar"><a href="home.html"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a>
+            </div>
+            <div class="navbar"><a href="Aadhar_muan_card.html"><i class="fas fa-id-card"></i> <span>Aadhar
+                        Card</span></a></div>
+            <div class="navbar"><a href="new_pan_card_appy.html"><i class="fas fa-address-card"></i> <span>Pan
+                        Card</span></a></div>
+            <div class="navbar"><a href="lost_aadhar_no.html"><i class="fas fa-copy"></i> <span>Duplicate EID TO
+                        PDF</span></a></div>
+            <div class="navbar"><a href="mobiletopdf"><i class="fas fa-mobile-alt"></i> <span>Mobile Number to Aadhar
+                        PDF</span></a></div>
+            <div class="navbar"><a href="Generateeid"><i class="fas fa-id-badge"></i> <span>Generate EID to
+                        UID</span></a></div>
+            <div class="navbar"><a href="Duplicateeid"><i class="fas fa-clone"></i> <span>Duplicate EID to
+                        UID</span></a></div>
+            <div class="navbar"><a href="pannotouid"><i class="fas fa-exchange-alt"></i> <span>PAN No to UID</span></a>
+            </div>
+            <div class="navbar"><a href="Lost-pan_number.html"><i class="fas fa-question-circle"></i> <span>Lost PAN
+                        No</span></a></div>
+            <div class="navbar"><a href="profile.html"><i class="fa-solid fa-user"></i><span>Profile</span></a></div>
+            <div class="navbar"><a href="payment.html"><i class="fa-solid fa-user"></i><span>ADD Payment</span></a>
+            </div>
+            <div class="navbar"><a href="transaction.html"><i class="fa-solid fa-user"></i><span>Transaction</span></a>
+            </div>
+            <div class="navbar"><button id="logout"><i class="fa-solid fa-user"></i> <span>Logout</span></button></div>
+        </div>
+    <style>
+        /* CSS for the form styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 20px;
+    align-items: center;
+    justify-content: center;
+}
+
+.aadharnumber {
+   width: 100%;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-left: 20px;
+}
+
+.number2 {
+    display: flex;
+    flex-direction: column;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    font-size: 16px;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+input[type="number"] {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    outline: none;
+    margin-bottom: 15px;
+}
+
+input[type="number"]:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.25);
+}
+
+button {
+    padding: 10px 15px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+    </style>
+</head>
+<body>
+    <div class="aadharnumber">
+        <div class="number2">
+          <h2>
+            sirf Aadhar number dalen aur photo ke sath Apna ful detail Dekhen apply kar sakte ho, iska charge ₹150 hai aur 24 ghante ke andar aapko photo and full details Email mil jaega. <br>
+            सिर्फ आधार नंबर डालें और फोटो के साथ अपना पूरा विवरण देखें, अप्लाई कर सकें, इसका चार्ज ₹150 है और 24 घंटे के अंदर आपका फोटो और पूरा विवरण ईमेल मिल जाएगा।
+          </h2>
+          <form action="/aadartodetails" method="POST">
+            <label for="number">Aadhar Number</label>
+            <input type="number" id="number" name="aadhar_number" placeholder="Aadhar Number" required>
+            <button type="submit" value="submit">Submit</button>
+          </form>
+          <h2>Submitted Aadhar number to details Data</h2>
+  <!-- Table to display submitted data -->
+  <table border="1">
+    <thead>
+      <tr>
+        <th>Aadhar Number</th>
+        <th>Email</th>
+        <th>Status</th>
+        <th>Created At</th>
+      </tr>
+    </thead>
+    <tbody id="aadartodetailsTableBody">
+      <!-- New entries will be appended here -->
+    </tbody>
+  </table>
+        </div>
+      </div>
+      
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Load jQuery first -->
+    <script src="logout.js"></script> <!-- Include the logout.js file -->
+    <script src="login-check.js"></script> <!-- Include the login-check.js file -->
+    <script>
+        document.querySelector('.iconnavbaar').addEventListener('click', function () {
+            const navbara = document.querySelector('.navbara');
+            navbara.classList.toggle('collapsed');
+        });
+
+        document.querySelectorAll('.printservicebo').forEach(item => {
+            item.addEventListener('click', function () {
+                const link = item.querySelector('a');
+                if (link) {
+                    window.location.href = link.href;
+                }
+            });
+        });
+    </script>
+    <script>
+        // Fetch and display wallet balance
+        fetch('/api/wallet-balance')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.walletBalance !== undefined) {
+                    document.getElementById('walletBalance').textContent = data.walletBalance;
+                } else {
+                    console.error('Error: Wallet balance not found');
+                }
+            })
+            .catch(error => console.error('Error fetching wallet balance:', error));
+           
+    </script>
+    <script>
+        // Fetch and display E-Shram Card data for the logged-in user
+        async function fetchEShramData() {
+          try {
+            const response = await fetch('/aadar_to_details');
+            const data = await response.json();
+    
+            if (data.length === 0) {
+              alert('No aadar_to_details found for this user.');
+              return;
+            }
+    
+            const tableBody = document.getElementById('aadartodetailsTableBody');
+            tableBody.innerHTML = ''; // Clear the table
+    
+            data.forEach(entry => {
+              const newRow = `<tr>
+                <td>${entry.aadhar_number}</td>
+                <td>${entry.email}</td>
+                <td>${entry.status}</td>
+                <td>${new Date(entry.createdAt).toLocaleString()}</td>
+              </tr>`;
+              tableBody.innerHTML += newRow;
+            });
+          } catch (error) {
+            console.error('Error fetching data:', error);
+          }
+        }
+    
+        // Call fetchEShramData when the page loads
+        window.onload = fetchEShramData;
+      </script>
+
+</body>
+
+</html>
