@@ -26,7 +26,7 @@ const Aadharuclappy = require('./models/Aadharuclappy'); // Ensure the correct p
 const DataModel = require('./models/Data'); // Import your schema
 const Jiopaymankbank = require('./models/jiopaymankbankauto');
 const Kotak = require('./models/Kotak'); // Adjust the path based on the actual location of your model
-const Aadhar_Number = require('./models/aadhartopdfnumber');
+const Aadhar_Number = require('./models/Aadhartopdfnumber');
 // const E_Shram_Card = require('./models/E_shram_card'); // Correct path
 const AadharToDetails = require('./models/adhart Details')
 const crypto = require('crypto');
@@ -37,7 +37,7 @@ const app = express();
 
 app.use(cors()); // Enable CORS for all routes
 app.use(express.json());
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 10000;
 
 // // Connect to MongoDB
 // mongoose.connect('mongodb+srv://rahul199202012:gexBdbMGUqtwE3Nq@cluster0.k7xol6w.mongodb.net/rndigitalindia', {
