@@ -37,7 +37,7 @@ const app = express();
 
 app.use(cors()); // Enable CORS for all routes
 app.use(express.json());
-const port = process.env.PORT || 10000;
+const port = process.env.PORT || 3000;
 
 // // Connect to MongoDB
 // mongoose.connect('mongodb+srv://rahul199202012:gexBdbMGUqtwE3Nq@cluster0.k7xol6w.mongodb.net/rndigitalindia', {
@@ -215,31 +215,47 @@ app.post('/submit-contact', (req, res) => {
   });
 });
 
+
 app.post('/register', async (req, res) => {
   const { name, PhoneNumber, email, password, confirmpassword } = req.body;
 
+  // Check if all fields are provided
   if (!name || !PhoneNumber || !email || !password || !confirmpassword) {
     return res.status(400).json({ message: 'All fields are required' });
   }
 
+  // Check if passwords match
   if (password !== confirmpassword) {
     return res.status(400).json({ message: 'Passwords do not match' });
   }
 
   try {
+    // Check if the email already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: 'Email already exists' });
     }
 
+    // Generate a unique 14-digit number
+    const uniqueNumber = generateUniqueNumber();
+
+    // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Get the current date
+    const currentDate = new Date();
+
+    // Create a new user object
     const newUser = new User({
       name,
       PhoneNumber,
       email,
-      password: hashedPassword
+      password: hashedPassword,
+      uniqueNumber,       // Save the generated 14-digit number
+      registerDate: currentDate // Save the current date
     });
 
+    // Save the new user to the database
     await newUser.save();
     res.status(201).json({ message: 'User registered successfully' });
   } catch (error) {
@@ -247,6 +263,14 @@ app.post('/register', async (req, res) => {
     res.status(500).json({ message: 'Error registering user' });
   }
 });
+
+// Function to generate a 14-digit unique number
+function generateUniqueNumber() {
+  const timestamp = Date.now(); // Get the current timestamp
+  const randomDigits = Math.floor(Math.random() * 10000); // Add randomness for uniqueness
+  return `${timestamp}${randomDigits}`.slice(0, 14); // Ensure the number is 14 digits long
+}
+
 
 // Login route
 app.post('/login', async (req, res) => {
@@ -278,21 +302,56 @@ app.get('/logout', (req, res) => {
 });
 
 // Profile API
+// app.get('/api/profile', checkAuth, async (req, res) => {
+//   try {
+//     const user = await User.findById(req.session.userId);
+//     if (!user) {
+//       return res.status(404).send('User not found');
+//     }
+//     res.json({
+//       name: user.name,
+//       email: user.email,
+//       PhoneNumber: user.PhoneNumber,
+//       walletBalance: user.walletBalance
+      
+//     });
+//   } catch (error) {
+//     console.error('Error fetching profile:', error);
+//     res.status(500).send('Error fetching profile');
+//   }
+// });
+
 app.get('/api/profile', checkAuth, async (req, res) => {
   try {
-    const user = await User.findById(req.session.userId);
+    // Find a single user by ID
+    const user = await User.findOne({ _id: req.session.userId });
+    
     if (!user) {
-      return res.status(404).send('User not found');
+      return res.status(404).json({ message: 'User not found' });
     }
+    
+    // Return the profile data
     res.json({
       name: user.name,
       email: user.email,
       PhoneNumber: user.PhoneNumber,
-      walletBalance: user.walletBalance
+      walletBalance: user.walletBalance,
+      uniqueNumber: user.uniqueNumber,
+      registerDate: user.registerDate ? new Date(user.registerDate).toLocaleDateString() : 'N/A'
     });
   } catch (error) {
-    console.error('Error fetching profile:', error);
-    res.status(500).send('Error fetching profile');
+    console.error('Error fetching records:', error);
+    res.status(500).json({ message: 'Error fetching records' });
+  }
+});
+
+app.get('/api/profile', checkAuth, async (req, res) => {
+  try {
+    const records = await User.find({ userId: req.session.userId });
+    res.json(records);
+  } catch (error) {
+    console.error('Error fetching records:', error);
+    res.status(500).json({ message: 'Error fetching records' });
   }
 });
 
@@ -339,6 +398,9 @@ app.get('/E_Shram_card-download', (req, res) => {
 });
 app.get('/aadhar_no_to_photo_details', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'aadhar_no_to_photo_details.html'));
+});
+app.get('/certificate', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'certificate.html'));
 });
 
 // Lost Aadhaar form route
@@ -1430,6 +1492,8 @@ app.get('/LostPAN', checkAuth, async (req, res) => {
     res.status(500).json({ message: 'Error fetching records' });
   }
 });
+
+
 
 app.get('/api/transactions', checkAuth, async (req, res) => {
   try {
