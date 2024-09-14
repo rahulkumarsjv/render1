@@ -1,15 +1,3 @@
-// const mongoose = require('mongoose');
-
-// const userSchema = new mongoose.Schema({
-//   name: { type: String, required: true },
-//   PhoneNumber: { type: String, required: true },
-//   email: { type: String, required: true, unique: true },
-//   password: { type: String, required: true },
-//   walletBalance: { type: Number, default: 0 },
-// });
-
-// module.exports = mongoose.model('User', userSchema);
-
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
@@ -19,11 +7,13 @@ const userSchema = new Schema({
     required: true
   },
   PhoneNumber: {
-     type: String, required: true 
-    },
-  email: {
     type: String,
     required: true
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true
   },
   walletBalance: {
     type: Number,
@@ -32,8 +22,16 @@ const userSchema = new Schema({
   password: {
     type: String,
     required: true
+  },
+  uniqueNumber: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  registerDate: {
+    type: Date,
+    default: Date.now // Automatically set the current date
   }
 });
 
 module.exports = mongoose.model('User', userSchema);
-
