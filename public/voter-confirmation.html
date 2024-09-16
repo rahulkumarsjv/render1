@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voter ID Card Application</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .confirmation-container {
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 5px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 16px;
+            margin: 5px 0;
+        }
+        .button-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .download-btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .download-btn:hover {
+            background-color: #0056b3;
+        }
+        .error-message {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="confirmation-container">
+        <h1>Voter ID Card Original Copy</h1>
+        <p>Received order for Voter Card Mobile Number RS.50.00/- (incl. of taxes) copy Voter id card</p>
+        <p>Name as to be printed on Voter ID Card: <span id="name">Loading...</span></p>
+        <p>Application Number: <span id="uniqueNumber">Loading...</span></p>
+        <p>Mobile Number: <span id="mobilenumber">Loading...</span></p>
+        <p>Voter ID card Online voter print provided to all India customers authorized and RN Digital India portal cyber cafe.</p>
+        <p>Customer care helpline number: <span id="number">7061805159</span></p>
+        <p id="datetime"></p>
+        <div class="button-container">
+            <button class="download-btn" id="downloadBtn" onclick="downloadScreenshot()">Download</button>
+        </div>
+    </div>
+
+    <!-- Include external JS libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.0/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.0/jspdf.umd.min.js"></script>
+    <script>
+        async function fetchAccountDetails() {
+            // Extract query parameters from URL
+            const params = new URLSearchParams(window.location.search);
+            const uniqueNumber = params.get('uniqueNumber');
+            const name = params.get('name');
+            const mobileNumber = params.get('mobileNumber');
+            const email = params.get('email');
+            const address = params.get('address');
+
+            // Populate fields with data
+            document.getElementById('uniqueNumber').innerText = uniqueNumber || 'N/A';
+            document.getElementById('name').innerText = name || 'N/A';
+            document.getElementById('mobilenumber').innerText = mobileNumber || 'N/A';
+            document.getElementById('email').innerText = email || 'N/A';
+            document.getElementById('address').innerText = address || 'N/A';
+
+            // Set current datetime
+            const now = new Date();
+            document.getElementById('datetime').innerText = now.toLocaleString();
+        }
+
+        function downloadScreenshot() {
+            const button = document.getElementById('downloadBtn');
+            button.style.display = 'none';
+
+            html2canvas(document.querySelector('.confirmation-container'), {
+                scale: 2,
+                useCORS: true,
+                allowTaint: true
+            }).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jspdf.jsPDF('p', 'mm', 'a4');
+                const pageWidth = pdf.internal.pageSize.getWidth();
+                const imgWidth = pageWidth;
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+                pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+                pdf.save('voter_id_card.pdf');
+
+                button.style.display = 'block';
+            }).catch(err => {
+                console.error('Error generating screenshot:', err);
+                button.style.display = 'block';
+            });
+        }
+
+        window.onload = fetchAccountDetails;
+    </script>
+</body>
+</html>
