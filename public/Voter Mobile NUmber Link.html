@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/home.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+        integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link rel="stylesheet" href="opin_moine.css">
+    <title>RA DIGITAL INDIA Cyber Cafe</title>
+    <style>
+        #six,
+        #nine,
+        #ten {
+            background-color: red;
+        }
+        /* Basic styling for the entire voter form section */
+.voter {
+    background-color: #f5f5f5;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 500px;
+    margin: 0 auto;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.number2 h2 {
+    font-size: 16px;
+    color: #333;
+    text-align: center;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.Enter h1 {
+    font-size: 24px;
+    color: #007bff;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Styling for the form */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+label {
+    font-size: 14px;
+    color: #555;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="name"] {
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 100%;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="name"]:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Hide additional fields initially */
+#additionalFields {
+    display: none;
+}
+
+/* Styling the submit button for the final form */
+button[type="submit"] {
+    background-color: #28a745;
+}
+
+button[type="submit"]:hover {
+    background-color: #218838;
+}
+
+/* Add some padding to the captcha div */
+.catpcha {
+    padding: 10px 0;
+}
+
+/* Responsive design: form adapts to smaller screen sizes */
+@media screen and (max-width: 600px) {
+    .voter {
+        padding: 15px;
+        width: 100%;
+    }
+    
+    .number2 h2 {
+        font-size: 14px;
+    }
+
+    .Enter h1 {
+        font-size: 20px;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="name"] {
+        font-size: 12px;
+        padding: 8px;
+    }
+
+    button {
+        font-size: 14px;
+    }
+}
+/* Style for the Send OTP button */
+#sendOtpBtn {
+    background-color: #ffc107;
+    color: #fff;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+}
+
+#sendOtpBtn:hover {
+    background-color: #e0a800;
+}
+
+/* Responsive design adjustment for smaller screens */
+@media screen and (max-width: 600px) {
+    #sendOtpBtn {
+        padding: 8px;
+        font-size: 12px;
+    }
+}
+/* Style for the generated Captcha */
+#captchaSection {
+    margin-top: 10px;
+}
+
+#generatedCaptcha {
+    background-color: #f3f3f3;
+    padding: 5px 10px;
+    border-radius: 4px;
+    display: inline-block;
+    font-size: 18px;
+    letter-spacing: 3px;
+}
+
+/* Captcha input box style */
+#captchaInput {
+    margin-top: 5px;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+
+
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="navborder">
+            <div class="iconnavbaar">&#9776;</div> <!-- Using HTML entity for the menu icon -->
+            <div class="nav-right">
+                <div class="profile">Wallet Balance:</div>
+                <div class="bullet">
+                    <p><span id="walletBalance">Loading...</span></p>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="home">
+        <div class="navbara">
+            <div class="navbar"><a href="home.html"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a>
+            </div>
+            <div class="navbar"><a href="Aadhar_muan_card.html"><i class="fas fa-id-card"></i> <span>Aadhar
+                        Card</span></a></div>
+            <div class="navbar"><a href="new_pan_card_appy.html"><i class="fas fa-address-card"></i> <span>Pan
+                        Card</span></a></div>
+            <div class="navbar"><a href="lost_aadhar_no.html"><i class="fas fa-copy"></i> <span>Duplicate EID TO
+                        PDF</span></a></div>
+            <div class="navbar"><a href="mobiletopdf"><i class="fas fa-mobile-alt"></i> <span>Mobile Number to Aadhar
+                        PDF</span></a></div>
+            <div class="navbar"><a href="Generateeid"><i class="fas fa-id-badge"></i> <span>Generate EID to
+                        UID</span></a></div>
+            <div class="navbar"><a href="Duplicateeid"><i class="fas fa-clone"></i> <span>Duplicate EID to
+                        UID</span></a></div>
+            <div class="navbar"><a href="pannotouid"><i class="fas fa-exchange-alt"></i> <span>PAN No to UID</span></a>
+            </div>
+            <div class="navbar"><a href="Lost-pan_number.html"><i class="fas fa-question-circle"></i> <span>Lost PAN
+                        No</span></a></div>
+            <div class="navbar"><a href="profile.html"><i class="fa-solid fa-user"></i><span>Profile</span></a></div>
+            <div class="navbar"><a href="payment.html"><i class="fa-solid fa-user"></i><span>ADD Payment</span></a>
+            </div>
+            <div class="navbar"><a href="transaction.html"><i class="fa-solid fa-user"></i><span>Transaction</span></a>
+            </div>
+            <div class="navbar"><button id="logout"><i class="fa-solid fa-user"></i> <span>Logout</span></button></div>
+        </div>
+        <div class="voter">
+            <div class="number2">
+                <h2>Voter ID card mobile number link करें, अधिकतम 7 दिन के अंदर अपडेट हो जाएगा। वोटर आईडी कार्ड ऐप डाउनलोड कर सकते हैं।</h2>
+            </div>
+                <form id="voterForm" action="/votar_new_mobile_link" method="POST">
+                    <div class="voter">
+                        <div class="number2">
+                            <h2>aapka 24 se 48 ghante ke andar Ek Hamare company se call back aaega aur mobile number do Apne dala hai use control Karega Ki aapane Yahi mobile number dala hai ki dala hai aur Usi mobile number per Ek OTP Ki send Hoga aapko vah OTP batana Hoga Uske bad aapka 3 se 4 din ke andar aapka mobile number update ho jaega<br>
+                                <br>आपको 24 से 48 घंटों के भीतर हमारी कंपनी की ओर से एक कॉल प्राप्त होगी, जिसमें आपके द्वारा दर्ज किए गए मोबाइल नंबर की पुष्टि की जाएगी कि आपने सही नंबर ही दर्ज किया है या नहीं। इसके बाद, उसी मोबाइल नंबर पर एक OTP भेजा जाएगा, जिसे आपको बताना होगा। उसके बाद, 3 से 4 दिनों के अंदर आपका मोबाइल नंबर अपडेट हो जाएगा।</h2>
+                            <div class="Enter">
+                                <h1>ENTER VOTER DETAILS</h1>
+                            </div>
+                                  <form id="voterForm" action="/votarnewmobilelink" method="POST">
+                                    <!-- Step 1: Enter voter ID -->
+                                    <label for="voter_number">Voter Number</label>
+                                    <input type="text" id="voter_number" name="voter_number" placeholder="Voter Number (e.g., ABC1234567)" required
+                                           pattern="[A-Za-z]{3}[0-9]{7}" title="Please enter a valid 10-character voter ID (e.g., ABC1234567)">
+                                    <button type="button" id="nextBtn">Next</button>
+                              
+                                    <!-- Step 2: Additional fields (initially hidden) -->
+                                    <div id="additionalFields" style="display:none;">
+                                      <label for="name">Full Name</label>
+                                      <input type="text" id="name" name="name" placeholder="Full Name" required>
+                              
+                                      <!-- Mobile number input -->
+                                      <label for="mobile">New Mobile Number</label>
+                                      <input type="number" id="mobile" name="mobile" placeholder="New Mobile Number" required>
+                              
+                                      <!-- Captcha display and input -->
+                                      <div id="captchaSection">
+                                        <p>Captcha Code: <span id="generatedCaptcha" style="font-weight: bold;"></span></p>
+                                        <label for="captchaInput">Enter Captcha</label>
+                                        <input type="text" id="captchaInput" name="captcha" placeholder="Captcha" required>
+                                      </div>
+                              
+                                      <button type="submit" value="submit">Submit</button>
+                                    </div>
+                                  </form>
+                                </div>
+                              </div>
+                              
+                              <script>
+                              // Function to generate a random Captcha code (6 characters)
+                              function generateCaptcha() {
+                                let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+                                let captcha = '';
+                                for (let i = 0; i < 6; i++) {
+                                  captcha += characters.charAt(Math.floor(Math.random() * characters.length));
+                                }
+                                return captcha;
+                              }
+                              
+                              // Event listener for "Next" button
+                              document.getElementById("nextBtn").addEventListener("click", function() {
+                                var voterNumber = document.getElementById("voter_number").value;
+                                var voterIdPattern = /^[A-Za-z]{3}[0-9]{7}$/;
+                              
+                                if (voterIdPattern.test(voterNumber)) {
+                                  document.getElementById("nextBtn").style.display = "none";
+                                  document.getElementById("additionalFields").style.display = "block";
+                                  document.getElementById("name").focus();
+                              
+                                  // Automatically generate and display Captcha
+                                  var generatedCaptcha = generateCaptcha();
+                                  document.getElementById("generatedCaptcha").textContent = generatedCaptcha;
+                                } else {
+                                  alert("Please enter a valid 10-character Voter ID (e.g., ABC1234567).");
+                                }
+                              });
+                              
+                              // Event listener for form submission to validate Captcha
+                              document.getElementById("voterForm").addEventListener("submit", function(e) {
+                                var enteredCaptcha = document.getElementById("captchaInput").value;
+                                var generatedCaptcha = document.getElementById("generatedCaptcha").textContent;
+                              
+                                if (enteredCaptcha !== generatedCaptcha) {
+                                  e.preventDefault();  // Prevent form submission
+                                  alert("The Captcha code you entered is incorrect. Please try again.");
+                                }
+                              });
+                              </script>
+                              <script>
+                                document.querySelector('.iconnavbaar').addEventListener('click', function () {
+                                    const navbara = document.querySelector('.navbara');
+                                    navbara.classList.toggle('collapsed');
+                                });
+                        
+                                document.querySelectorAll('.printservicebo').forEach(item => {
+                                    item.addEventListener('click', function () {
+                                        const link = item.querySelector('a');
+                                        if (link) {
+                                            window.location.href = link.href;
+                                        }
+                                    });
+                                });
+                            </script>
+                            <script>
+                                // Fetch and display wallet balance
+                                fetch('/api/wallet-balance')
+                                    .then(response => {
+                                        if (!response.ok) {
+                                            throw new Error('Network response was not ok');
+                                        }
+                                        return response.json();
+                                    })
+                                    .then(data => {
+                                        if (data.walletBalance !== undefined) {
+                                            document.getElementById('walletBalance').textContent = data.walletBalance;
+                                        } else {
+                                            console.error('Error: Wallet balance not found');
+                                        }
+                                    })
+                                    .catch(error => console.error('Error fetching wallet balance:', error));
+                                   
+                            </script>
+                        
+                        
+</body>
+</html>
