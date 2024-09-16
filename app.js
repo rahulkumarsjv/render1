@@ -29,6 +29,7 @@ const Kotak = require('./models/Kotak'); // Adjust the path based on the actual 
 const Aadhar_Number = require('./models/Aadhartopdfnumber');
 // const E_Shram_Card = require('./models/E_shram_card'); // Correct path
 const AadharToDetails = require('./models/AdhartDetails')
+const VoterMobileLink = require('./models/VoterMobileLink');  // Import the model correctly
 const crypto = require('crypto');
 require('dotenv').config();
 const cors = require('cors');
@@ -401,6 +402,12 @@ app.get('/aadhar_no_to_photo_details', (req, res) => {
 });
 app.get('/certificate', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'certificate.html'));
+});
+app.get('/Voter Mobile NUmber Link', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'Voter Mobile NUmber Link.html'));
+});
+app.get('/voter-confirmation', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'voter-confirmation.html'));
 });
 
 // Lost Aadhaar form route
@@ -1460,7 +1467,87 @@ app.get('/aadar_to_details', async (req, res) => {
   }
 });
 
+// Example endpoint to handle POST request
+app.post('/votar_new_mobile_link', async (req, res) => {
+  try {
+    const { voter_number, name, mobile, captcha } = req.body;
 
+    // Retrieve the user from session
+    const user = await User.findById(req.session.userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const requiredBalance = 60;  // Assuming same wallet balance check as E-Shram
+    if (user.walletBalance < requiredBalance) {
+      return res.status(400).json({ message: 'Insufficient wallet balance' });
+    }
+
+    // Deduct ₹60 from the user's wallet balance
+    user.walletBalance -= requiredBalance;
+    await user.save();
+
+    // Generate a unique 10-digit number
+    const generateUniqueNumber = () => {
+      return Math.floor(1000000000 + Math.random() * 9000000000);
+    };
+    const uniqueNumber = generateUniqueNumber();
+
+    // Create a new voter mobile link document
+    const voterEntry = new VoterMobileLink({
+      voter_number,
+      name,
+      mobile,
+      email: user.email,  // Include email from the user object
+      createdAt: new Date(),
+      status: 'pending',
+      captcha,
+      uniqueNumber  // Save the unique number
+    });
+
+    // Save the voter mobile link document
+    await voterEntry.save();
+
+    // Log the transaction
+    const transaction = new Transaction({
+      userId: user._id,
+      amount: requiredBalance,
+      type: 'debit',
+      description: 'Voter mobile link submission',
+      date: new Date()
+    });
+
+    await transaction.save();
+
+    // Redirect to the confirmation page with the unique number
+    res.redirect(`/voter-confirmation?uniqueNumber=${uniqueNumber}&name=${encodeURIComponent(name)}&mobileNumber=${encodeURIComponent(mobile)}&email=${encodeURIComponent(user.email)}&address=${encodeURIComponent(user.address || 'N/A')}`);
+
+  } catch (error) {
+    console.error('Error saving data:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+// GET route to fetch Voter id Card submissions for the logged-in user
+app.get('/votar_new_mobile_link', async (req, res) => {
+  try {
+    // Retrieve the logged-in user from session
+    const user = await User.findById(req.session.userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Fetch only the E-Shram cards related to the logged-in user's email
+    const VoterMobileLink = await VoterMobileLink.find({ email: user.email });
+
+    res.status(200).json(VoterMobileLink);
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
 
 app.get('/api/pan-applications', async (req, res) => {
   try {
