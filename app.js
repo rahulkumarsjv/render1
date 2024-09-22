@@ -1261,10 +1261,9 @@ app.post('/kotat', upload.fields([
       .catch(err => res.status(400).send('Error saving record: ' + err.message));
 });
 
-// Handle POST request to submit Aadhar number
 app.post('/aadhar_number', async (req, res) => {
   try {
-    const { aadhar_number } = req.body;
+    const { aadhar_number, card_type } = req.body;
 
     // Retrieve the user from session
     const user = await User.findById(req.session.userId);
@@ -1273,22 +1272,30 @@ app.post('/aadhar_number', async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    const requiredBalance =300;
+    // Determine the charge based on card type
+    let requiredBalance = 300; // Default charge
+    if (card_type === 'e_shram') {
+      requiredBalance = 200; // Charge for e shram card
+    } else if (card_type === 'without_e_shram') {
+      requiredBalance = 400; // Charge for without e shram card
+    }
+
+    // Check if the user has sufficient balance
     if (user.walletBalance < requiredBalance) {
       return res.status(400).json({ message: 'Insufficient wallet balance' });
     }
 
-    // Deduct ₹300 from the user's wallet balance
+    // Deduct the required amount from the user's wallet balance
     user.walletBalance -= requiredBalance;
     await user.save();
 
-    // Create a new AadharNumber document
+    // Create a new Aadhar_Number document
     const aadharEntry = new Aadhar_Number({
       aadhar_number,
-      createdAt: new Date()
+      createdAt: new Date(),
     });
 
-    // Save the AadharNumber document
+    // Save the Aadhar_Number document
     await aadharEntry.save();
 
     // Log the transaction
@@ -1296,13 +1303,13 @@ app.post('/aadhar_number', async (req, res) => {
       userId: user._id,
       amount: requiredBalance,
       type: 'debit',
-      description: 'Aadhar number to PDF',
-      date: new Date()
+      description: `Aadhar number to PDF - ${card_type}`,
+      date: new Date(),
     });
 
     await transaction.save();
 
-    res.status(200).send('Aadhar to PDF data 24 ghante ke andar aapke SEND EMAIL ID successfully per pahunch jaega ');
+    res.status(200).send('Aadhar to PDF data 24 ghante ke andar aapke SEND EMAIL ID successfully per pahunch jaega');
   } catch (error) {
     console.error('Error saving data:', error);
     res.status(500).send('Internal Server Error');
