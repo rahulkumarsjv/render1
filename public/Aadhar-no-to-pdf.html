@@ -10,8 +10,6 @@
         integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
         <link rel="stylesheet" href="opin_moine.css">
-    <title>RA DIGITAL INDIA Cyber Cafe</title>
-
 
     <style>
         #six,
@@ -122,20 +120,31 @@ button {
 button:hover {
     background-color: #0056b3;
 }
+select{
+    width: 100%;
+    height: 30px;
+}
 
     </style>
 </head>
 <body>
     <div class="aadharnunber">
         <div class="number2">
-            <h2>Aadhar number se PDF nikal sakte ho iska charge maximum ₹300 Hoga aur 24 ghante aapka approval Hoga Uske bad 24 ghante ke andar aapka PDF aapke Mel per parya ho jaega<br>आधार नंबर से पीडीएफ निकाल सकते हैं इसका चार्ज अधिकतम ₹300 होगा और 24 घंटे आपका अप्रूवल होगा उसके खराब 24 घंटे के अंदर आपका पीडीएफ आपके मेल पर पर्याय हो जाएगा</h2>
+            <h2>You can generate a PDF using only your Aadhar number. You will need to pay a maximum of ₹200 for this service. This PDF will be valid for 24 hours and will be sent to your email within 24 hours. Please note that this service is only available to individuals who have an e-Shram card. If you do not have an e-Shram card, you will need to pay ₹400.
+            <br>केवल आधार नंबर से पीडीएफ जनरेट कर सकता हैं। इसके लिए आपको अधिकतम 200 रुपये देने होंगे। यह PDF 24 घंटों के लिए ही वैध होगा। 24 घंटों के अंदर यह आपके ईमेल पर आ जाएगा। ध्यान रहे कि यह सेवा सिर्फ उन लोगों के लिए उपलब्ध है जिनका ई-श्रम कार्ड बना हुआ है अगर आपका ई-श्रम कार्ड नहीं है तो आपको 400 रुपये देने होंगे।</h2>
             <form action="/aadhar_number" method="POST">
+                <label for="card_type">Select Card Type:</label>
+                <select name="card_type" required>
+                    <option value="e_shram">e shram card</option>
+                    <option value="without_e_shram">without e shram card</option>
+                </select>
                 <label for="number">Aadhar Number</label>
                 <input type="number" id="number" name="aadhar_number" placeholder="Aadhar Number" required>
                 <button type="submit" value="submit">Submit</button>
             </form>
         </div>
     </div>
+    
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Load jQuery first -->
     <script src="logout.js"></script> <!-- Include the logout.js file -->
     <script src="login-check.js"></script> <!-- Include the login-check.js file -->
@@ -173,10 +182,6 @@ button:hover {
             .catch(error => console.error('Error fetching wallet balance:', error));
            
     </script>
-
-</body>
-
-</html>
 
 </body>
 </html>
