@@ -784,18 +784,15 @@ app.post('/AadharFingerprint', async (req, res) => {
 });
 
 
-// Serve static files from /uploads directory
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
-// Setup storage for multer
+// Setup storage for Multer
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         const uploadPath = path.join(__dirname, 'uploads');
-        cb(null, uploadPath);
+        cb(null, uploadPath); // Save files to the "uploads" folder
     },
     filename: (req, file, cb) => {
         const uniqueName = `${Date.now()}-${file.originalname}`;
-        cb(null, uniqueName);
+        cb(null, uniqueName); // Generate a unique filename
     },
 });
 
@@ -812,7 +809,7 @@ function checkFileType(file, cb) {
     }
 }
 
-// Initialize multer
+// Initialize Multer
 const upload = multer({
     storage: storage,
     limits: { fileSize: 10 * 1024 * 1024 }, // 10 MB limit
@@ -1046,82 +1043,92 @@ app.use(session({
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // Route to handle PAN Card application submission (new)
+// Route to handle PAN Card application submission (new)
 app.post('/submit-newpan-application', upload.fields([
-  { name: 'file', maxCount: 1 },
-  { name: 'signature', maxCount: 1 },
-  { name: 'documents', maxCount: 1 }
+    { name: 'file', maxCount: 1 },
+    { name: 'signature', maxCount: 1 },
+    { name: 'documents', maxCount: 1 }
 ]), async (req, res) => {
-  try {
-      console.log('Files:', req.files); // Debugging statement to check the contents of req.files
-      console.log('Body:', req.body); // Debugging statement to check the contents of req.body
+    try {
+        console.log('Files:', req.files); // Debugging statement to check the contents of req.files
+        console.log('Body:', req.body); // Debugging statement to check the contents of req.body
 
-      const file = req.files['file'] ? req.files['file'][0].filename : null;
-      const signature = req.files['signature'] ? req.files['signature'][0].filename : null;
-      const documents = req.files['documents'] ? req.files['documents'][0].filename : null;
+        const file = req.files['file'] ? req.files['file'][0].filename : null;
+        const signature = req.files['signature'] ? req.files['signature'][0].filename : null;
+        const documents = req.files['documents'] ? req.files['documents'][0].filename : null;
 
-      // Extract other form fields from req.body
-      const {
-          category, date, city, area_code, aotype, range_code, ao_no,
-          title, last_name, first_name, middle_name, name_on_card,
-          gender, dob, single_parent, mother_last_name, mother_first_name,
-          mother_middle_name, father_last_name, father_first_name,
-          father_middle_name, name_on_card_parent, address_type, flat,
-          building, street, locality, town, state, pincode, country,
-          isd_code, mobile, email, aadhaar, income_source, identity_proof,
-          address_proof, dob_proof, declaration, verifier_name,
-          verification_place, verification_date, pan_option
-      } = req.body;
+        // Extract other form fields from req.body
+        const {
+            category, date, city, area_code, aotype, range_code, ao_no,
+            title, last_name, first_name, middle_name, name_on_card,
+            gender, dob, single_parent, mother_last_name, mother_first_name,
+            mother_middle_name, father_last_name, father_first_name,
+            father_middle_name, name_on_card_parent, address_type, flat,
+            building, street, locality, town, state, pincode, country,
+            isd_code, mobile, email, aadhaar, income_source, identity_proof,
+            address_proof, dob_proof, declaration, verifier_name,
+            verification_place, verification_date, pan_option
+        } = req.body;
 
-      const user = await User.findById(req.session.userId);
-      if (!user) {
-          return res.status(404).json({ message: 'User not found' });
-      }
+        const user = await User.findById(req.session.userId);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
 
-      const requiredBalance = 110;
-      if (user.walletBalance < requiredBalance) {
-          return res.status(400).json({ message: 'Insufficient wallet balance' });
-      }
+        const requiredBalance = 110;
+        if (user.walletBalance < requiredBalance) {
+            return res.status(400).json({ message: 'Insufficient wallet balance' });
+        }
 
-      // Generate a 14-digit unique number
-      const uniqueNumber = crypto.randomBytes(7).toString('hex');
+        // Generate a 14-digit unique number
+        const uniqueNumber = crypto.randomBytes(7).toString('hex');
 
-      const pana49form = new Pana49form({
-          category, date, city, area_code, aotype, range_code, ao_no,
-          title, last_name, first_name, middle_name, name_on_card,
-          gender, dob, single_parent, mother_last_name, mother_first_name,
-          mother_middle_name, father_last_name, father_first_name,
-          father_middle_name, name_on_card_parent, address_type, flat,
-          building, street, locality, town, state, pincode, country,
-          isd_code, mobile, email, aadhaar, income_source, identity_proof,
-          address_proof, dob_proof, declaration, filePath: file, 
-          signaturePath: signature, documentsPath: documents,
-          verifier_name, verification_place, verification_date,
-          pan_option, uniqueNumber
-      });
+        const pana49form = new Pana49form({
+            category, date, city, area_code, aotype, range_code, ao_no,
+            title, last_name, first_name, middle_name, name_on_card,
+            gender, dob, single_parent, mother_last_name, mother_first_name,
+            mother_middle_name, father_last_name, father_first_name,
+            father_middle_name, name_on_card_parent, address_type, flat,
+            building, street, locality, town, state, pincode, country,
+            isd_code, mobile, email, aadhaar, income_source, identity_proof,
+            address_proof, dob_proof, declaration, filePath: file,
+            signaturePath: signature, documentsPath: documents,
+            verifier_name, verification_place, verification_date,
+            pan_option, uniqueNumber
+        });
 
-      await pana49form.save();
+        await pana49form.save();
 
-      user.walletBalance -= requiredBalance;
-      await user.save();
+        user.walletBalance -= requiredBalance;
+        await user.save();
 
-      const transaction = new Transaction({
-          userId: req.session.userId,
-          amount: requiredBalance,
-          type: 'debit',
-          description: 'New PAN Card Application Fee',
-          date: new Date(),
-      });
+        const transaction = new Transaction({
+            userId: req.session.userId,
+            amount: requiredBalance,
+            type: 'debit',
+            description: 'New PAN Card Application Fee',
+            date: new Date(),
+        });
 
-      await transaction.save();
+        await transaction.save();
 
-      // res.json({ message: 'New PAN Card application submitted successfully!' });
-      res.redirect('applicaacknow.html')
-  } catch (error) {
-      console.error('Error submitting PAN Card application:', error);
-      res.status(500).json({ message: 'Internal Server Error' });
-  }
+        res.redirect('applicaacknow.html'); // Redirect to acknowledgment page
+    } catch (error) {
+        console.error('Error submitting PAN Card application:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
 });
 
+// Route to get all PAN applications (for displaying in the table)
+app.get('/get-all-pan-applications', async (req, res) => {
+    try {
+        const applications = await Pana49form.find();
+        res.json(applications);
+    } catch (error) {
+        console.error('Error fetching applications:', error);
+        res.status(500).json({ message: 'Error fetching data' });
+    }
+});
 
 // Setting up the static directory for serving uploaded files
 app.use('/uploads', express.static('uploads'));
