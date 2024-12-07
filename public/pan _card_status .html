@@ -24,31 +24,84 @@
             width: 100px;
             height: 150px;
         }
+        #protectedContent {
+            display: none; /* Hidden by default */
+        }
     </style>
 </head>
 <body>
-    <h1>PAN Card Applications</h1>
-    <input type="text" id="searchInput" placeholder="Search..." onkeyup="filterTable()">
-    <table id="panTable">
-        <thead>
-            <tr>
-                <th>Unique Number</th>
-                <th>Applicant Category</th>
-                <th>Date</th>
-                <th>City</th>
-                <th>State</th>
-                <th>Status</th>
-                <th>Photo</th>
-                <th>Signature</th>
-                <th>PDF Document</th>
-            </tr>
-        </thead>
-        <tbody id="panTableBody">
-            <!-- Rows populated dynamically -->
-        </tbody>
-    </table>
+    <h1>Welcome to RA DIGITAL INDIA Cyber Cafe</h1>
+
+    <p><a href="#" id="unlockLink">Click here to access the form and table (Password Required)</a></p>
+
+    <!-- Password prompt section (hidden by default) -->
+    <div id="passwordPrompt" style="display:none;">
+        <label for="password">Enter Password: </label>
+        <input type="password" id="password" placeholder="Enter password">
+        <button onclick="checkPassword()">Submit</button>
+    </div>
+
+    <!-- Protected Content (hidden by default) -->
+    <div id="protectedContent">
+        <h2>PAN Card Applications</h2>
+
+        <form id="uploadForm" enctype="multipart/form-data">
+            <label for="photo">Photo: </label>
+            <input type="file" name="photo" accept="image/*"><br><br>
+
+            <label for="signature">Signature: </label>
+            <input type="file" name="signature" accept="image/*"><br><br>
+
+            <label for="documents">Documents (PDF): </label>
+            <input type="file" name="documents" accept="application/pdf"><br><br>
+
+            <button type="submit">Upload</button>
+        </form>
+
+        <input type="text" id="searchInput" placeholder="Search..." onkeyup="filterTable()">
+
+        <table id="panTable">
+            <thead>
+                <tr>
+                    <th>Unique Number</th>
+                    <th>Applicant Category</th>
+                    <th>Date</th>
+                    <th>City</th>
+                    <th>State</th>
+                    <th>Status</th>
+                    <th>Photo</th>
+                    <th>Signature</th>
+                    <th>PDF Document</th>
+                </tr>
+            </thead>
+            <tbody id="panTableBody">
+                <!-- Rows populated dynamically -->
+            </tbody>
+        </table>
+    </div>
 
     <script>
+        const correctPassword = "yourPassword"; // Set your password here
+
+        // Event listener to show the password prompt
+        document.getElementById('unlockLink').addEventListener('click', function(event) {
+            event.preventDefault();
+            document.getElementById('passwordPrompt').style.display = 'block';
+        });
+
+        // Check the entered password
+        function checkPassword() {
+            const enteredPassword = document.getElementById('password').value;
+
+            if (enteredPassword === correctPassword) {
+                document.getElementById('passwordPrompt').style.display = 'none'; // Hide the password prompt
+                document.getElementById('protectedContent').style.display = 'block'; // Show protected content
+                fetchData(); // Fetch data after unlocking
+            } else {
+                alert("Incorrect password! Access denied.");
+            }
+        }
+
         // Fetch data from the server
         async function fetchData() {
             try {
@@ -85,7 +138,7 @@
 
                 row.innerHTML = `
                     <td>${application.uniqueNumber || 'N/A'}</td>
-                    <td>${application.category_of_applicant || 'N/A'}</td>
+                    <td>${application.category || 'N/A'}</td>
                     <td>${application.date || 'N/A'}</td>
                     <td>${application.city || 'N/A'}</td>
                     <td>${application.state || 'N/A'}</td>
@@ -111,8 +164,32 @@
             });
         }
 
-        // Fetch data on page load
-        document.addEventListener('DOMContentLoaded', fetchData);
+        // Handle form submission for file upload
+        document.getElementById('uploadForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const formData = new FormData(event.target);
+
+            try {
+                const response = await fetch('/submit-newpan-application', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                alert(result.message); // Show success message
+
+                // Fetch the latest data after upload
+                fetchData();
+            } catch (error) {
+                alert(`Error: ${error.message}`);
+            }
+        });
+
     </script>
 </body>
 </html>
