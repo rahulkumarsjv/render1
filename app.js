@@ -1204,7 +1204,38 @@ app.post('/submit-correctpan-application', upload.fields([
   }
 });
 
+// Simulated database
+const panApplications = [];
 
+// Route to upload files
+app.post('/upload', upload.fields([
+    { name: 'photo', maxCount: 1 },
+    { name: 'signature', maxCount: 1 },
+    { name: 'documents', maxCount: 1 },
+]), (req, res) => {
+    const { uniqueNumber, category_of_applicant, date, city, state, status } = req.body;
+
+    // Save application details to the "database"
+    const application = {
+        uniqueNumber,
+        category_of_applicant,
+        date,
+        city,
+        state,
+        status,
+        filePath: req.files['photo']?.[0].filename || null,
+        signaturePath: req.files['signature']?.[0].filename || null,
+        documentsPath: req.files['documents']?.[0].filename || null,
+    };
+
+    panApplications.push(application);
+    res.json({ message: 'Application uploaded successfully!', application });
+});
+
+// Route to fetch all applications
+app.get('/get-all-pan-applications', (req, res) => {
+    res.json(panApplications);
+});
 
 app.post('/submit-aadharuclappy', async (req, res) => {
   const { fullname, shopName, aadharNumber, panNumber, address, pinCode, mobileNumber, email } = req.body;
