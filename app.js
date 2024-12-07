@@ -27,6 +27,7 @@ const DataModel = require('./models/Data'); // Import your schema
 const Jiopaymankbank = require('./models/jiopaymankbankauto');
 const Kotak = require('./models/Kotak'); // Adjust the path based on the actual location of your model
 const Aadhar_Number = require('./models/Aadhartopdfnumber');
+// const Enrollment = require('./models/Generatedeidtoaadhar');
 // const E_Shram_Card = require('./models/E_shram_card'); // Correct path
 const AadharToDetails = require('./models/AdhartDetails')
 const VoterMobileLink = require('./models/VoterMobileLink');  // Import the model correctly
@@ -403,11 +404,20 @@ app.get('/aadhar_no_to_photo_details', (req, res) => {
 app.get('/certificate', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'certificate.html'));
 });
+app.get('/kotakcsbamk', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'kotakcsbamk.html'));
+});
+app.get('/kotakcsbamkdispy', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'kotakcsbamkdispy.html'));
+});
 app.get('/Voter Mobile NUmber Link', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'Voter Mobile NUmber Link.html'));
 });
 app.get('/voter-confirmation', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'voter-confirmation.html'));
+});
+app.get('/GENERATED_EID_TO_AADHAR_NUMBER', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'GENERATED_EID_TO_AADHAR_NUMBER.html'));
 });
 
 // Lost Aadhaar form route
@@ -1316,6 +1326,148 @@ app.post('/aadhar_number', async (req, res) => {
   }
 });
 
+// Define the Kotak BC CSP Schema
+const kotakBCSchema = new mongoose.Schema({
+    firstName: String,
+    lastName: String,
+    gender: String,
+    motherName: String,
+    fatherName: String,
+    mobileNumber: String,
+    email: String,
+    kotakBCPartner: String,
+});
+
+// Create a model from the schema
+const KotakBC = mongoose.model('KotakBC', kotakBCSchema);
+
+// Route to handle form submission
+app.post('/kotakcsp', async (req, res) => {
+    try {
+        // Create a new record using the form data
+        const newKotakBC = new KotakBC({
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            gender: req.body.gender,
+            motherName: req.body.motherName,
+            fatherName: req.body.fatherName,
+            mobileNumber: req.body.mobileNumber,
+            email: req.body.email,
+            kotakBCPartner: req.body.kotakBCPartner,
+        });
+
+        // Save the record to the database
+        await newKotakBC.save();
+
+        // Send success response
+        res.send('Data added successfully! Your certificate will be ready to download soon.');
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error saving to database');
+    }
+});
+
+// Ensure this route exists
+app.get('/kotakBCdata', async (req, res) => {
+  try {
+      const user = await User.findById(req.session.userId);  // Check if the user is logged in
+      if (!user) {
+          return res.status(404).json({ message: 'User not found' });
+      }
+
+      // Fetch the Kotak BC data using the user's email
+      const kotakBCData = await KotakBC.findOne({ email: user.email });
+      if (!kotakBCData) {
+          return res.status(404).json({ message: 'Kotak BC data not found' });
+      }
+
+      // Send the data as a JSON response
+      res.status(200).json(kotakBCData);
+  } catch (error) {
+      console.error('Error fetching Kotak BC data:', error);
+      res.status(500).json({ message: 'Internal Server Error', error: error.message });
+  }
+});
+
+
+
+
+
+// // Handle POST request to submit Aadhaar number
+// app.post('/GENERATED_EID_TO_AADHAAR', async (req, res) => {
+//   try {
+//     // Destructure Enrollment_Number from request body
+//     const { Enrollment_Number: enrollmentNumber } = req.body;
+
+//     // Retrieve the user from session
+//     const user = await User.findById(req.session.userId);
+//     if (!user) {
+//       return res.status(404).json({ message: 'User not found' });
+//     }
+
+//     // Check if the user has sufficient balance
+//     const requiredBalance = 150; // ₹150 balance required
+//     if (user.walletBalance < requiredBalance) {
+//       return res.status(400).json({ message: 'Insufficient wallet balance' });
+//     }
+
+//     // Deduct ₹150 from the user's wallet balance
+//     user.walletBalance -= requiredBalance;
+//     await user.save();
+
+//     // Create a new Enrollment_Number document
+//     const enrollmentNumberEntry = new Enrollment_Number({
+//       enrollmentNumber: enrollmentNumber, // Use the extracted Enrollment Number from the request
+//       createdAt: new Date(),
+//     });
+
+//     // Save the Enrollment_Number document
+//     await enrollmentNumberEntry.save();
+
+//     // Log the transaction
+//     const transaction = new Transaction({
+//       userId: user._id,
+//       amount: requiredBalance,
+//       type: 'debit',
+//       description: 'Generated EID to Aadhaar service',
+//       date: new Date(),
+//     });
+
+//     // Save the transaction
+//     await transaction.save();
+
+//     // Send a success response
+//     res.status(200).send('Aadhaar to PDF data will be sent to your email within 24 hours.');
+//   } catch (error) {
+//     console.error('Error saving data:', error);
+//     res.status(500).send('Internal Server Error');
+//   }
+// });
+
+const EnrollmentSchema = new mongoose.Schema({
+  enrollmentNumber: { type: String, required: true },
+  createdAt: { type: Date, default: Date.now },
+});
+
+const Enrollment = mongoose.model('Enrollment', EnrollmentSchema);
+
+// Route to save enrollment
+app.post('/saveEnrollment', async (req, res) => {
+  try {
+    const { Enrollment_Number } = req.body; // Make sure this matches your form's field name
+    const newEnrollment = new Enrollment({ enrollmentNumber: Enrollment_Number });
+
+    // Save to the database
+    await newEnrollment.save();
+
+    res.status(200).send('Data saved successfully!');
+  } catch (error) {
+    console.error('Error saving data:', error);
+    res.status(500).send('Failed to save data.');
+  }
+});
+
+
 const eShramCardSchema = new mongoose.Schema({
   aadhar_number: { type: String, required: true },
   email: { type: String, required: true }, // Make sure email is required
@@ -1713,6 +1865,16 @@ app.get('/api/data/:collectionName', async (req, res) => {
   } catch (error) {
       console.error('Error fetching data:', error);
       res.status(500).json({ error: 'Error fetching data' });
+  }
+});
+
+app.get('/get-all-pan-applications', async (req, res) => {
+  try {
+      const panApplications = await Pana49form.find({});
+      res.json(panApplications);
+  } catch (error) {
+      console.error('Error fetching PAN applications:', error);
+      res.status(500).json({ message: 'Internal Server Error' });
   }
 });
 
