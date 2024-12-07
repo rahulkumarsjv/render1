@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RA DIGITAL INDIA Cyber Cafe</title>
     <style>
         table {
@@ -48,7 +49,9 @@
     </table>
 
     <script>
-         const correctPassword = 'Anju@rahul';
+        const correctPassword = 'Anju@rahul'; // Replace with your desired password
+
+        // Fetch data from the server
         async function fetchData() {
             try {
                 const response = await fetch('/get-all-pan-applications');
@@ -62,6 +65,7 @@
             }
         }
 
+        // Populate the table with data
         function populateTable(data) {
             const tableBody = document.getElementById('panTableBody');
             tableBody.innerHTML = ''; // Clear existing rows
@@ -81,17 +85,17 @@
                     ? `<embed src="/uploads/${application.documentsPath}" type="application/pdf">`
                     : 'N/A';
 
-                      // Add download buttons for images and PDFs
-                const downloadPhotoBtn = application.filePath 
-                    ? `<button class="download-btn" onclick="promptPasswordAndDownload('/uploads/${application.filePath}')">Download Photo</button>`
+                // Add download buttons for images and PDFs
+                const downloadPhotoBtn = application.filePath
+                    ? `<button onclick="promptPasswordAndDownload('/uploads/${application.filePath}')">Download Photo</button>`
                     : '';
 
-                const downloadSignatureBtn = application.signaturePath 
-                    ? `<button class="download-btn" onclick="promptPasswordAndDownload('/uploads/${application.signaturePath}')">Download Signature</button>`
+                const downloadSignatureBtn = application.signaturePath
+                    ? `<button onclick="promptPasswordAndDownload('/uploads/${application.signaturePath}')">Download Signature</button>`
                     : '';
 
-                const downloadPdfBtn = application.documentsPath 
-                    ? `<button class="download-btn" onclick="promptPasswordAndDownload('/uploads/${application.documentsPath}')">Download PDF</button>`
+                const downloadPdfBtn = application.documentsPath
+                    ? `<button onclick="promptPasswordAndDownload('/uploads/${application.documentsPath}')">Download PDF</button>`
                     : '';
 
                 row.innerHTML = `
@@ -101,20 +105,17 @@
                     <td>${application.city || 'N/A'}</td>
                     <td>${application.state || 'N/A'}</td>
                     <td>${application.status || 'N/A'}</td>
-                     <td>
+                    <td>
                         ${photoHTML}
-                        ${downloadPhotoBtn} <!-- Photo download button -->
+                        ${downloadPhotoBtn}
                     </td>
                     <td>
                         ${signatureHTML}
-                        ${downloadSignatureBtn} <!-- Signature download button -->
+                        ${downloadSignatureBtn}
                     </td>
                     <td>
                         ${pdfHTML}
-                        ${downloadPdfBtn} <!-- PDF download button -->
-                    </td>
-                    <td>
-                        <!-- You can add more actions here if needed -->
+                        ${downloadPdfBtn}
                     </td>
                 `;
 
@@ -122,7 +123,7 @@
             });
         }
 
-        // Prompt the user for password and download the file if correct
+        // Prompt the user for a password and download the file if correct
         function promptPasswordAndDownload(filePath) {
             const userPassword = prompt('Enter password to access this file:');
             if (userPassword === correctPassword) {
@@ -132,15 +133,15 @@
             }
         }
 
-        
-        // Function to trigger file download
+        // Trigger file download
         function downloadFile(filePath) {
             const a = document.createElement('a');
             a.href = filePath;
-            a.download = ''; // Trigger download without opening
+            a.download = filePath.split('/').pop(); // Extract filename for download
             a.click();
         }
-        
+
+        // Filter table rows based on search input
         function filterTable() {
             const searchValue = document.getElementById('searchInput').value.toLowerCase();
             const rows = document.querySelectorAll('#panTableBody tr');
@@ -151,8 +152,8 @@
                 row.style.display = matches ? '' : 'none';
             });
         }
-        document.addEventListener('DOMContentLoaded', fetchData);
 
+        // Fetch data on page load
         document.addEventListener('DOMContentLoaded', fetchData);
     </script>
 </body>
