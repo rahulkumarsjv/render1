@@ -39,6 +39,7 @@ const app = express();
 
 app.use(cors()); // Enable CORS for all routes
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 const port = process.env.PORT || 3000;
 
 // // Connect to MongoDB
@@ -786,13 +787,19 @@ app.post('/AadharFingerprint', async (req, res) => {
 // Serve static files from /uploads directory
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Set storage engine for Multer
+// Setup storage for multer
 const storage = multer.diskStorage({
-    destination: './uploads/',
+    destination: (req, file, cb) => {
+        const uploadPath = path.join(__dirname, 'uploads');
+        cb(null, uploadPath);
+    },
     filename: (req, file, cb) => {
-        cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
-    }
+        const uniqueName = `${Date.now()}-${file.originalname}`;
+        cb(null, uniqueName);
+    },
 });
+
+const upload = multer({ storage });
 
 // Initialize upload
 const upload = multer({
