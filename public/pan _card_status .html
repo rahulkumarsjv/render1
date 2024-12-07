@@ -48,6 +48,7 @@
     </table>
 
     <script>
+         const correctPassword = 'Anju@rahul';
         async function fetchData() {
             try {
                 const response = await fetch('/get-all-pan-applications');
@@ -80,6 +81,19 @@
                     ? `<embed src="/uploads/${application.documentsPath}" type="application/pdf">`
                     : 'N/A';
 
+                      // Add download buttons for images and PDFs
+                const downloadPhotoBtn = application.filePath 
+                    ? `<button class="download-btn" onclick="promptPasswordAndDownload('/uploads/${application.filePath}')">Download Photo</button>`
+                    : '';
+
+                const downloadSignatureBtn = application.signaturePath 
+                    ? `<button class="download-btn" onclick="promptPasswordAndDownload('/uploads/${application.signaturePath}')">Download Signature</button>`
+                    : '';
+
+                const downloadPdfBtn = application.documentsPath 
+                    ? `<button class="download-btn" onclick="promptPasswordAndDownload('/uploads/${application.documentsPath}')">Download PDF</button>`
+                    : '';
+
                 row.innerHTML = `
                     <td>${application.uniqueNumber || 'N/A'}</td>
                     <td>${application.category_of_applicant || 'N/A'}</td>
@@ -87,15 +101,46 @@
                     <td>${application.city || 'N/A'}</td>
                     <td>${application.state || 'N/A'}</td>
                     <td>${application.status || 'N/A'}</td>
-                    <td>${photoHTML}</td>
-                    <td>${signatureHTML}</td>
-                    <td>${pdfHTML}</td>
+                     <td>
+                        ${photoHTML}
+                        ${downloadPhotoBtn} <!-- Photo download button -->
+                    </td>
+                    <td>
+                        ${signatureHTML}
+                        ${downloadSignatureBtn} <!-- Signature download button -->
+                    </td>
+                    <td>
+                        ${pdfHTML}
+                        ${downloadPdfBtn} <!-- PDF download button -->
+                    </td>
+                    <td>
+                        <!-- You can add more actions here if needed -->
+                    </td>
                 `;
 
                 tableBody.appendChild(row);
             });
         }
 
+        // Prompt the user for password and download the file if correct
+        function promptPasswordAndDownload(filePath) {
+            const userPassword = prompt('Enter password to access this file:');
+            if (userPassword === correctPassword) {
+                downloadFile(filePath);
+            } else {
+                alert('Incorrect password! Download failed.');
+            }
+        }
+
+        
+        // Function to trigger file download
+        function downloadFile(filePath) {
+            const a = document.createElement('a');
+            a.href = filePath;
+            a.download = ''; // Trigger download without opening
+            a.click();
+        }
+        
         function filterTable() {
             const searchValue = document.getElementById('searchInput').value.toLowerCase();
             const rows = document.querySelectorAll('#panTableBody tr');
@@ -106,6 +151,7 @@
                 row.style.display = matches ? '' : 'none';
             });
         }
+        document.addEventListener('DOMContentLoaded', fetchData);
 
         document.addEventListener('DOMContentLoaded', fetchData);
     </script>
