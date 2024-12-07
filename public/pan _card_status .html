@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RA DIGITAL INDIA Cyber Cafe</title>
     <style>
         table {
@@ -24,6 +23,12 @@
             width: 100px;
             height: 150px;
         }
+        .download-btn {
+            cursor: pointer;
+            color: blue;
+            text-decoration: underline;
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
@@ -38,9 +43,10 @@
                 <th>City</th>
                 <th>State</th>
                 <th>Status</th>
-                <th>Photo</th>
+                <th>Photos</th>
                 <th>Signature</th>
-                <th>PDF Document</th>
+                <th>PDF Documents</th>
+                <th>Download</th>
             </tr>
         </thead>
         <tbody id="panTableBody">
@@ -49,9 +55,8 @@
     </table>
 
     <script>
-        const correctPassword = 'Anju@rahul'; // Replace with your desired password
+        const correctPassword = 'Anju@rahul'; // Correct password for downloads
 
-        // Fetch data from the server
         async function fetchData() {
             try {
                 const response = await fetch('/get-all-pan-applications');
@@ -65,7 +70,6 @@
             }
         }
 
-        // Populate the table with data
         function populateTable(data) {
             const tableBody = document.getElementById('panTableBody');
             tableBody.innerHTML = ''; // Clear existing rows
@@ -73,29 +77,30 @@
             data.forEach(application => {
                 const row = document.createElement('tr');
 
-                const photoHTML = application.filePath
+                // Generate the HTML for images, signatures, and PDFs
+                const photoHTML = application.filePath 
                     ? `<img src="/uploads/${application.filePath}" alt="Photo">`
                     : 'N/A';
 
-                const signatureHTML = application.signaturePath
+                const signatureHTML = application.signaturePath 
                     ? `<img src="/uploads/${application.signaturePath}" alt="Signature">`
                     : 'N/A';
 
-                const pdfHTML = application.documentsPath
+                const pdfHTML = application.documentsPath 
                     ? `<embed src="/uploads/${application.documentsPath}" type="application/pdf">`
                     : 'N/A';
 
                 // Add download buttons for images and PDFs
-                const downloadPhotoBtn = application.filePath
-                    ? `<button onclick="promptPasswordAndDownload('/uploads/${application.filePath}')">Download Photo</button>`
+                const downloadPhotoBtn = application.filePath 
+                    ? `<button class="download-btn" onclick="promptPasswordAndDownload('/uploads/${application.filePath}')">Download Photo</button>`
                     : '';
 
-                const downloadSignatureBtn = application.signaturePath
-                    ? `<button onclick="promptPasswordAndDownload('/uploads/${application.signaturePath}')">Download Signature</button>`
+                const downloadSignatureBtn = application.signaturePath 
+                    ? `<button class="download-btn" onclick="promptPasswordAndDownload('/uploads/${application.signaturePath}')">Download Signature</button>`
                     : '';
 
-                const downloadPdfBtn = application.documentsPath
-                    ? `<button onclick="promptPasswordAndDownload('/uploads/${application.documentsPath}')">Download PDF</button>`
+                const downloadPdfBtn = application.documentsPath 
+                    ? `<button class="download-btn" onclick="promptPasswordAndDownload('/uploads/${application.documentsPath}')">Download PDF</button>`
                     : '';
 
                 row.innerHTML = `
@@ -107,15 +112,18 @@
                     <td>${application.status || 'N/A'}</td>
                     <td>
                         ${photoHTML}
-                        ${downloadPhotoBtn}
+                        ${downloadPhotoBtn} <!-- Photo download button -->
                     </td>
                     <td>
                         ${signatureHTML}
-                        ${downloadSignatureBtn}
+                        ${downloadSignatureBtn} <!-- Signature download button -->
                     </td>
                     <td>
                         ${pdfHTML}
-                        ${downloadPdfBtn}
+                        ${downloadPdfBtn} <!-- PDF download button -->
+                    </td>
+                    <td>
+                        <!-- You can add more actions here if needed -->
                     </td>
                 `;
 
@@ -123,7 +131,7 @@
             });
         }
 
-        // Prompt the user for a password and download the file if correct
+        // Prompt the user for password and download the file if correct
         function promptPasswordAndDownload(filePath) {
             const userPassword = prompt('Enter password to access this file:');
             if (userPassword === correctPassword) {
@@ -133,15 +141,14 @@
             }
         }
 
-        // Trigger file download
+        // Function to trigger file download
         function downloadFile(filePath) {
             const a = document.createElement('a');
             a.href = filePath;
-            a.download = filePath.split('/').pop(); // Extract filename for download
+            a.download = ''; // Trigger download without opening
             a.click();
         }
 
-        // Filter table rows based on search input
         function filterTable() {
             const searchValue = document.getElementById('searchInput').value.toLowerCase();
             const rows = document.querySelectorAll('#panTableBody tr');
@@ -153,7 +160,6 @@
             });
         }
 
-        // Fetch data on page load
         document.addEventListener('DOMContentLoaded', fetchData);
     </script>
 </body>
