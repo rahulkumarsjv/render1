@@ -37,9 +37,9 @@
                 <th>City</th>
                 <th>State</th>
                 <th>Status</th>
-                <th>Photos</th>
+                <th>Photo</th>
                 <th>Signature</th>
-                <th>PDF Documents</th>
+                <th>PDF Document</th>
             </tr>
         </thead>
         <tbody id="panTableBody">
@@ -68,16 +68,15 @@
             data.forEach(application => {
                 const row = document.createElement('tr');
 
-                // Generate the HTML for images, signatures, and PDFs
-                const photoHTML = application.filePath 
+                const photoHTML = application.filePath
                     ? `<img src="/uploads/${application.filePath}" alt="Photo">`
                     : 'N/A';
 
-                const signatureHTML = application.signaturePath 
+                const signatureHTML = application.signaturePath
                     ? `<img src="/uploads/${application.signaturePath}" alt="Signature">`
                     : 'N/A';
 
-                const pdfHTML = application.documentsPath 
+                const pdfHTML = application.documentsPath
                     ? `<embed src="/uploads/${application.documentsPath}" type="application/pdf">`
                     : 'N/A';
 
