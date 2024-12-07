@@ -799,9 +799,20 @@ const storage = multer.diskStorage({
     },
 });
 
-const upload = multer({ storage });
+// File type check function
+function checkFileType(file, cb) {
+    const fileTypes = /jpeg|jpg|png|pdf/; // Allowed file types
+    const extname = fileTypes.test(path.extname(file.originalname).toLowerCase());
+    const mimeType = fileTypes.test(file.mimetype);
 
-// Initialize upload
+    if (extname && mimeType) {
+        cb(null, true);
+    } else {
+        cb(new Error('Only images and PDFs are allowed'));
+    }
+}
+
+// Initialize multer
 const upload = multer({
     storage: storage,
     limits: { fileSize: 10 * 1024 * 1024 }, // 10 MB limit
@@ -809,19 +820,6 @@ const upload = multer({
         checkFileType(file, cb);
     }
 });
-
-// Function to check file type
-function checkFileType(file, cb) {
-    const filetypes = /jpeg|jpg|png|pdf/;
-    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-    const mimetype = filetypes.test(file.mimetype);
-
-    if (mimetype && extname) {
-        return cb(null, true);
-    } else {
-        cb('Error: Images and PDFs Only!');
-    }
-}
 
 // Route to handle file uploads and form data
 app.post('/pan-altruist', upload.fields([
