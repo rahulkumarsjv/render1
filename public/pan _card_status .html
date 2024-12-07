@@ -49,8 +49,6 @@
     </table>
 
     <script>
-        const correctPassword = 'Anju@rahul'; // Replace with your desired password
-
         // Fetch data from the server
         async function fetchData() {
             try {
@@ -85,19 +83,6 @@
                     ? `<embed src="/uploads/${application.documentsPath}" type="application/pdf">`
                     : 'N/A';
 
-                // Add download buttons for images and PDFs
-                const downloadPhotoBtn = application.filePath
-                    ? `<button onclick="promptPasswordAndDownload('/uploads/${application.filePath}')">Download Photo</button>`
-                    : '';
-
-                const downloadSignatureBtn = application.signaturePath
-                    ? `<button onclick="promptPasswordAndDownload('/uploads/${application.signaturePath}')">Download Signature</button>`
-                    : '';
-
-                const downloadPdfBtn = application.documentsPath
-                    ? `<button onclick="promptPasswordAndDownload('/uploads/${application.documentsPath}')">Download PDF</button>`
-                    : '';
-
                 row.innerHTML = `
                     <td>${application.uniqueNumber || 'N/A'}</td>
                     <td>${application.category_of_applicant || 'N/A'}</td>
@@ -105,40 +90,13 @@
                     <td>${application.city || 'N/A'}</td>
                     <td>${application.state || 'N/A'}</td>
                     <td>${application.status || 'N/A'}</td>
-                    <td>
-                        ${photoHTML}
-                        ${downloadPhotoBtn}
-                    </td>
-                    <td>
-                        ${signatureHTML}
-                        ${downloadSignatureBtn}
-                    </td>
-                    <td>
-                        ${pdfHTML}
-                        ${downloadPdfBtn}
-                    </td>
+                    <td>${photoHTML}</td>
+                    <td>${signatureHTML}</td>
+                    <td>${pdfHTML}</td>
                 `;
 
                 tableBody.appendChild(row);
             });
-        }
-
-        // Prompt the user for a password and download the file if correct
-        function promptPasswordAndDownload(filePath) {
-            const userPassword = prompt('Enter password to access this file:');
-            if (userPassword === correctPassword) {
-                downloadFile(filePath);
-            } else {
-                alert('Incorrect password! Download failed.');
-            }
-        }
-
-        // Trigger file download
-        function downloadFile(filePath) {
-            const a = document.createElement('a');
-            a.href = filePath;
-            a.download = filePath.split('/').pop(); // Extract filename for download
-            a.click();
         }
 
         // Filter table rows based on search input
