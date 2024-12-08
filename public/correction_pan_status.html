@@ -61,6 +61,15 @@
 
     <script>
     document.addEventListener('DOMContentLoaded', async function () {
+        const password = "12345"; // Define your password here
+        const userPassword = prompt("Please enter the password to view the details:");
+
+        if (userPassword !== password) {
+            alert("Incorrect password! You cannot view the details.");
+            document.body.innerHTML = "<h1>Access Denied</h1>";
+            return;
+        }
+
         try {
             const response = await fetch('/api/pan-applications');
             if (!response.ok) {
