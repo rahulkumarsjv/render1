@@ -1,0 +1,101 @@
+/* Reset some basic styles for consistency */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    line-height: 1.6;
+    padding: 20px;
+}
+
+/* Main container */
+.dob {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    margin: 0 auto;
+}
+
+/* Heading styles */
+.dob h3, .dob h1, .dob h2 {
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.dob h3 {
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.dob h1 {
+    font-size: 20px;
+    color: #444;
+}
+
+.dob h2 {
+    font-size: 18px;
+    color: #777;
+    margin-bottom: 30px;
+}
+
+/* PDF links in a flex row */
+.pdf-links {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.pdf-links a {
+    text-decoration: none;
+    color: #007BFF;
+    font-weight: bold;
+}
+
+.pdf-links a:hover {
+    color: #0056b3;
+}
+
+/* Image gallery with two rows */
+.image-gallery {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: flex-start;
+}
+
+.image-item {
+    width: calc(50% - 20px); /* 2 images per row with space between them */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.image-item img {
+    width: 100%;
+    height: 200px; /* Set a fixed height for all images */
+    object-fit: cover; /* Ensure the images cover the box without distortion */
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Make the layout responsive on smaller screens */
+@media (max-width: 768px) {
+    .image-item {
+        width: calc(50% - 20px); /* 2 images per row on medium screens */
+    }
+}
+
+@media (max-width: 480px) {
+    .image-item {
+        width: 100%; /* 1 image per row on small screens */
+    }
+}
